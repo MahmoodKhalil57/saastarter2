@@ -1,0 +1,32 @@
+# The whole deployment story (baas/site.md §2a): the backend deploys with
+# `sync push`; the frontend is just files on GitHub Pages.
+name: deploy
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      # Drift gate: the declared backend must match the account.
+      # - run: bun ../hono-aep-baas/bin/sync.ts diff --exit-code --dir hono-aep-baas-config
+      #   env: { BAAS_KEY: ${{ secrets.BAAS_KEY }} }
+      - run: bun install
+        working-directory: frontend
+      - run: bun run build
+        working-directory: frontend
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
