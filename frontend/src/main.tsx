@@ -8,6 +8,8 @@ import { HomePage } from "./pages/Home";
 import { BlogPage } from "./pages/Blog";
 import { PostPage } from "./pages/Post";
 import { ContactPage } from "./pages/Contact";
+import { CmsPage, CmsPageError } from "hono-aep-blocks";
+import { config } from "./config";
 
 const router = createBrowserRouter(
   [
@@ -19,6 +21,22 @@ const router = createBrowserRouter(
         { path: "blog", Component: BlogPage },
         { path: "blog/:id", Component: PostPage },
         { path: "contact", Component: ContactPage },
+        {
+          // "A cms for some pages": any path that is not a code route tries
+          // the project's hosted Puck pages (public read, CORS-open).
+          path: "*",
+          Component: CmsPage,
+          ErrorBoundary: CmsPageError,
+          loader: async ({ params }) => {
+            const slug = (params["*"] as string) || "home";
+            const response = await fetch(
+              `${config.endpoint}/v1/projects/${config.project}/pages/${slug}`,
+            );
+            if (!response.ok) throw new Response("Not found", { status: response.status });
+            const doc = (await response.json()) as { title: string; data: unknown };
+            return { slug, title: doc.title, data: doc.data };
+          },
+        },
       ],
     },
   ],

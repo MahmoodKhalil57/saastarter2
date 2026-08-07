@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "hono-aep-ui";
+import { CmsBlock } from "hono-aep-blocks";
+import { config } from "../config";
 
 const FEATURES = [
   ["Backend in git", "Collections, forms, and pages declared in hono-aep-baas-config/ — synced, never clicked together."],
@@ -11,6 +13,9 @@ export function HomePage() {
   const navigate = useNavigate();
   return (
     <div className="space-y-12">
+      {/* A hosted Puck FRAGMENT inside a code route (site.md §1): marketing
+          owns this section from the dashboard; absent block, nothing renders. */}
+      <CmsBlock url={`${config.endpoint}/v1/projects/${config.project}/blocks/announcement`} />
       <section className="space-y-4 pt-8 text-center">
         <h1 className="text-4xl font-bold tracking-tight">Build the backend in git.</h1>
         <p className="mx-auto max-w-xl text-muted-foreground">
