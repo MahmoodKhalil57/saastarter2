@@ -1,0 +1,7 @@
+{
+  "endpoint": "http://localhost:3000",
+  "project": "saastarter2",
+  "resources": [
+    "forms/*.cms.json"
+  ]
+}
