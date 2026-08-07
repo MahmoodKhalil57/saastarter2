@@ -47,8 +47,10 @@ engine stays app-side (react-router actions).
 
 **P4 — site documents** (`baas/site.md`): the 10 color schemes + dark
 mode port as hosted tweakcn THEMES (one `<link>` tag); marketing pages
-optionally as Puck pages; SEO artifacts (sitemap/robots/llms/.md
-mirrors) reified into public/ at build; the white-label admin mounts
+optionally as Puck pages AND standalone Puck block fragments (hero/
+pricing/footer rendered as-is inside code routes); PWA (manifest/icons/
+SW from site.app + theme, installable off Pages) + SEO artifacts
+(sitemap/robots/llms/.md mirrors) reified into public/ at build; the white-label admin mounts
 in the SPA behind the auth pool. Also: field localization (cms localization.md — the hard
 dependency for blogs/products), search + related items (search kind),
 counters/analytics (quotas/KV story), realtime order status (umbrella
