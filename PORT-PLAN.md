@@ -13,9 +13,13 @@ round of 2026-08-07).
 
 - The baas hosts: state (collections), end-user auth (pools), delivery
   (jobs/notifications/webhooks), contracts (OpenAPI/MCP), files (media).
-- The app hosts: react-router server loaders/actions — the bespoke ~30
-  endpoints (money math, discount engine, checkout orchestration) stay
-  HERE, calling the baas with an `sk_` key. No hosted user code.
+- The frontend is a **basic, beginner-friendly STATIC react-router
+  (SPA mode) + shadcn app** — no server code, hostable anywhere static.
+  Everything comes from the baas over HTTP (pk_ embeds, session auth
+  when the pool lands). The bespoke money-math endpoints are therefore
+  NOT ported in the static flagship: checkout/payments wait for the
+  billing kind's hosted surface (P3), or an advanced consumer adds an
+  optional thin server — never the beginner path.
 - Fixed by construction: saastarter's world-readable PII + world-writable
   blogs (open-access defaults) and its unauthenticated job callback —
   fail-closed policies and signed delivery replace them.
@@ -48,8 +52,9 @@ counters/analytics (quotas/KV story), realtime order status (umbrella
 
 ## Frontend
 
-react-router framework mode + shadcn (the suite's base component
-contract applies); pages: landing/marketing (static + i18n messages in
+STATIC react-router (SPA mode, `ssr:false`) + shadcn — beginner-
+friendly by design: `bun create`, edit pages, `bun run build`, host the
+dist anywhere. The suite's base component contract applies. Pages: landing/marketing (static + i18n messages in
 this repo), blogs, products, checkout, account (settings/security/
 billing/orders/wishlist/developer), auth views. Message catalogs are
 plain files here, git-versioned — not a baas concern.
