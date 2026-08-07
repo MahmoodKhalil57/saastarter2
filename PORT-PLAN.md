@@ -58,7 +58,10 @@ counters/analytics (quotas/KV story), realtime order status (umbrella
 
 STATIC react-router (SPA mode, `ssr:false`) + shadcn — beginner-
 friendly by design: `bun create`, edit pages, `bun run build`, host the
-dist anywhere. The suite's base component contract applies. Pages: landing/marketing (static + i18n messages in
+dist anywhere — **GitHub Pages is the reference host** (site.md §2a:
+basename config, 404.html fallback, prerendered page routes, .nojekyll,
+deploy-pages CI; Bearer-only auth from the static origin). The suite's
+base component contract applies. Pages: landing/marketing (static + i18n messages in
 this repo), blogs, products, checkout, account (settings/security/
 billing/orders/wishlist/developer), auth views. Message catalogs are
 plain files here, git-versioned — not a baas concern.
