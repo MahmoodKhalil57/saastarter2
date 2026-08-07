@@ -45,7 +45,11 @@ stock = event → jobs); payments via billing kind (customer link,
 intents) + connections INBOUND (signed Stripe webhooks); discount
 engine stays app-side (react-router actions).
 
-**P4 — polish**: field localization (cms localization.md — the hard
+**P4 — site documents** (`baas/site.md`): the 10 color schemes + dark
+mode port as hosted tweakcn THEMES (one `<link>` tag); marketing pages
+optionally as Puck pages; SEO artifacts (sitemap/robots/llms/.md
+mirrors) reified into public/ at build; the white-label admin mounts
+in the SPA behind the auth pool. Also: field localization (cms localization.md — the hard
 dependency for blogs/products), search + related items (search kind),
 counters/analytics (quotas/KV story), realtime order status (umbrella
 §3a realtime, events grammar), public/private OpenAPI split.
