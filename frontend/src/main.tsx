@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import { runtimeBasename } from "./config";
 import { Layout } from "./Layout";
+import { UiProvider } from "./ui";
 import { HomePage } from "./pages/Home";
 import { BlogPage } from "./pages/Blog";
 import { PostPage } from "./pages/Post";
@@ -24,4 +25,8 @@ const router = createBrowserRouter(
   { basename: runtimeBasename() },
 );
 
-createRoot(document.getElementById("root")!).render(<RouterProvider router={router} />);
+createRoot(document.getElementById("root")!).render(
+  <UiProvider>
+    <RouterProvider router={router} />
+  </UiProvider>,
+);
