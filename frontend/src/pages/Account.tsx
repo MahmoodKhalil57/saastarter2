@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
 import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateAvatar, updateProfile, useSession } from "../auth";
-import { money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, uploadMedia, type Order, type WishlistItem } from "../store";
+import { billingPortal, money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, uploadMedia, type Order, type WishlistItem } from "../store";
 import { config } from "../config";
 
 const TABS = ["overview", "settings", "security", "billing", "orders", "wishlist", "developer"] as const;
@@ -135,9 +135,12 @@ export function AccountPage() {
                   ? "Active — the pro entitlement is granted and renews on every invoice (revoked on cancellation)."
                   : "$9/mo — a real Stripe subscription (recurring checkout); the webhook lifecycle grants, renews, and revokes the pro entitlement."}</CardDescription></CardHeader>
               <CardContent>
-                {pro
-                  ? <p className="text-sm text-muted-foreground">Entitlement-gated features (like advanced export) are on for this account.</p>
-                  : <Button onClick={async () => { const r = await subscribe(); if (r.needsAuth) return navigate("/login?next=/account"); if (r.redirect) window.location.href = r.redirect; }}>Subscribe — $9/mo</Button>}
+                {pro ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">Entitlement-gated features (like advanced export) are on for this account.</p>
+                    <Button variant="outline" onClick={async () => { const r = await billingPortal(); if (r.url) window.location.href = r.url; else say("No billing history to manage yet."); }}>Manage subscription</Button>
+                  </div>
+                ) : <Button onClick={async () => { const r = await subscribe(); if (r.needsAuth) return navigate("/login?next=/account"); if (r.redirect) window.location.href = r.redirect; }}>Subscribe — $9/mo</Button>}
               </CardContent>
             </Card>
           </>

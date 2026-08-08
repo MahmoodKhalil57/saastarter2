@@ -139,6 +139,19 @@ export async function subscribe(): Promise<{ redirect?: string; needsAuth?: bool
   return body.url ? { redirect: body.url } : {};
 }
 
+/** The provider's self-serve portal (manage payment method / cancel) —
+ *  available once a verified purchase recorded the customer mapping. */
+export async function billingPortal(): Promise<{ url?: string }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return {};
+  const r = await fetch(`${base}/billing/portal`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header },
+    body: JSON.stringify({ returnUrl: `${location.origin}${config.basename}/account?tab=billing` }),
+  });
+  if (!r.ok) return {};
+  return (await r.json()) as { url: string };
+}
+
 /** Server-evaluated flags for the signed-in principal (entitlement-gated). */
 export async function proActive(): Promise<boolean> {
   const header = authHeader();
