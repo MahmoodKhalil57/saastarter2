@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
-import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateProfile, useSession } from "../auth";
-import { money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, type Order, type WishlistItem } from "../store";
+import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateAvatar, updateProfile, useSession } from "../auth";
+import { money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, uploadMedia, type Order, type WishlistItem } from "../store";
 import { config } from "../config";
 
 const TABS = ["overview", "settings", "security", "billing", "orders", "wishlist", "developer"] as const;
@@ -10,7 +10,7 @@ type Tab = (typeof TABS)[number];
 
 export function AccountPage() {
   const navigate = useNavigate();
-  const { user } = useSession();
+  const { user, refresh } = useSession();
   const [params, setParams] = useSearchParams();
   const tab = (params.get("tab") as Tab) || "overview";
   const [owns, setOwns] = useState<Set<string>>(new Set());
@@ -67,7 +67,22 @@ export function AccountPage() {
           <>
             <Card>
               <CardHeader><CardTitle>Profile</CardTitle><CardDescription>Signed in as {user.email}</CardDescription></CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                  {user.image
+                    ? <img src={user.image} alt="" className="h-14 w-14 rounded-full border object-cover" />
+                    : <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-muted text-lg font-semibold">{(user.name || "?").slice(0, 1).toUpperCase()}</div>}
+                  <label className="cursor-pointer text-sm text-primary underline">
+                    Change avatar
+                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const up = await uploadMedia(file); // per-project media (R2/fs behind the seam)
+                      if ("url" in up) { await updateAvatar(up.url); refresh(); say("Avatar updated ✓"); }
+                      else say("error" in up ? up.error : "Sign in first");
+                    }} />
+                  </label>
+                </div>
                 <form className="flex gap-2" onSubmit={async (e) => { e.preventDefault(); const name = String(new FormData(e.currentTarget).get("name") ?? ""); if (!name) return; const r = await updateProfile(name); say(r.ok ? "Name updated ✓" : "Update failed"); }}>
                   <input name="name" defaultValue={user.name} className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
                   <Button type="submit">Save</Button>

@@ -17,7 +17,7 @@ export const authHeader = (): Record<string, string> => {
   return t ? { Authorization: `Bearer ${t}` } : {};
 };
 
-export type PoolUser = { id: string; email: string; name: string };
+export type PoolUser = { id: string; email: string; name: string; image?: string | null };
 
 async function post(path: string, body: unknown): Promise<Response> {
   const response = await fetch(auth(path), {
@@ -43,6 +43,7 @@ export function signOut(): void {
 // --- Account lifecycle (auth-pools.md §1.5) — all server-side flows; the
 // --- pool's better-auth surface is the API, mail rides notifications.
 export const updateProfile = (name: string) => post("/update-user", { name });
+export const updateAvatar = (image: string) => post("/update-user", { image });
 export const changeEmail = (newEmail: string) =>
   post("/change-email", { newEmail, callbackURL: `${location.origin}${config.basename}/account` });
 export const changePassword = (currentPassword: string, newPassword: string, revokeOtherSessions = true) =>

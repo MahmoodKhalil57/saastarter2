@@ -102,6 +102,25 @@ export async function owned(): Promise<Set<string>> {
 }
 
 // ---------------------------------------------------------------------------
+// Media — per-project files (baas media kind): authenticated multipart
+// upload, public immutable download URL. Used for avatars here; the same
+// two calls carry product shots, post covers, anything.
+// ---------------------------------------------------------------------------
+
+export async function uploadMedia(file: File): Promise<{ url: string } | { needsAuth: true } | { error: string }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { needsAuth: true };
+  const form = new FormData();
+  form.append("file", file);
+  const r = await fetch(`${base}/media:upload`, { method: "POST", headers: header, body: form });
+  if (r.status === 401) return { needsAuth: true };
+  if (!r.ok) return { error: `upload failed (${r.status})` };
+  const { results } = (await r.json()) as { results: { path: string }[] };
+  const id = results[0]!.path.split("/")[1]!;
+  return { url: `${base}/media/${id}:download` };
+}
+
+// ---------------------------------------------------------------------------
 // Subscriptions — the billing kind's RECURRING path (separate from the
 // one-time commerce flow): a month-interval catalog price → hosted
 // subscription-mode checkout; the webhook lifecycle (grant → renew on
