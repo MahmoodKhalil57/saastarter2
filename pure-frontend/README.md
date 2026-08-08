@@ -38,3 +38,14 @@ Notes:
   (open the `127.0.0.1:...` URL in Chrome), not the embedded preview
   panel — the panel's webview blocks the CDN + API requests this app
   makes. Set `livePreview.openPreviewTarget` to `External Browser`.
+
+## Theming (full tweakcn vocabulary)
+
+The hosted theme document (`hono-aep-baas-config/themes/default.cms.css`)
+drives the whole site through `css/tweakcn-adapter.css`. EVERY tweakcn
+token is live: background/foreground, card, popover, primary, secondary,
+muted, accent, destructive (+foregrounds), border, input, ring,
+chart-1..5, the full sidebar-* set (it styles the cart drawer), radius,
+font-sans/serif/mono, shadow tokens, and letter-spacing. `--spacing` is
+the one non-mappable token (Bootstrap's spacing scale is compile-time).
+Restyle = edit the theme + `sync push` — or the studio, or MCP.
