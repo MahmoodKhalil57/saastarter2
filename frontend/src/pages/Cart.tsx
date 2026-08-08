@@ -56,12 +56,17 @@ export function CartPage() {
         {settling ? (
           <p className="text-center text-muted-foreground">Confirming with the payment provider…</p>
         ) : (
+          <>
+          <button className="mb-4 text-sm text-muted-foreground hover:text-foreground" onClick={() => setPaying(null)}>
+            ← Back to cart (your items are safe until payment completes)
+          </button>
           <PaymentStep
             payment={paying.payment}
             amountLabel={money(paying.amount)}
             onPaid={() => void settle(paying.orderId, paying.amount)}
             onError={(message) => { setCouponError(message); setPaying(null); }}
           />
+          </>
         )}
       </div>
     );
