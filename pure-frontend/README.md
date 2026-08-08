@@ -22,9 +22,14 @@ Any static file server works — there is nothing to build:
 
 ```bash
 cd pure-frontend
-python3 -m http.server 8080     # or: bunx serve .
+python3 -m http.server 8080 --bind 0.0.0.0   # or: bunx serve .
 # → http://localhost:8080
 ```
+
+On **WSL2**, `--bind 0.0.0.0` matters: a server bound to `127.0.0.1`
+inside WSL is invisible to a Windows browser (VS Code Live Preview does
+exactly that — hence "site can't be reached"). Bound to `0.0.0.0` it is
+reachable as `localhost` and via the WSL IP (`hostname -I`).
 
 Notes:
 - `file://` (double-clicking index.html) will NOT work — browsers block
