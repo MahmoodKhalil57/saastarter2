@@ -82,11 +82,11 @@ async function renderOrders() {
       <div class="card"><div class="card-body py-2">
         <div class="d-flex justify-content-between">
           <span>${order.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span>
-          <span class="d-flex gap-3"><span>${money(order.total_cents)}</span><span class="${["paid","delivered","shipped","fulfilled"].includes(order.status) ? "text-success" : "text-body-secondary"}">${order.status}</span></span>
+          <span class="d-flex gap-3"><span class="s2-price">${money(order.total_cents)}</span><span class="${["paid","delivered","shipped","fulfilled"].includes(order.status) ? "text-success" : "text-body-secondary"}">${order.status}</span></span>
         </div>
         ${(order.deliveries ?? []).flatMap((d) => d.artifacts).map((artifact) =>
           artifact.kind === "download"
-            ? `<a class="btn btn-sm btn-outline-primary artifact-btn mt-1" target="_blank" href="${config.endpoint}${artifact.claim}">⬇ ${artifact.label}</a>`
+            ? `<a class="btn btn-sm btn-outline-primary artifact-btn mt-1" target="_blank" href="${config.endpoint}${artifact.claim}"><iconify-icon icon="lucide:download" inline></iconify-icon> ${artifact.label}</a>`
             : artifact.kind === "tracking"
               ? `<span class="badge text-bg-secondary mt-1">📦 ${artifact.label}${artifact.code ? " — " + artifact.code : ""}</span>`
               : `<small class="text-body-secondary d-block mt-1">${artifact.label}</small>`).join(" ")}

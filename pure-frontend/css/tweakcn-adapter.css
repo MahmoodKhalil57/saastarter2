@@ -1,0 +1,84 @@
+/* ==========================================================================
+   tweakcn → Bootstrap adapter
+   The hosted theme (hono-aep-baas-config/themes/default.cms.css, served at
+   /v1/projects/{p}/theme.css) speaks the tweakcn/shadcn token vocabulary
+   (--background, --foreground, --primary, --radius, --font-*…). This file
+   bridges those tokens into Bootstrap's variable system, so RESTYLING THE
+   SITE = editing the theme document + `sync push` — no CSS surgery here.
+
+   Every bridge carries a design fallback (the "source-code editorial"
+   palette), so the site renders correctly even if the theme link fails.
+   Dark mode: ui.js sets BOTH data-bs-theme="dark" (Bootstrap) and the
+   `dark` class (the theme document's .dark block); the var() chains below
+   then re-resolve automatically — the dark block here only supplies
+   fallback literals for the theme-less case.
+   ========================================================================== */
+
+:root {
+  /* theme → design tokens */
+  --s2-accent: var(--primary, #d9482b);
+  --s2-accent-contrast: var(--primary-foreground, #fffdf9);
+  --s2-paper: var(--background, #faf6f0);
+  --s2-ink: var(--foreground, #1c1917);
+  --s2-card: var(--card, #fdfaf5);
+  --s2-line: var(--border, #d8d0c4);
+  --s2-muted: var(--muted-foreground, #6d6459);
+  --s2-display: var(--font-serif, "Fraunces", Georgia, serif);
+  --s2-body: var(--font-sans, "IBM Plex Sans", ui-sans-serif, sans-serif);
+  --s2-mono: var(--font-mono, "IBM Plex Mono", ui-monospace, monospace);
+
+  /* design tokens → Bootstrap */
+  --bs-body-font-family: var(--s2-body);
+  --bs-body-bg: var(--s2-paper);
+  --bs-body-color: var(--s2-ink);
+  --bs-border-color: var(--s2-line);
+  --bs-border-radius: var(--radius, 0.25rem);
+  --bs-primary: var(--s2-accent);
+  --bs-link-color: var(--s2-accent);
+  --bs-link-hover-color: var(--s2-accent);
+  --bs-secondary-color: var(--s2-muted);
+}
+[data-bs-theme="dark"] {
+  /* fallback literals for the theme-less case; with a theme present the
+     .dark block redefines --background/--primary/… and the :root chains
+     above re-resolve — these only win when those are undefined. */
+  --s2-accent: var(--primary, #ff6a45);
+  --s2-accent-contrast: var(--primary-foreground, #241109);
+  --s2-paper: var(--background, #171412);
+  --s2-ink: var(--foreground, #ece6dd);
+  --s2-card: var(--card, #1d1916);
+  --s2-line: var(--border, #3a342d);
+  --s2-muted: var(--muted-foreground, #a89c8d);
+  --bs-body-bg: var(--s2-paper);
+  --bs-body-color: var(--s2-ink);
+  --bs-border-color: var(--s2-line);
+}
+
+/* Bootstrap components whose colors bake in --bs-primary-rgb or utility
+   classes: rebind them to the bridged tokens (oklch-safe — no RGB triplets
+   required anywhere). */
+.btn-primary {
+  --bs-btn-bg: var(--s2-accent); --bs-btn-border-color: var(--s2-accent);
+  --bs-btn-color: var(--s2-accent-contrast);
+  --bs-btn-hover-bg: color-mix(in srgb, var(--s2-accent) 85%, var(--s2-ink));
+  --bs-btn-hover-border-color: color-mix(in srgb, var(--s2-accent) 85%, var(--s2-ink));
+  --bs-btn-hover-color: var(--s2-accent-contrast);
+  --bs-btn-active-bg: color-mix(in srgb, var(--s2-accent) 75%, var(--s2-ink));
+  --bs-btn-active-border-color: color-mix(in srgb, var(--s2-accent) 75%, var(--s2-ink));
+  --bs-btn-active-color: var(--s2-accent-contrast);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--s2-accent); --bs-btn-border-color: var(--s2-accent);
+  --bs-btn-hover-bg: var(--s2-accent); --bs-btn-hover-border-color: var(--s2-accent);
+  --bs-btn-hover-color: var(--s2-accent-contrast);
+  --bs-btn-active-bg: var(--s2-accent); --bs-btn-active-color: var(--s2-accent-contrast);
+}
+.text-bg-primary {
+  background-color: var(--s2-accent) !important;
+  color: var(--s2-accent-contrast) !important;
+}
+.card { background-color: var(--s2-card); color: var(--card-foreground, var(--s2-ink)); }
+.form-control:focus {
+  border-color: var(--s2-accent);
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--s2-accent) 18%, transparent);
+}

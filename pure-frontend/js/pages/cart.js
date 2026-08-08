@@ -17,8 +17,8 @@ async function renderCart() {
     items.innerHTML = cart.items.map((item) => `
       <div class="card"><div class="card-body py-2 d-flex justify-content-between align-items-center">
         <div><strong>${item.name ?? item.product_id}</strong><br><small class="text-body-secondary">${money(item.price_cents)} × ${item.quantity}</small></div>
-        <div class="d-flex gap-3 align-items-center"><span class="fw-semibold">${money(item.price_cents * item.quantity)}</span>
-          <button class="btn btn-sm btn-link text-danger p-0" data-variant="${item.variant ?? item.product_id}">Remove</button></div>
+        <div class="d-flex gap-3 align-items-center"><span class="s2-price">${money(item.price_cents * item.quantity)}</span>
+          <button class="btn btn-sm btn-link text-danger p-0" data-variant="${item.variant ?? item.product_id}" aria-label="Remove"><iconify-icon icon="lucide:trash-2" inline pointer-events="none"></iconify-icon></button></div>
       </div></div>`).join("");
     document.getElementById("checkout").disabled = false;
   }
@@ -26,7 +26,7 @@ async function renderCart() {
   document.getElementById("total").textContent = money(total);
 }
 document.getElementById("items").addEventListener("click", async (event) => {
-  const variant = event.target.dataset?.variant;
+  const variant = event.target.closest?.("[data-variant]")?.dataset?.variant;
   if (variant) { await removeFromCart(variant); void renderCart(); }
 });
 

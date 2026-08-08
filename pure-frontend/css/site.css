@@ -1,4 +1,101 @@
-/* Tiny overrides on Bootstrap — the hosted tweakcn theme stays the React
-   app's; the pure app leans on Bootstrap's own token system. */
+/* ==========================================================================
+   saastarter2 — "source-code editorial" COMPONENTS
+   Tokens come from the HOSTED THEME via css/tweakcn-adapter.css (edit
+   themes/default.cms.css + sync push to restyle); this file only styles
+   components in terms of --s2-* tokens. Both themes, RTL-safe.
+   ========================================================================== */
+
+
+body { background: var(--s2-paper); color: var(--s2-ink); }
+
+/* --- typography ---------------------------------------------------------- */
+h1, h2, h3, .display-2, .display-3, .display-4 {
+  font-family: var(--s2-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.s2-hero-title {
+  font-family: var(--s2-display);
+  font-size: clamp(3rem, 9vw, 5.75rem);
+  line-height: 0.98;
+  font-weight: 600;
+}
+.s2-hero-title em { font-style: italic; color: var(--s2-accent); font-weight: 500; }
+.s2-kicker {
+  font-family: var(--s2-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--s2-accent) 85%, var(--s2-ink));
+}
+.s2-kicker::before { content: "// "; opacity: 0.6; }
+.s2-comment { font-family: var(--s2-mono); font-size: 0.85rem; color: var(--bs-secondary-color); }
+.s2-mono, .s2-price, code { font-family: var(--s2-mono); }
+.s2-price { font-weight: 600; letter-spacing: -0.02em; }
+
+/* --- chrome -------------------------------------------------------------- */
+.navbar { background: var(--s2-paper); }
+.navbar-brand { font-family: var(--s2-display); font-weight: 600; font-size: 1.35rem; }
+.navbar-brand .badge {
+  font-family: var(--s2-mono); font-weight: 500; font-size: 0.6rem;
+  background: var(--s2-accent) !important; color: var(--s2-accent-contrast);
+  vertical-align: super;
+}
+.icon { vertical-align: -0.14em; }
+.nav-link { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+/* --- cards: 1px ink + hard offset shadow on hover ------------------------ */
+.card {
+  border: 1px solid var(--s2-line);
+  border-radius: var(--bs-border-radius);
+  background: var(--bs-body-bg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+a.card:hover, .card.s2-hover:hover {
+  transform: translate(-2px, -2px);
+  border-color: var(--s2-ink);
+  box-shadow: 4px 4px 0 var(--s2-ink);
+}
+[data-bs-theme="dark"] a.card:hover, [data-bs-theme="dark"] .card.s2-hover:hover {
+  border-color: var(--s2-accent);
+  box-shadow: 4px 4px 0 var(--s2-accent);
+}
+.s2-feature .icon { font-size: 1.5rem; color: var(--s2-accent); }
+.s2-feature h5 { font-family: var(--s2-body); font-weight: 600; font-size: 1rem; margin: 0.6rem 0 0.25rem; }
+
+/* --- buttons ------------------------------------------------------------- */
+.btn { border-radius: var(--bs-border-radius); font-weight: 500; }
+.btn .icon { margin-inline-end: 0.4rem; }
+
+/* --- hero grid-paper + stagger reveal ------------------------------------ */
+.s2-hero {
+  position: relative;
+  background-image:
+    linear-gradient(var(--s2-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--s2-line) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  background-position: center;
+  border-block-end: 1px solid var(--s2-line);
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+}
+.s2-hero::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, var(--s2-paper) 95%);
+}
+.s2-hero > * { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .s2-reveal { opacity: 0; transform: translateY(14px); animation: s2-up 0.55s ease forwards; }
+  .s2-reveal:nth-child(2) { animation-delay: 0.08s; }
+  .s2-reveal:nth-child(3) { animation-delay: 0.16s; }
+  .s2-reveal:nth-child(4) { animation-delay: 0.24s; }
+  @keyframes s2-up { to { opacity: 1; transform: none; } }
+}
+
+/* --- misc ---------------------------------------------------------------- */
 .product-emoji { font-size: 3rem; }
 .artifact-btn { text-decoration: none; }
+.form-control, .input-group-text { border-radius: var(--bs-border-radius); }
+.s2-tier-badge { font-family: var(--s2-mono); font-size: 0.7rem; }
+footer { font-family: var(--s2-mono); font-size: 0.78rem; }
+.blockquote { font-family: var(--s2-display); font-style: italic; font-weight: 450; }

@@ -3,9 +3,14 @@
 // live cart badge, toasts. Import on every page.
 import { consumeAuthFragment, getLocale, getSession, setLocale, signOut } from "./api.js";
 import { getCart } from "./store.js";
+import { icon } from "./icons.js";
 
 const dark = () => localStorage.getItem("theme") === "dark";
-const applyTheme = () => document.documentElement.setAttribute("data-bs-theme", dark() ? "dark" : "light");
+const applyTheme = () => {
+  document.documentElement.setAttribute("data-bs-theme", dark() ? "dark" : "light");
+  // the hosted theme document scopes its dark tokens under `.dark`
+  document.documentElement.classList.toggle("dark", dark());
+};
 const applyLocale = () => {
   const locale = getLocale();
   document.documentElement.lang = locale;
@@ -25,16 +30,16 @@ export function toast(message, ok = true) {
 const NAV = `
 <nav class="navbar navbar-expand-md border-bottom">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="./index.html">saastarter2 <span class="badge text-bg-secondary">pure</span></a>
+    <a class="navbar-brand" href="./index.html">saastarter2<span class="badge ms-1">pure</span></a>
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav-items"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="nav-items">
       <ul class="navbar-nav ms-auto align-items-md-center gap-2">
-        <li class="nav-item"><a class="nav-link" href="./products.html" data-i18n="nav.products">Products</a></li>
-        <li class="nav-item"><a class="nav-link" href="./blog.html" data-i18n="nav.blog">Blog</a></li>
-        <li class="nav-item"><a class="nav-link" href="./cart.html">Cart <span id="cart-count" class="badge text-bg-primary d-none"></span></a></li>
-        <li class="nav-item"><a class="nav-link" id="nav-account" href="./login.html">Sign in</a></li>
-        <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="theme-toggle">🌙</button></li>
-        <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="locale-toggle">ع</button></li>
+        <li class="nav-item"><a class="nav-link" href="./products.html">${icon("package")} Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="./blog.html">${icon("file-text")} Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="./cart.html">${icon("shopping-cart")} Cart <span id="cart-count" class="badge text-bg-primary d-none"></span></a></li>
+        <li class="nav-item"><a class="nav-link" id="nav-account" href="./login.html">${icon("log-in")} Sign in</a></li>
+        <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="theme-toggle" aria-label="Toggle dark mode">${icon("moon")}</button></li>
+        <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="locale-toggle" aria-label="Switch language">${icon("languages")} <span class="s2-mono">ع</span></button></li>
       </ul>
     </div>
   </div>
@@ -45,10 +50,10 @@ async function refreshSessionUi() {
   const link = document.getElementById("nav-account");
   if (!link) return;
   if (user && !user.isAnonymous) {
-    link.textContent = "Account";
+    link.innerHTML = `${icon("user")} Account`;
     link.href = "./account.html";
   } else {
-    link.textContent = "Sign in";
+    link.innerHTML = `${icon("log-in")} Sign in`;
     link.href = "./login.html";
   }
 }
@@ -68,9 +73,13 @@ export function initChrome() {
   consumeAuthFragment();
   const mount = document.getElementById("nav");
   if (mount) mount.innerHTML = NAV;
-  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+  const themeButton = document.getElementById("theme-toggle");
+  const paintTheme = () => { if (themeButton) themeButton.innerHTML = icon(dark() ? "sun" : "moon"); };
+  paintTheme();
+  themeButton?.addEventListener("click", () => {
     localStorage.setItem("theme", dark() ? "light" : "dark");
     applyTheme();
+    paintTheme();
   });
   document.getElementById("locale-toggle")?.addEventListener("click", () => setLocale(getLocale() === "en" ? "ar" : "en"));
   addEventListener("session-changed", refreshSessionUi);
