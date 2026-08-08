@@ -15,3 +15,21 @@ Everything server-side is the baas: guest-by-default sessions, hybrid
 search, discounts, the embedded payment element (gateway.md), digital
 delivery claims (delivery.md), 2FA, Google OAuth, subscriptions.
 `js/config.js` is the one file to edit.
+
+## Run it locally
+
+Any static file server works — there is nothing to build:
+
+```bash
+cd pure-frontend
+python3 -m http.server 8080     # or: bunx serve .
+# → http://localhost:8080
+```
+
+Notes:
+- `file://` (double-clicking index.html) will NOT work — browsers block
+  ES-module imports without a server.
+- VS Code Live Preview serves it fine, but view it in a REAL browser
+  (open the `127.0.0.1:...` URL in Chrome), not the embedded preview
+  panel — the panel's webview blocks the CDN + API requests this app
+  makes. Set `livePreview.openPreviewTarget` to `External Browser`.
