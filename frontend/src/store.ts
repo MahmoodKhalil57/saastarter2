@@ -152,6 +152,15 @@ export async function products(): Promise<CatalogProduct[]> {
   if (!r.ok) return [];
   return ((await r.json()) as { results: CatalogProduct[] }).results;
 }
+/** Hybrid product search (search kind — lexical + semantic RRF, AEP-136 :search). */
+export async function searchProducts(query: string): Promise<CatalogProduct[]> {
+  const r = await fetch(`${base}/products:search`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }),
+  });
+  if (!r.ok) return [];
+  return ((await r.json()) as { results: CatalogProduct[] }).results;
+}
+
 export async function product(slug: string): Promise<CatalogProduct | null> {
   const r = await fetch(`${base}/products/${slug}`);
   return r.ok ? ((await r.json()) as CatalogProduct) : null;
