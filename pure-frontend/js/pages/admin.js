@@ -1,5 +1,5 @@
-// The owner studio — the spec's "website" write surface, in the pure
-// idiom: every action below is the PUBLIC API under the sk_ key's
+// The STORE ADMIN (application plane: products, orders, discounts, stats).
+// Definitions belong to the platform's hosted /studio. In the pure idiom: every action below is the PUBLIC API under the sk_ key's
 // policies (sync.md §1's one-write-surface law; nothing here is a
 // backdoor). The key lives in this browser's localStorage only.
 import { base, config } from "../config.js";
@@ -21,7 +21,7 @@ async function verifyKey(key) {
 async function unlock() {
   el("gate").classList.add("d-none");
   el("studio").classList.remove("d-none");
-  await Promise.all([renderStats(), renderOrders(), renderProducts(), renderDiscounts(), loadTheme()]);
+  await Promise.all([renderStats(), renderOrders(), renderProducts(), renderDiscounts()]);
 }
 el("unlock").onclick = async () => {
   const key = el("key-input").value.trim();
@@ -156,12 +156,3 @@ el("d-save").onclick = async () => {
   void renderDiscounts();
 };
 
-// --- theme -------------------------------------------------------------------
-async function loadTheme() {
-  const row = await (await api("/themes/default")).json();
-  el("theme-css").value = row.css ?? "";
-}
-el("theme-save").onclick = async () => {
-  const response = await api("/themes/default", { method: "PUT", body: JSON.stringify({ css: el("theme-css").value }) });
-  toast(response.ok ? "Theme applied ✓ — refresh any page to see it" : `Failed (${response.status})`, response.ok);
-};
