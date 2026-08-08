@@ -1,0 +1,4 @@
+/* Tiny overrides on Bootstrap — the hosted tweakcn theme stays the React
+   app's; the pure app leans on Bootstrap's own token system. */
+.product-emoji { font-size: 3rem; }
+.artifact-btn { text-decoration: none; }
