@@ -49,9 +49,12 @@ scripts inert — at that point **the DOM is the file** — so you, DevTools,
 or a Claude browser extension can mutate it. Review the line diff, commit:
 one push to the source branch, one to `gh-pages` (which is the deploy).
 No server anywhere in the loop — the browser talks to api.github.com
-directly. Agents get a console hook: `s2devgit.enterEdit()` →
-mutate → `s2devgit.push("msg")`. Three files: `js/devgit.js`,
-`js/devgit-github.js`, `js/devgit-diff.js`.
+directly. Not just HTML: "Edit css / js / any file" opens any repo file
+as text — stylesheets preview live on the page as you type. Agents get
+console hooks: `s2devgit.enterEdit()` → mutate → `s2devgit.push("msg")`
+for pages; `s2devgit.readFile(path)` / `s2devgit.writeFile(path, text,
+"msg")` for everything else. Four files: `js/devgit.js`,
+`js/devgit-github.js`, `js/devgit-diff.js`, `js/devgit-files.js`.
 
 ## Theming (full tweakcn vocabulary)
 

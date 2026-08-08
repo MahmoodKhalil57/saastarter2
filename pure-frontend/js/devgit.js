@@ -4,6 +4,7 @@
 // GitHub Pages serves the new commit. Loaded by ui.js only when a developer
 // has saved a token on dev.html; visitors never fetch this file.
 import { changedCount, diffLines, mergeToSource, renderDiff } from "./devgit-diff.js";
+import { paintFiles, readFile, writeFile } from "./devgit-files.js";
 import { getFile, loadConfig, putFile, targets } from "./devgit-github.js";
 
 const cfg = loadConfig();
@@ -23,6 +24,7 @@ const style = el("style", "", `
   .s2-devgit-panel{position:fixed;bottom:4rem;left:1rem;z-index:2000;width:min(34rem,calc(100vw - 2rem));max-height:70vh;overflow:auto}
   .s2-devgit-diff{font-size:.75rem;line-height:1.5;background:var(--bs-tertiary-bg);padding:.5rem;border-radius:.375rem;max-height:14rem;overflow:auto}
   .s2-devgit-add{color:var(--bs-success)}.s2-devgit-del{color:var(--bs-danger)}.s2-devgit-fold{opacity:.5}
+  .s2-devgit-panel textarea{font-size:.75rem;line-height:1.45;white-space:pre;overflow-x:auto}
   [contenteditable="true"]:focus-visible{outline:2px dashed var(--bs-primary);outline-offset:2px}`);
 const fab = el("button", "btn btn-dark shadow s2-devgit-fab", "&lt;/&gt;");
 const panel = el("div", "card shadow s2-devgit-panel d-none");
@@ -37,9 +39,10 @@ function paint(html) {
 const status = (message, ok = true) => { const box = panel.querySelector("[data-status]"); if (box) box.innerHTML = `<div class="alert alert-${ok ? "info" : "danger"} py-1 px-2 small mb-0">${message}</div>`; };
 
 function paintHome() {
-  paint(`<p class="small text-body-secondary mb-0">Freeze this page, edit the DOM (by hand, DevTools, or a browser agent), then commit the diff straight to GitHub. Configure on <a href="./dev.html">dev.html</a>.</p>
-    <div data-status></div><button class="btn btn-warning btn-sm" data-edit>Edit this page</button>`);
+  paint(`<p class="small text-body-secondary mb-0">Freeze this page and edit the DOM, or open any file in the repo (by hand, DevTools, or a browser agent), then commit the diff straight to GitHub. Configure on <a href="./dev.html">dev.html</a>.</p>
+    <div data-status></div><div class="hstack gap-2"><button class="btn btn-warning btn-sm" data-edit>Edit this page</button><button class="btn btn-outline-warning btn-sm" data-files>Edit css / js / any file</button></div>`);
   panel.querySelector("[data-edit]").addEventListener("click", () => enterEdit().catch((error) => status(error.message, false)));
+  panel.querySelector("[data-files]").addEventListener("click", () => paintFiles({ paint, status, panel, back: paintHome }));
 }
 
 // Swap the live DOM for the pristine repo file: scripts come in inert (they
@@ -114,6 +117,8 @@ if (cfg?.token) {
   document.body.append(style, fab, panel);
   paintHome();
   panel.classList.add("d-none");
-  // Console/agent hook: s2devgit.enterEdit() → mutate DOM → s2devgit.push("msg")
-  window.s2devgit = { enterEdit, serializePage, review, push };
+  // Console/agent hooks — page loop: s2devgit.enterEdit() → mutate DOM →
+  // s2devgit.push("msg"); any file: await s2devgit.readFile("css/site.css")
+  // then s2devgit.writeFile("css/site.css", newText, "msg").
+  window.s2devgit = { enterEdit, serializePage, review, push, readFile, writeFile };
 }

@@ -50,9 +50,9 @@ export const pageFile = () => decodeURIComponent(location.pathname.split("/").po
 
 // Where an edit lands: the source branch (under sourceDir/) and — when
 // configured — the deploy branch, whose root IS the GitHub Pages site root,
-// so that second commit is the deploy.
-export function targets(cfg) {
-  const file = pageFile();
+// so that second commit is the deploy. `file` is any site-relative path
+// (defaults to the current page): "css/site.css", "js/store.js", …
+export function targets(cfg, file = pageFile()) {
   const list = [{ branch: cfg.branch, path: cfg.sourceDir ? `${cfg.sourceDir}/${file}` : file }];
   if (cfg.deployBranch && cfg.deployBranch !== cfg.branch) list.push({ branch: cfg.deployBranch, path: file });
   return list.map((t) => ({ ...t, label: `${t.branch}:${t.path}` }));
