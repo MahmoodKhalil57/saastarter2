@@ -27,6 +27,20 @@ if (!result.success) {
   process.exit(1);
 }
 
+// The manifest is a REIFIED artifact (sync artifacts → public/), so the
+// bundler never sees it — the link is injected post-build, base-path'd.
+for (const name of ["index.html"]) {
+  const target = `${out}${name}`;
+  const html = await Bun.file(target).text();
+  await Bun.write(
+    target,
+    html.replace(
+      "</head>",
+      `<link rel="manifest" href="${config.basename}/manifest.webmanifest"></head>`,
+    ),
+  );
+}
+
 // Pages has no rewrites: 404.html IS the SPA shell, so deep links recover.
 cpSync(`${out}index.html`, `${out}404.html`);
 // Jekyll would eat underscore-prefixed asset paths — opt out.

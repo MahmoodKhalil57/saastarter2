@@ -20,6 +20,9 @@ jobs:
       # Drift gate: the declared backend must match the account.
       # - run: bun ../hono-aep-baas/bin/sync.ts diff --exit-code --dir hono-aep-baas-config
       #   env: { BAAS_KEY: ${{ secrets.BAAS_KEY }} }
+      # Reified SEO/PWA artifacts (site.md §2) → frontend/public/.
+      # - run: bun ../hono-aep-baas/bin/sync.ts artifacts --dir hono-aep-baas-config --out frontend/public --base /saastarter2
+      #   env: { BAAS_KEY: ${{ secrets.BAAS_KEY }} }
       - run: bun install
         working-directory: frontend
       - run: bun run build
