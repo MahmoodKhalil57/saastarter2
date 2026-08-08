@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
 import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateProfile, useSession } from "../auth";
-import { money, myOrders, myWishlist, owned as ownedProducts, toggleWishlist, type Order, type WishlistItem } from "../store";
+import { money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, type Order, type WishlistItem } from "../store";
 import { config } from "../config";
 
 const TABS = ["overview", "settings", "security", "billing", "orders", "wishlist", "developer"] as const;
@@ -18,7 +18,9 @@ export function AccountPage() {
   const [wishlist, setWishlist] = useState<WishlistItem[] | null>(null);
   const [devKey, setDevKey] = useState<string | null>(null);
   const [flash, setFlash] = useState("");
+  const [pro, setPro] = useState(false);
   const say = (m: string) => { setFlash(m); setTimeout(() => setFlash(""), 5000); };
+  useEffect(() => { if (user) void proActive().then(setPro); }, [user]);
 
   useEffect(() => { if (user) void ownedProducts().then(setOwns); }, [user]);
   useEffect(() => { if (user && tab === "orders") void myOrders().then(setOrders); }, [user, tab]);
@@ -105,12 +107,25 @@ export function AccountPage() {
           </Card>
         )}
         {tab === "billing" && (
-          <Card><CardHeader><CardTitle>Billing</CardTitle><CardDescription>Test mode — Stripe.</CardDescription></CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
-              <p>License: {license}</p>
-              <p>Owns: {owns.size ? [...owns].join(", ") : "nothing yet"}</p>
-              {!isCustomer && <Button className="mt-2" onClick={() => navigate("/products")}>Browse products</Button>}
-            </CardContent></Card>
+          <>
+            <Card><CardHeader><CardTitle>Billing</CardTitle><CardDescription>Test mode — Stripe.</CardDescription></CardHeader>
+              <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <p>License: {license}</p>
+                <p>Owns: {owns.size ? [...owns].join(", ") : "nothing yet"}</p>
+                {!isCustomer && <Button className="mt-2" onClick={() => navigate("/products")}>Browse products</Button>}
+              </CardContent></Card>
+            <Card className={pro ? "border-primary ring-1 ring-primary/30" : ""}>
+              <CardHeader><CardTitle>Pro subscription {pro ? "✓" : ""}</CardTitle>
+                <CardDescription>{pro
+                  ? "Active — the pro entitlement is granted and renews on every invoice (revoked on cancellation)."
+                  : "$9/mo — a real Stripe subscription (recurring checkout); the webhook lifecycle grants, renews, and revokes the pro entitlement."}</CardDescription></CardHeader>
+              <CardContent>
+                {pro
+                  ? <p className="text-sm text-muted-foreground">Entitlement-gated features (like advanced export) are on for this account.</p>
+                  : <Button onClick={async () => { const r = await subscribe(); if (r.needsAuth) return navigate("/login?next=/account"); if (r.redirect) window.location.href = r.redirect; }}>Subscribe — $9/mo</Button>}
+              </CardContent>
+            </Card>
+          </>
         )}
         {tab === "orders" && (
           <Card><CardHeader><CardTitle>Orders</CardTitle><CardDescription>Your commerce orders (baas/commerce.md) — snapshot totals, newest first.</CardDescription></CardHeader>

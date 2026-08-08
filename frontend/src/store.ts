@@ -102,6 +102,35 @@ export async function owned(): Promise<Set<string>> {
 }
 
 // ---------------------------------------------------------------------------
+// Subscriptions — the billing kind's RECURRING path (separate from the
+// one-time commerce flow): a month-interval catalog price → hosted
+// subscription-mode checkout; the webhook lifecycle (grant → renew on
+// invoice.paid → revoke on cancellation) maintains the `pro` entitlement.
+// ---------------------------------------------------------------------------
+
+export async function subscribe(): Promise<{ redirect?: string; needsAuth?: boolean }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { needsAuth: true };
+  const r = await fetch(`${base}/billing/checkout`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header },
+    body: JSON.stringify({ product: "pro-monthly", price: "monthly" }),
+  });
+  if (r.status === 401) return { needsAuth: true };
+  const body = (await r.json()) as { url?: string };
+  return body.url ? { redirect: body.url } : {};
+}
+
+/** Server-evaluated flags for the signed-in principal (entitlement-gated). */
+export async function proActive(): Promise<boolean> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return false;
+  const r = await fetch(`${base}/flags`, { headers: header });
+  if (!r.ok) return false;
+  const flags = (await r.json()) as Record<string, unknown>;
+  return flags["owns-pro"] === true || flags["advanced-export"] === true;
+}
+
+// ---------------------------------------------------------------------------
 // Reviews — a hosted collection (hono-aep-baas-config/collections/reviews.cms.json).
 // A whole "reviews subsystem" is one declarative JSON file: public read,
 // authenticated create, owner edit/delete. The app just calls the contract.
