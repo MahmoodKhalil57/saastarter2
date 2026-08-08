@@ -1,0 +1,7 @@
+{
+  "author_name": "Demo Customer",
+  "body": "Cloned the repo, ran config sync then seed push — the store you are reading this on came up from nothing. The review you are reading IS part of the seed.",
+  "product": "saastarter2",
+  "rating": 5,
+  "title": "The demo reviews itself"
+}

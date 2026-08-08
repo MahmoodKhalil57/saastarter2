@@ -1,0 +1,5 @@
+{
+  "email": "demo@saastarter2.test",
+  "name": "Demo Customer",
+  "password": { "$env": "SEED_DEMO_PASSWORD" }
+}

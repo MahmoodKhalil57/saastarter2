@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun index.html",
     "build": "bun scripts/build.ts",
-    "preview": "bunx serve dist"
+    "preview": "bunx serve dist",
+    "seed": "bun ../../hono-aep-baas/bin/seed.ts --dir ../hono-aep-baas-idempotent-seed"
   },
   "dependencies": {
     "hono-aep-blocks": "file:../../customPackages/hono-aep-blocks",
