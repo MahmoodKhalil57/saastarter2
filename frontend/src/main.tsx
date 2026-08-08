@@ -10,6 +10,13 @@ import { PostPage } from "./pages/Post";
 import { ContactPage } from "./pages/Contact";
 import { LoginPage } from "./pages/Login";
 import { AccountPage } from "./pages/Account";
+import { AdminGate } from "./admin";
+import {
+  AdminIndexPage,
+  AdminListPage,
+  AdminNewPage,
+  AdminEditPage,
+} from "hono-aep-ui";
 import { CmsPage, CmsPageError } from "hono-aep-blocks";
 import { config } from "./config";
 
@@ -25,6 +32,10 @@ const router = createBrowserRouter(
         { path: "contact", Component: ContactPage },
         { path: "login", Component: LoginPage },
         { path: "account", Component: AccountPage },
+        { path: "admin", element: <AdminGate><AdminIndexPage /></AdminGate> },
+        { path: "admin/:plural", element: <AdminGate><AdminListPage /></AdminGate> },
+        { path: "admin/:plural/new", element: <AdminGate><AdminNewPage /></AdminGate> },
+        { path: "admin/:plural/:id", element: <AdminGate><AdminEditPage /></AdminGate> },
         {
           // "A cms for some pages": any path that is not a code route tries
           // the project's hosted Puck pages (public read, CORS-open).

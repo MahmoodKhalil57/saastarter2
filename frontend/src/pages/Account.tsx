@@ -24,9 +24,14 @@ export function AccountPage() {
           <dt className="text-muted-foreground">Email</dt>
           <dd>{user.email}</dd>
         </dl>
-        <Button variant="outline" onClick={() => { signOut(); navigate("/"); }}>
-          Sign out
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate("/admin")}>
+            Manage content
+          </Button>
+          <Button variant="ghost" onClick={() => { signOut(); navigate("/"); }}>
+            Sign out
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
