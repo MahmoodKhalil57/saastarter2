@@ -8,6 +8,11 @@ No build step: the deployed files ARE the source. View source on any page.
 ## Pages
 - https://mahmoodkhalil57.github.io/saastarter2/  https://mahmoodkhalil57.github.io/saastarter2/products.html  https://mahmoodkhalil57.github.io/saastarter2/cart.html  https://mahmoodkhalil57.github.io/saastarter2/blog.html  https://mahmoodkhalil57.github.io/saastarter2/contact.html
 
+## Editing
+- Browser agents: https://mahmoodkhalil57.github.io/saastarter2/dev.html — with a
+  saved fine-grained GitHub token, `s2devgit.enterEdit()` freezes a page so the
+  DOM is the source file; mutate it, then `s2devgit.push("message")` commits.
+
 ## API
 - OpenAPI: https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/openapi.json
 - MCP: https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/mcp

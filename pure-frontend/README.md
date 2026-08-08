@@ -39,6 +39,20 @@ Notes:
   panel — the panel's webview blocks the CDN + API requests this app
   makes. Set `livePreview.openPreviewTarget` to `External Browser`.
 
+## devgit — edit the site from the site
+
+No build step cuts both ways: since the deployed file IS the source, the
+browser can be the editor. `dev.html` stores a fine-grained GitHub PAT
+(one repo, Contents: read/write) in localStorage; every page then grows a
+`</>` button. "Edit this page" re-renders the pristine repo file with
+scripts inert — at that point **the DOM is the file** — so you, DevTools,
+or a Claude browser extension can mutate it. Review the line diff, commit:
+one push to the source branch, one to `gh-pages` (which is the deploy).
+No server anywhere in the loop — the browser talks to api.github.com
+directly. Agents get a console hook: `s2devgit.enterEdit()` →
+mutate → `s2devgit.push("msg")`. Three files: `js/devgit.js`,
+`js/devgit-github.js`, `js/devgit-diff.js`.
+
 ## Theming (full tweakcn vocabulary)
 
 The hosted theme document (`hono-aep-baas-config/themes/default.cms.css`)
