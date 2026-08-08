@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import { runtimeBasename } from "./config";
-import { applyLocale } from "./locale";
+import { applyLocale, localeQuery } from "./locale";
 
 applyLocale(); // lang + dir before first paint of the app tree
 import { Layout } from "./Layout";
@@ -55,7 +55,7 @@ const router = createBrowserRouter(
           loader: async ({ params }) => {
             const slug = (params["*"] as string) || "home";
             const response = await fetch(
-              `${config.endpoint}/v1/projects/${config.project}/pages/${slug}`,
+              `${config.endpoint}/v1/projects/${config.project}/pages/${slug}${localeQuery()}`,
             );
             if (!response.ok) throw new Response("Not found", { status: response.status });
             const doc = (await response.json()) as { title: string; data: unknown };
