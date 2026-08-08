@@ -1,0 +1,13 @@
+# saastarter2
+
+> The self-aware SaaS template: an ecommerce shop that sells its own source
+> code — raw HTML + Bootstrap over a declarative baas on Cloudflare Workers.
+
+No build step: the deployed files ARE the source. View source on any page.
+
+## Pages
+- https://mahmoodkhalil57.github.io/saastarter2/  https://mahmoodkhalil57.github.io/saastarter2/products.html  https://mahmoodkhalil57.github.io/saastarter2/cart.html  https://mahmoodkhalil57.github.io/saastarter2/blog.html  https://mahmoodkhalil57.github.io/saastarter2/contact.html
+
+## API
+- OpenAPI: https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/openapi.json
+- MCP: https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/mcp

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Redirecting…</title>
+<script>
+// Old SPA-route compatibility: /products/x → product.html?slug=x, etc.
+const parts = location.pathname.replace(/^\/saastarter2\/?/, "").split("/").filter(Boolean);
+const [head, tail] = parts;
+const map = {
+  products: tail ? `product.html?slug=${encodeURIComponent(tail)}` : "products.html",
+  blog: tail ? `post.html?id=${encodeURIComponent(tail)}` : "blog.html",
+  changelog: "blog.html", cart: "cart.html", login: "login.html",
+  account: "account.html" + location.search, contact: "contact.html",
+};
+location.replace("/saastarter2/" + (map[head] ?? (head ? `page.html?slug=${encodeURIComponent(head)}` : "")));
+</script>
+</head>
+<body>Redirecting…</body>
+</html>

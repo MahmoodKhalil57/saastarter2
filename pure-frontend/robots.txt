@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mahmoodkhalil57.github.io/saastarter2/sitemap.xml

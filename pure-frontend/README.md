@@ -1,7 +1,7 @@
 # pure-frontend — the raw-HTML edition
 
-The SAME store as `../frontend` (same backend, same cart, same payments,
-same auth) with the entire toolchain deleted:
+THE frontend (the React edition it started as a sibling of is deleted —
+this is the store now), with the entire toolchain deleted:
 
 - **No build step** — browser-native ES modules (`<script type="module">`);
   deploying is copying this folder to any static host.

@@ -1,4 +1,4 @@
-import { signInGoogle, signInWith2fa, signUp, verify2fa } from "../api.js";
+import { requestReset, signInGoogle, signInWith2fa, signUp, verify2fa } from "../api.js";
 
 let mode = "sign-in";
 let challenge = null;
@@ -34,4 +34,11 @@ el("submit").onclick = async () => {
 el("totp-verify").onclick = async () => {
   if (await verify2fa(el("totp-code").value, challenge)) location.href = "./account.html";
   else fail("totp-error", "Wrong code — try again.");
+};
+
+el("forgot").onclick = async () => {
+  const email = el("email").value;
+  if (!email) return fail("auth-error", "Enter your email first.");
+  await requestReset(email);
+  fail("auth-error", "If that account exists, a reset link is on its way.");
 };

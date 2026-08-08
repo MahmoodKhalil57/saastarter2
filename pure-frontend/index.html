@@ -1,25 +1,52 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link id="bs-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"><link rel="stylesheet" href="./css/site.css"><script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><title>saastarter2 pure — raw HTML edition</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="manifest" href="./manifest.webmanifest"><link id="bs-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"><link rel="stylesheet" href="./css/site.css"><script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><title>saastarter2 — the self-aware SaaS template</title>
+<meta name="description" content="An ecommerce shop that sells its own source code. Raw HTML + Bootstrap over a declarative baas on Cloudflare Workers."></head>
 <body>
 <div id="nav"></div>
-<main class="container py-5">
+<main class="container py-4">
   <section class="text-center py-5">
-    <p class="text-uppercase text-secondary small fw-semibold">The self-aware SaaS template — pure edition</p>
-    <h1 class="display-3 fw-bold">No build step.<br><span class="text-secondary">No framework.</span></h1>
-    <p class="lead mx-auto mt-4" style="max-width:36rem">This is the SAME store as the React app — same backend, same cart, same payments — written in raw HTML + Bootstrap + browser-native ES modules. View source; that's the whole app.</p>
+    <p class="text-uppercase text-secondary small fw-semibold">The self-aware SaaS template</p>
+    <h1 class="display-2 fw-bold">Ship fast.<br><span class="text-body-tertiary">Stay minimal.</span></h1>
+    <p class="lead mx-auto mt-4" style="max-width:36rem">The store you are looking at sells the repo that builds it — raw HTML + Bootstrap, no build step, no framework. Everything hard lives in the hosted backend.</p>
     <div class="mt-4 d-flex gap-2 justify-content-center">
       <a class="btn btn-primary btn-lg" href="./products.html">Browse products</a>
-      <a class="btn btn-outline-secondary btn-lg" href="../">React edition →</a>
+      <a class="btn btn-outline-secondary btn-lg" href="./page.html?slug=story">Our story</a>
     </div>
   </section>
-  <section class="row g-4 py-5">
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>Guest-by-default</h5><p class="text-body-secondary mb-0">Add to cart instantly — a session appears when needed, and signing up later keeps everything.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>In-page payments</h5><p class="text-body-secondary mb-0">The gateway's element renders inside this site — no redirect, no vendor lock.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>Digital delivery</h5><p class="text-body-secondary mb-0">Buy a file-backed product and a signed download link lands on your order.</p></div></div></div>
+  <section class="row g-4 py-4">
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>🛒 eCommerce</h5><p class="text-body-secondary mb-0">Guest-by-default cart, coupons, in-page payments (no redirect), digital delivery with signed downloads.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>🔐 Authentication</h5><p class="text-body-secondary mb-0">Sessions, Google OAuth, real TOTP two-factor, verified deletion — all bearer-first for static hosts.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>🔎 Search + i18n</h5><p class="text-body-secondary mb-0">Hybrid lexical+semantic search; English/Arabic with RTL — content localized server-side.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>💳 Subscriptions</h5><p class="text-body-secondary mb-0">Recurring checkout, renew/lapse lifecycle, self-serve customer portal.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>📦 Delivery</h5><p class="text-body-secondary mb-0">Neutral delivery contract — download links today; couriers and carriers as drivers tomorrow.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h5>📄 Forms + CMS</h5><p class="text-body-secondary mb-0">A contact form with zero JavaScript, hosted pages with localized siblings.</p></div></div></div>
+  </section>
+  <section class="py-5">
+    <h2 class="text-center mb-4">Pricing</h2>
+    <div class="row g-4 justify-content-center" id="pricing">
+      <div class="col-md-3"><div class="card h-100"><div class="card-body vstack"><h5>Frontend Lite</h5><div class="fs-3 fw-bold">Free</div><p class="text-body-secondary small flex-grow-1">This very page — view source, copy, ship.</p><button class="btn btn-outline-secondary" disabled>It's this page</button></div></div></div>
+      <div class="col-md-3"><div class="card h-100 border-primary"><div class="card-body vstack"><h5>Backend + Frontend</h5><div class="fs-3 fw-bold">$49</div><p class="text-body-secondary small flex-grow-1">Admin, products, checkout, hosted collections + auth pools.</p><button class="btn btn-primary" data-buy="billing-kit">Add to cart</button></div></div></div>
+      <div class="col-md-3"><div class="card h-100"><div class="card-body vstack"><h5>Full Stack Pro</h5><div class="fs-3 fw-bold">$149</div><p class="text-body-secondary small flex-grow-1">Stripe payments, order management, lifetime updates.</p><button class="btn btn-outline-primary" data-buy="saastarter2">Add to cart</button></div></div></div>
+    </div>
+  </section>
+  <section class="py-4 text-center">
+    <blockquote class="blockquote mx-auto" style="max-width:34rem"><p>"Best template I've used — and it literally sells itself, so I trusted it instantly."</p><footer class="blockquote-footer">Emily Park, Indie Maker</footer></blockquote>
   </section>
 </main>
-<footer class="border-top py-4 text-center text-body-secondary small">pure-frontend: 8 pages, ~600 lines of JS, zero dependencies beyond Bootstrap's CDN.</footer>
+<footer class="border-top py-4 text-center text-body-secondary small">
+  static on GitHub Pages · backend on Cloudflare Workers · <a href="./contact.html">contact</a> · <a href="./blog.html">blog</a>
+</footer>
 <script type="module" src="./js/ui.js"></script>
+<script type="module">
+import { addToCart } from "./js/store.js";
+import { toast } from "./js/ui.js";
+document.getElementById("pricing").addEventListener("click", async (event) => {
+  const slug = event.target.dataset?.buy;
+  if (!slug) return;
+  await addToCart(slug);
+  toast("Added to cart ✓ — head to the cart to check out.");
+});
+</script>
 </body>
 </html>

@@ -26,6 +26,7 @@ async function post(path, body, headers = {}) {
 
 export const signUp = (email, password, name) => post("/sign-up/email", { email, password, name });
 export const signIn = (email, password) => post("/sign-in/email", { email, password });
+export const requestReset = (email) => post("/request-password-reset", { email, redirectTo: location.origin });
 export const signInGuest = () => post("/sign-in/anonymous", {});
 export const signOut = () => { localStorage.removeItem(KEY); dispatchEvent(new Event("session-changed")); };
 export const updateProfile = (name) => post("/update-user", { name });

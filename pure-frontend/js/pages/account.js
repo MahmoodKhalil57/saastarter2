@@ -1,5 +1,5 @@
-import { changePassword, confirm2fa, enable2fa, getSession, signOut, updateProfile } from "../api.js";
-import { billingPortal, mintKey, money, myOrders, proActive, subscribe } from "../store.js";
+import { changeEmail, changePassword, confirm2fa, deleteAccount, enable2fa, getSession, signOut, updateAvatar, updateProfile } from "../api.js";
+import { billingPortal, mintKey, money, myOrders, myWishlist, proActive, subscribe, toggleWishlist, uploadMedia } from "../store.js";
 import { config } from "../config.js";
 import { toast } from "../ui.js";
 
@@ -13,6 +13,35 @@ el("tf-state").textContent = user?.twoFactorEnabled ? "✓ on" : "";
 if (user?.twoFactorEnabled) el("tf-setup").classList.add("d-none");
 
 el("prof-save").onclick = async () => toast((await updateProfile(el("prof-name").value)).ok ? "Saved ✓" : "Failed", true);
+// avatar (per-project media behind the seam)
+if (user?.image) { el("avatar").src = user.image; el("avatar").classList.remove("d-none"); el("avatar-fallback").classList.add("d-none"); }
+else el("avatar-fallback").textContent = (user?.name || "?").slice(0, 1).toUpperCase();
+el("avatar-file").onchange = async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const url = await uploadMedia(file);
+  if (!url) return toast("Upload failed", false);
+  await updateAvatar(url);
+  toast("Avatar updated ✓");
+  location.reload();
+};
+el("email-change").onclick = async () =>
+  toast((await changeEmail(el("new-email").value)).ok ? "Confirmation sent to the new address ✓" : "Request failed", true);
+el("del-req").onclick = async () =>
+  toast((await deleteAccount(el("del-pw").value)).ok ? "Deletion email sent — check your inbox" : "Wrong password?", true);
+async function renderWishlist() {
+  const rows = await myWishlist();
+  el("wishlist").innerHTML = rows.length === 0
+    ? '<p class="text-body-secondary">Nothing saved yet — tap ❤️ on a product.</p>'
+    : rows.map((w) => `<div class="card"><div class="card-body py-2 d-flex justify-content-between">
+        <a href="./product.html?slug=${encodeURIComponent(w.product)}">${w.product}</a>
+        <button class="btn btn-sm btn-link text-danger p-0" data-unwish="${w.product}">Remove</button></div></div>`).join("");
+}
+el("wishlist").addEventListener("click", async (event) => {
+  const product = event.target.dataset?.unwish;
+  if (product) { await toggleWishlist(product); void renderWishlist(); }
+});
+await renderWishlist();
 el("sign-out").onclick = () => { signOut(); location.href = "./index.html"; };
 
 el("tf-enable").onclick = async () => {

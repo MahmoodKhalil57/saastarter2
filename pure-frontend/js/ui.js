@@ -81,3 +81,6 @@ export function initChrome() {
 
 export { signOut };
 initChrome();
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  addEventListener("load", () => void navigator.serviceWorker.register("./sw.js").catch(() => {}));
+}

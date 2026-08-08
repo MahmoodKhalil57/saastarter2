@@ -2,7 +2,12 @@
 
 ## STATUS — 2026-08-08: the port is COMPLETE and live (and exceeds the original)
 
-Frontend: https://mahmoodkhalil57.github.io/saastarter2 · Backend: mizan-gpp
+Frontend: https://mahmoodkhalil57.github.io/saastarter2 — the PURE
+edition (raw HTML + Bootstrap CDN + browser-native ES modules; no build
+step, no router, no framework; ~1,000 lines total, largest file 146).
+The React `frontend/` was deleted 2026-08-08 once the pure port reached
+parity — the capabilities all live in the baas, so the frontend is a
+rendering choice, and the beginner-friendly one won. Backend: mizan-gpp
 on Cloudflare Workers (D1 + R2 + Workers AI) · Project `b40546af-b19c-46ca-8661-87db12b3e85a`.
 Reproducible from nothing: `sync push` (definitions) + `seed push` (data,
 baas/seed.md — idempotent, lock-ledgered). 491 tests green across 19 suites;
