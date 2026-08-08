@@ -16,7 +16,11 @@ declare global {
 }
 type StripeJs = {
   elements(options: { clientSecret: string; appearance?: unknown }): StripeElements;
-  confirmPayment(options: { elements: StripeElements; redirect: "if_required" }): Promise<{
+  confirmPayment(options: {
+    elements: StripeElements;
+    redirect: "if_required";
+    confirmParams?: { return_url?: string };
+  }): Promise<{
     error?: { message?: string };
     paymentIntent?: { status: string };
   }>;
@@ -75,7 +79,11 @@ export function PaymentStep({
   const pay = async () => {
     if (!stripeRef.current || !elementsRef.current) return;
     setBusy(true);
-    const result = await stripeRef.current.confirmPayment({ elements: elementsRef.current, redirect: "if_required" });
+    const result = await stripeRef.current.confirmPayment({
+      elements: elementsRef.current,
+      redirect: "if_required", // card stays in-page; redirect methods (iDEAL…) come back here
+      confirmParams: { return_url: location.href },
+    });
     setBusy(false);
     if (result.error) return onError(result.error.message ?? "Payment failed.");
     onPaid(); // UX only — the ORDER flips on the verified webhook (gateway.md §2.3)
