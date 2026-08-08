@@ -4,13 +4,16 @@
       "enabled": true
     }
   },
+  "create_time": "2026-08-08T02:08:28Z",
+  "created_by": "Jvk6Uk2lHfwlfOqv76sZPPz7kzApRuMA",
   "display_name": "saastarter2",
   "site": {
     "app": {
       "shortName": "SaaS2"
     },
-    "description": "The flagship mizan-gpp consumer \u2014 static react-router + shadcn on GitHub Pages.",
+    "description": "The flagship mizan-gpp consumer — static react-router + shadcn on GitHub Pages.",
     "locale": "en",
-    "url": "https://YOURNAME.github.io"
-  }
+    "url": "https://mahmoodkhalil57.github.io"
+  },
+  "update_time": "2026-08-08T02:08:28Z"
 }

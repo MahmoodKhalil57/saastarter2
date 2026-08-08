@@ -1,8 +1,9 @@
 {
-  "endpoint": "http://localhost:3000",
-  "project": "saastarter2",
+  "endpoint": "https://mizan-gpp.the-montiapple.workers.dev",
+  "project": "saastarter2-app",
   "resources": [
     "forms/*.cms.json",
-    "themes/*.cms.css"
+    "themes/*.cms.css",
+    "collections/*.cms.json"
   ]
 }

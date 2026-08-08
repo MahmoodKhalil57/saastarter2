@@ -1,0 +1,23 @@
+{
+  "create_time": "2026-08-08T02:08:29Z",
+  "created_by": "Jvk6Uk2lHfwlfOqv76sZPPz7kzApRuMA",
+  "definition": {
+    "fields": [
+      {
+        "name": "title",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "name": "body",
+        "type": "string"
+      }
+    ],
+    "plural": "posts",
+    "policy_create": "authenticated",
+    "policy_get": "public",
+    "policy_list": "public",
+    "singular": "post"
+  },
+  "update_time": "2026-08-08T02:08:29Z"
+}

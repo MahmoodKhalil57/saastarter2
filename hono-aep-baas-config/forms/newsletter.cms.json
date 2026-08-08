@@ -1,4 +1,8 @@
 {
+  "create_time": "2026-08-08T02:08:28Z",
+  "created_by": "Jvk6Uk2lHfwlfOqv76sZPPz7kzApRuMA",
   "display_name": "Newsletter signup",
-  "notify_email": "owner@saastarter2.example"
+  "notify_email": "owner@saastarter2.example",
+  "submit_key": "pk_live_5915e234e03e46c1974a8eeb059194f4429bfa068ee74019a1b8485153fa27b5",
+  "update_time": "2026-08-08T02:08:28Z"
 }
