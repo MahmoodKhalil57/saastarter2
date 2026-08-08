@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Badge, Button, Card, CardContent } from "hono-aep-ui";
-import { buy, entitlements, money, product, type CatalogProduct } from "../store";
+import { addToCart, money, product, track, type CatalogProduct } from "../store";
 import { useSession } from "../auth";
 
 export function ProductDetailPage() {
@@ -9,23 +9,24 @@ export function ProductDetailPage() {
   const navigate = useNavigate();
   const { user } = useSession();
   const [p, setP] = useState<CatalogProduct | null | undefined>(undefined);
-  const [owned, setOwned] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  useEffect(() => { void product(slug!).then(setP); void entitlements().then(setOwned); }, [slug, user]);
+  const [added, setAdded] = useState(false);
+  useEffect(() => {
+    void product(slug!).then((prod) => {
+      setP(prod);
+      if (prod) void track("product_viewed", { product_id: prod.slug, name: prod.name, price_cents: prod.price_cents, category: prod.category });
+    });
+  }, [slug]);
 
   if (p === undefined) return <p className="text-muted-foreground">Loading…</p>;
   if (p === null) return <p className="text-muted-foreground">Not found. <Link to="/products" className="underline">Back to catalog</Link></p>;
 
-  // The saastarter2 product itself maps to the Lifetime license; others are add-ons.
-  const buyable = p.slug === "saastarter2" ? "lifetime" : p.slug === "billing-kit" ? "pro" : null;
-  const owns = buyable && owned.includes(buyable);
-
-  const purchase = async () => {
-    if (!buyable) return;
-    setBusy(true); const r = await buy(buyable); setBusy(false);
-    if (r.needsAuth) return navigate("/login?buy=" + buyable);
-    if (r.redirect) return void (window.location.href = r.redirect);
-    if (r.owned) void entitlements().then(setOwned);
+  const add = async () => {
+    setBusy(true);
+    const r = await addToCart(p.slug);
+    setBusy(false);
+    if ("needsAuth" in r) return navigate("/login?next=/products/" + p.slug);
+    setAdded(true);
   };
 
   return (
@@ -44,14 +45,13 @@ export function ProductDetailPage() {
         </div>
         <p className="leading-relaxed">{p.description}</p>
         <div className="text-3xl font-bold">{p.price_cents ? money(p.price_cents) : "Free"}</div>
-        {buyable ? (
-          <Button size="lg" disabled={busy || !!owns} onClick={purchase}>
-            {owns ? "You own this ✓" : busy ? "…" : user ? "Buy now" : "Sign in to buy"}
+        <div className="flex items-center gap-3">
+          <Button size="lg" disabled={busy} onClick={add}>
+            {busy ? "…" : user ? "Add to cart" : "Sign in to add"}
           </Button>
-        ) : (
-          <Button size="lg" variant="outline" disabled>Included with Pro</Button>
-        )}
-        {owns && <p className="text-sm">Unlocked — <Link to="/account" className="text-primary underline">get your source →</Link></p>}
+          {added && <Button size="lg" variant="outline" onClick={() => navigate("/cart")}>View cart →</Button>}
+        </div>
+        {added && <p className="text-sm text-muted-foreground">Added ✓ — the cart total is derived server-side from live prices.</p>}
         <p className="text-xs text-muted-foreground">This product is row <code>{p.path}</code> in a public hosted collection.</p>
       </div>
     </div>

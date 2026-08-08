@@ -8,6 +8,7 @@ import { HomePage } from "./pages/Home";
 import { BlogPage } from "./pages/Blog";
 import { ProductsPage } from "./pages/Products";
 import { ProductDetailPage } from "./pages/ProductDetail";
+import { CartPage } from "./pages/Cart";
 import { PostPage } from "./pages/Post";
 import { ContactPage } from "./pages/Contact";
 import { LoginPage } from "./pages/Login";
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
         { index: true, Component: HomePage },
         { path: "products", Component: ProductsPage },
         { path: "products/:slug", Component: ProductDetailPage },
+        { path: "cart", Component: CartPage },
         { path: "changelog", Component: BlogPage },
         { path: "blog", Component: BlogPage },
         { path: "blog/:id", Component: PostPage },

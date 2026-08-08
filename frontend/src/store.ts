@@ -1,50 +1,93 @@
 import { config } from "./config";
 import { authHeader } from "./auth";
 
-/** The storefront's data layer over the live baas billing kind. */
+/** The storefront's data layer over the live baas commerce + collections. */
 const base = `${config.endpoint}/v1/projects/${config.project}`;
-
-export type Price = { amountCents: number; currency: string; interval?: string };
-export type Product = { name: string; grants: string[]; prices: Record<string, Price> };
-export type Catalog = { products: Record<string, Product> };
 
 export const money = (cents: number, currency = "usd") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
 
-export async function catalog(): Promise<Catalog> {
-  const r = await fetch(`${base}/billing/checkout`);
-  return r.ok ? ((await r.json()) as Catalog) : { products: {} };
+// ---------------------------------------------------------------------------
+// Cart + checkout — the kind:commerce surface (baas/commerce.md). The cart
+// math, order snapshot, payment→order bridge, confirmation email, and
+// inventory all live server-side; the storefront just posts intent and
+// renders the returned views. This is the LoC the spec deletes from the app.
+// ---------------------------------------------------------------------------
+
+export type LineItem = { product_id: string; name?: string; variant?: string; price_cents: number; quantity: number };
+export type Cart = { id: string; items: LineItem[]; total_cents: number; currency: string; status: string };
+export type Order = { id: string; items: LineItem[]; total_cents: number; currency: string; status: string };
+
+const commerce = `${base}/commerce`;
+
+/** A cart mutation happened — the nav badge + Cart page re-read. */
+export function notifyCartChanged(): void {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("cart-changed"));
 }
 
-/** Buy: POST checkout → for stripe the baas returns a hosted URL to redirect
- *  to; for local it grants directly. Requires a signed-in end user. */
-export async function buy(product: string): Promise<{ redirect?: string; owned?: boolean; needsAuth?: boolean }> {
+export async function getCart(): Promise<Cart> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { id: "", items: [], total_cents: 0, currency: "usd", status: "active" };
+  const r = await fetch(`${commerce}/cart`, { headers: header });
+  return r.ok ? ((await r.json()) as Cart) : { id: "", items: [], total_cents: 0, currency: "usd", status: "active" };
+}
+
+export async function addToCart(variant: string, quantity = 1): Promise<Cart | { needsAuth: true }> {
   const header = authHeader();
   if (!("Authorization" in header)) return { needsAuth: true };
-  const r = await fetch(`${base}/billing/checkout`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...header },
-    body: JSON.stringify({ product, price: "once" }),
+  const r = await fetch(`${commerce}/cart:add`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify({ variant, quantity }),
   });
   if (r.status === 401) return { needsAuth: true };
-  const body = (await r.json()) as { url?: string; granted?: string[] };
-  if (body.url) return { redirect: body.url };
-  return { owned: (body.granted ?? []).length > 0 };
+  const cart = (await r.json()) as Cart;
+  notifyCartChanged();
+  return cart;
 }
 
-/** The signed-in user's entitlements (server-evaluated flags carry them). */
-export async function entitlements(): Promise<string[]> {
+export async function removeFromCart(variant: string): Promise<Cart> {
+  const header = authHeader();
+  const r = await fetch(`${commerce}/cart:remove`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify({ variant }),
+  });
+  const cart = (await r.json()) as Cart;
+  notifyCartChanged();
+  return cart;
+}
+
+/** Checkout: server snapshots the cart into an order and bridges to billing —
+ *  stripe returns a hosted session (redirect), local settles instantly. */
+export async function checkoutCart(): Promise<{ order: Order; redirect?: string; needsAuth?: boolean }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
+  const r = await fetch(`${commerce}/cart:checkout`, { method: "POST", headers: { "Content-Type": "application/json", ...header }, body: "{}" });
+  if (r.status === 401) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
+  const body = (await r.json()) as { order: Order; checkout?: { url?: string } };
+  return { order: body.order, ...(body.checkout?.url ? { redirect: body.checkout.url } : {}) };
+}
+
+/** The signed-in user's orders, newest first (purchase history + ownership). */
+export async function myOrders(): Promise<Order[]> {
   const header = authHeader();
   if (!("Authorization" in header)) return [];
-  // The flags endpoint resolves per-principal; we expose a dedicated
-  // "owns-pro"/"owns-lifetime" flag pair for the UI.
-  const r = await fetch(`${base}/flags`, { headers: header });
+  const r = await fetch(`${commerce}/orders`, { headers: header });
   if (!r.ok) return [];
-  const flags = (await r.json()) as Record<string, unknown>;
-  const owned: string[] = [];
-  if (flags["owns-pro"]) owned.push("pro");
-  if (flags["owns-lifetime"]) owned.push("lifetime");
-  return owned;
+  return ((await r.json()) as { orders: Order[] }).orders;
+}
+
+/** Does the user own `slug`? True when a paid order contains that product —
+ *  the same fact the baas turns into an `owns:{slug}` entitlement for authz. */
+export async function owned(): Promise<Set<string>> {
+  const orders = await myOrders();
+  const set = new Set<string>();
+  for (const o of orders) if (o.status === "paid") for (const i of o.items) set.add(i.product_id);
+  return set;
+}
+
+/** Client analytics event (untrusted; order_completed is server-derived). */
+export async function track(event: string, properties: Record<string, unknown> = {}): Promise<void> {
+  await fetch(`${commerce}/track`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...authHeader() }, body: JSON.stringify({ event, properties }),
+  }).catch(() => {});
 }
 
 export type CatalogProduct = { path: string; slug: string; name: string; tagline?: string; description?: string; price_cents?: number; category?: string; featured?: boolean };

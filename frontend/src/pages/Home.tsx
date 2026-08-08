@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Badge, Button, Card, CardContent } from "hono-aep-ui";
-import { buy, catalog, entitlements, money, type Catalog } from "../store";
+import { addToCart, owned as ownedProducts } from "../store";
 import { useSession } from "../auth";
 
 const FEATURES = [
@@ -16,8 +16,8 @@ const FEATURES = [
 const TIERS: { key: string | null; name: string; price: string; tagline: string; perks: string[]; popular?: boolean; cta: string }[] = [
   { key: null, name: "Frontend Lite", price: "Free", tagline: "Marketing site + SEO foundations.", perks: ["Landing, about, FAQ, blog, contact", "SEO + performance setup", "All UI components", "1 year of updates"], cta: "It's this page" },
   { key: null, name: "Frontend Pro", price: "Free", tagline: "Auth UI, dark/light, i18n, RTL.", perks: ["Everything in Frontend Lite", "Auth pages + sessions UI", "Theme toggle", "i18n + RTL"], cta: "Sign in to try" },
-  { key: "pro", name: "Backend + Frontend", price: "$49", tagline: "Admin, products, checkout, database.", perks: ["Everything in Frontend Pro", "Admin dashboard", "Products, cart, checkout", "Hosted collections + auth pools"], popular: true, cta: "Get B+F" },
-  { key: "lifetime", name: "Full Stack Pro", price: "$149", tagline: "Stripe payments + full eCommerce, forever.", perks: ["Everything in B+F", "Stripe payments", "Order management", "Lifetime updates + all templates"], cta: "Get Full Stack" },
+  { key: "billing-kit", name: "Backend + Frontend", price: "$49", tagline: "Admin, products, checkout, database.", perks: ["Everything in Frontend Pro", "Admin dashboard", "Products, cart, checkout", "Hosted collections + auth pools"], popular: true, cta: "Add B+F to cart" },
+  { key: "saastarter2", name: "Full Stack Pro", price: "$149", tagline: "Stripe payments + full eCommerce, forever.", perks: ["Everything in B+F", "Stripe payments", "Order management", "Lifetime updates + all templates"], cta: "Add Full Stack to cart" },
 ] as const;
 
 const TESTIMONIALS = [
@@ -36,17 +36,15 @@ const FAQS = [
 export function HomePage() {
   const navigate = useNavigate();
   const { user } = useSession();
-  const [cat, setCat] = useState<Catalog | null>(null);
-  const [owned, setOwned] = useState<string[]>([]);
+  const [owned, setOwned] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState<string | null>(null);
-  useEffect(() => { void catalog().then(setCat); void entitlements().then(setOwned); }, [user]);
+  useEffect(() => { void ownedProducts().then(setOwned); }, [user]);
 
-  const purchase = async (key: string) => {
-    setBusy(key);
-    const r = await buy(key); setBusy(null);
-    if (r.needsAuth) return navigate("/login?buy=" + key);
-    if (r.redirect) return void (window.location.href = r.redirect);
-    if (r.owned) void entitlements().then(setOwned);
+  const purchase = async (slug: string) => {
+    setBusy(slug);
+    const r = await addToCart(slug); setBusy(null);
+    if ("needsAuth" in r) return navigate("/login?next=/cart");
+    navigate("/cart");
   };
 
   return (
@@ -110,7 +108,7 @@ export function HomePage() {
         </div>
         <div className="grid gap-4 lg:grid-cols-4">
           {TIERS.map((tier) => {
-            const owns = tier.key && owned.includes(tier.key);
+            const owns = tier.key && owned.has(tier.key);
             return (
               <Card key={tier.name} className={tier.popular ? "border-primary ring-1 ring-primary/30" : ""}>
                 <CardContent className="flex h-full flex-col gap-4 pt-6">
@@ -119,7 +117,7 @@ export function HomePage() {
                     <div className="font-semibold">{tier.name}</div>
                     <p className="text-xs text-muted-foreground">{tier.tagline}</p>
                   </div>
-                  <div className="text-2xl font-bold">{cat && tier.key ? money(Object.values(cat.products[tier.key]?.prices ?? {})[0]?.amountCents ?? 0) : tier.price}</div>
+                  <div className="text-2xl font-bold">{tier.price}</div>
                   <ul className="flex-1 space-y-1 text-sm">{tier.perks.map((p) => <li key={p} className="flex gap-1.5 text-muted-foreground"><span className="text-primary">✓</span>{p}</li>)}</ul>
                   <Button variant={tier.popular ? "default" : "outline"} disabled={!!owns || busy === tier.key}
                     onClick={() => tier.key ? purchase(tier.key) : navigate(tier.name.includes("Pro") ? "/login" : "/products")}>

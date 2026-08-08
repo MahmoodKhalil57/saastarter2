@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
 import { authHeader, signOut, useSession } from "../auth";
-import { entitlements } from "../store";
+import { money, myOrders, owned as ownedProducts, type Order } from "../store";
 import { config } from "../config";
 
 const TABS = ["overview", "billing", "orders", "developer"] as const;
@@ -13,21 +13,19 @@ export function AccountPage() {
   const { user } = useSession();
   const [params, setParams] = useSearchParams();
   const tab = (params.get("tab") as Tab) || "overview";
-  const [owned, setOwned] = useState<string[]>([]);
-  const [orders, setOrders] = useState<{ path: string; metadata?: { type?: string }; ok?: boolean; response?: unknown }[] | null>(null);
+  const [owns, setOwns] = useState<Set<string>>(new Set());
+  const [orders, setOrders] = useState<Order[] | null>(null);
   const [devKey, setDevKey] = useState<string | null>(null);
 
-  useEffect(() => { if (user) void entitlements().then(setOwned); }, [user]);
-  useEffect(() => {
-    if (user && tab === "orders")
-      void fetch(`${config.endpoint}/v1/projects/${config.project}/operations`, { headers: authHeader() })
-        .then((r) => (r.ok ? r.json() : { results: [] }))
-        .then((b: { results: typeof orders }) => setOrders(b.results ?? []));
-  }, [user, tab]);
+  useEffect(() => { if (user) void ownedProducts().then(setOwns); }, [user]);
+  useEffect(() => { if (user && tab === "orders") void myOrders().then(setOrders); }, [user, tab]);
 
   if (user === undefined) return <p className="text-muted-foreground">Loading…</p>;
   if (user === null) { navigate("/login"); return null; }
-  const hasPro = owned.includes("pro");
+  // Owning the template itself unlocks the source; add-ons make you a customer.
+  const hasSource = owns.has("saastarter2");
+  const isCustomer = owns.size > 0;
+  const license = hasSource ? "Lifetime" : isCustomer ? "Add-ons" : "Free";
 
   return (
     <div className="grid gap-8 pb-16 pt-6 md:grid-cols-[10rem_1fr]">
@@ -44,33 +42,33 @@ export function AccountPage() {
               <CardHeader><CardTitle>Overview</CardTitle><CardDescription>{user.email}</CardDescription></CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm"><span className="text-muted-foreground">License:</span>
-                  {hasPro ? <Badge>{owned.includes("lifetime") ? "Lifetime" : "Pro"}</Badge> : <Badge variant="outline">Free</Badge>}</div>
+                  {isCustomer ? <Badge>{license}</Badge> : <Badge variant="outline">Free</Badge>}</div>
                 <div className="flex gap-2"><Button variant="outline" onClick={() => navigate("/admin")}>Open admin</Button>
                   <Button variant="ghost" onClick={() => { signOut(); navigate("/"); }}>Sign out</Button></div>
               </CardContent>
             </Card>
-            <Card className={hasPro ? "border-primary ring-1 ring-primary/30" : "opacity-70"}>
-              <CardHeader><CardTitle className="flex items-center gap-2">Your source {hasPro ? "🔓" : "🔒"}</CardTitle>
-                <CardDescription>{hasPro ? "You own it — the entitlement you bought unlocked this." : "Buy Pro to unlock. A real entitlement check, not a paywall image."}</CardDescription></CardHeader>
-              <CardContent>{hasPro
+            <Card className={hasSource ? "border-primary ring-1 ring-primary/30" : "opacity-70"}>
+              <CardHeader><CardTitle className="flex items-center gap-2">Your source {hasSource ? "🔓" : "🔒"}</CardTitle>
+                <CardDescription>{hasSource ? "You own it — a paid order for this template unlocked the repo (owns:saastarter2)." : "Buy the template to unlock. A real order check, not a paywall image."}</CardDescription></CardHeader>
+              <CardContent>{hasSource
                 ? <a href="https://github.com/MahmoodKhalil57/saastarter2" target="_blank" rel="noreferrer"><Button>Get the repository →</Button></a>
-                : <Button onClick={() => navigate("/#pricing")}>See pricing</Button>}</CardContent>
+                : <Button onClick={() => navigate("/products/saastarter2")}>Buy the template</Button>}</CardContent>
             </Card>
           </>
         )}
         {tab === "billing" && (
           <Card><CardHeader><CardTitle>Billing</CardTitle><CardDescription>Test mode — Stripe.</CardDescription></CardHeader>
             <CardContent className="space-y-2 text-sm text-muted-foreground">
-              <p>Plan: {hasPro ? (owned.includes("lifetime") ? "Lifetime license" : "Pro license") : "Free"}</p>
-              <p>Entitlements: {owned.length ? owned.join(", ") : "none"}</p>
-              {!hasPro && <Button className="mt-2" onClick={() => navigate("/#pricing")}>Upgrade</Button>}
+              <p>License: {license}</p>
+              <p>Owns: {owns.size ? [...owns].join(", ") : "nothing yet"}</p>
+              {!isCustomer && <Button className="mt-2" onClick={() => navigate("/products")}>Browse products</Button>}
             </CardContent></Card>
         )}
         {tab === "orders" && (
-          <Card><CardHeader><CardTitle>Orders</CardTitle><CardDescription>Delivery operations on your account (AEP-151).</CardDescription></CardHeader>
+          <Card><CardHeader><CardTitle>Orders</CardTitle><CardDescription>Your commerce orders (baas/commerce.md) — snapshot totals, newest first.</CardDescription></CardHeader>
             <CardContent>{orders === null ? <p className="text-sm text-muted-foreground">Loading…</p> : orders.length === 0
-              ? <p className="text-sm text-muted-foreground">No operations yet.</p>
-              : <ul className="space-y-1 text-sm">{orders.slice(0, 10).map((o) => <li key={o.path} className="flex justify-between border-b py-1 last:border-0"><span>{o.metadata?.type ?? "operation"}</span><span className={o.ok ? "text-primary" : "text-muted-foreground"}>{o.ok ? "done" : "…"}</span></li>)}</ul>}
+              ? <p className="text-sm text-muted-foreground">No orders yet.</p>
+              : <ul className="space-y-1 text-sm">{orders.slice(0, 10).map((o) => <li key={o.id} className="flex justify-between border-b py-1 last:border-0"><span>{o.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span><span className="flex gap-3"><span>{money(o.total_cents)}</span><span className={o.status === "paid" ? "text-primary" : "text-muted-foreground"}>{o.status}</span></span></li>)}</ul>}
             </CardContent></Card>
         )}
         {tab === "developer" && (
