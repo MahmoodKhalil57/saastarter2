@@ -185,13 +185,15 @@ export function AccountPage() {
             </CardContent></Card>
         )}
         {tab === "developer" && (
-          <Card><CardHeader><CardTitle>Developer</CardTitle><CardDescription>Mint an API key for this project's contract.</CardDescription></CardHeader>
+          <Card><CardHeader><CardTitle>Developer</CardTitle><CardDescription>Mint an sk_ API key bound to YOUR account — it acts exactly as your session does (your orders, wishlist, cart) against this project's API and MCP endpoint. Shown once; treat it as a secret.</CardDescription></CardHeader>
             <CardContent className="space-y-3">
               <Button onClick={async () => {
-                const r = await fetch(`${config.endpoint}/v1/keys:mint`, { method: "POST", headers: { "Content-Type": "application/json", ...authHeader() }, body: "{}" });
-                if (r.ok) setDevKey(((await r.json()) as { plaintext?: string }).plaintext ?? null);
+                const r = await fetch(`${config.endpoint}/v1/projects/${config.project}/keys:mint`, { method: "POST", headers: { "Content-Type": "application/json", ...authHeader() }, body: "{}" });
+                if (r.ok) { setDevKey(((await r.json()) as { plaintext?: string }).plaintext ?? null); say("Key minted — copy it now, it is shown once."); }
+                else say(`Mint failed (${r.status}) — ${((await r.json().catch(() => ({}))) as { title?: string }).title ?? "try again"}`);
               }}>Mint key</Button>
               {devKey && <code className="block break-all rounded bg-muted p-2 text-xs">{devKey}</code>}
+              {devKey && <p className="text-xs text-muted-foreground">Try it: <code>curl -H "Authorization: Bearer {devKey.slice(0, 12)}…" {config.endpoint}/v1/projects/{config.project}/commerce/orders</code></p>}
               <p className="text-xs text-muted-foreground">Your contract: <a className="underline" href={`${config.endpoint}/v1/projects/${config.project}/openapi.json`} target="_blank" rel="noreferrer">openapi.json</a> · <code>/v1/projects/{config.project}/mcp</code></p>
             </CardContent></Card>
         )}
