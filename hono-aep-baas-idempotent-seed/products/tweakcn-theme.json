@@ -1,9 +1,15 @@
 {
   "category": "theme",
-  "description": "Ten color schemes + dark mode as hosted themes — one link tag.",
+  "description": {
+    "ar": "عشرة أنظمة ألوان مع الوضع الداكن كسمات مستضافة — وسم رابط واحد.",
+    "en": "Ten color schemes + dark mode as hosted themes — one link tag."
+  },
   "featured": false,
   "name": "tweakcn Theme Pack",
   "price_cents": 2900,
   "slug": "tweakcn-theme",
-  "tagline": "Hosted tweakcn themes."
+  "tagline": {
+    "ar": "سمات tweakcn مستضافة.",
+    "en": "Hosted tweakcn themes."
+  }
 }

@@ -1,4 +1,5 @@
 import { config } from "./config";
+import { localeQuery } from "./locale";
 
 /** Tiny fetch helper over the baas contract (CORS-open reads, site.md §2a). */
 const v1 = (path: string) => `${config.endpoint}/v1/projects/${config.project}${path}`;
@@ -13,13 +14,13 @@ export type Post = {
 };
 
 export async function listPosts(): Promise<Post[]> {
-  const response = await fetch(v1("/posts?order_by=create_time desc"));
+  const response = await fetch(v1(`/posts?order_by=create_time desc${localeQuery("&")}`));
   if (!response.ok) return []; // collection not declared yet → empty blog
   const body = (await response.json()) as { results: Post[] };
   return body.results.filter((post) => post.state !== "DRAFT");
 }
 
 export async function getPost(id: string): Promise<Post | null> {
-  const response = await fetch(v1(`/posts/${id}`));
+  const response = await fetch(v1(`/posts/${id}${localeQuery()}`));
   return response.ok ? ((await response.json()) as Post) : null;
 }

@@ -2,6 +2,9 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import { runtimeBasename } from "./config";
+import { applyLocale } from "./locale";
+
+applyLocale(); // lang + dir before first paint of the app tree
 import { Layout } from "./Layout";
 import { UiProvider } from "./ui";
 import { HomePage } from "./pages/Home";

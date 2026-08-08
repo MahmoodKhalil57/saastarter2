@@ -1,9 +1,15 @@
 {
   "category": "plugin",
-  "description": "The billing kind: catalog, entitlements, Stripe checkout + webhooks.",
+  "description": {
+    "ar": "نوع الفوترة: الكتالوج والاستحقاقات والدفع عبر سترايب مع الويب هوك.",
+    "en": "The billing kind: catalog, entitlements, Stripe checkout + webhooks."
+  },
   "featured": false,
   "name": "Billing Kit",
   "price_cents": 4900,
   "slug": "billing-kit",
-  "tagline": "Entitlements + Stripe, dropped in."
+  "tagline": {
+    "ar": "الاستحقاقات وسترايب، جاهزة فورًا.",
+    "en": "Entitlements + Stripe, dropped in."
+  }
 }

@@ -16,11 +16,13 @@
       },
       {
         "name": "tagline",
-        "type": "string"
+        "type": "string",
+        "localized": true
       },
       {
         "name": "description",
-        "type": "string"
+        "type": "string",
+        "localized": true
       },
       {
         "name": "price_cents",

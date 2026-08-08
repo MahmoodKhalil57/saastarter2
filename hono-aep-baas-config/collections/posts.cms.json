@@ -6,11 +6,13 @@
       {
         "name": "title",
         "required": true,
-        "type": "string"
+        "type": "string",
+        "localized": true
       },
       {
         "name": "body",
-        "type": "string"
+        "type": "string",
+        "localized": true
       }
     ],
     "plural": "posts",

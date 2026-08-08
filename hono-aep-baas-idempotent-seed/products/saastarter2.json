@@ -1,9 +1,15 @@
 {
   "category": "starter",
-  "description": "The exact repo that builds this store — full-stack, Stripe, commerce, admin.",
+  "description": {
+    "ar": "المستودع نفسه الذي يبني هذا المتجر — متكامل، مع سترايب والتجارة ولوحة الإدارة.",
+    "en": "The exact repo that builds this store — full-stack, Stripe, commerce, admin."
+  },
   "featured": true,
   "name": "saastarter2 (this template)",
   "price_cents": 14900,
   "slug": "saastarter2",
-  "tagline": "The full self-aware template."
+  "tagline": {
+    "ar": "القالب الكامل الواعي بذاته.",
+    "en": "The full self-aware template."
+  }
 }

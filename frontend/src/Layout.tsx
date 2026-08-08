@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet } from "react-router";
 import { useSession } from "./auth";
 import { cartCount, useCart } from "./cart";
 import { useTheme } from "./theme";
+import { getLocale, setLocale } from "./locale";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground";
@@ -30,6 +31,15 @@ export function Layout() {
           </NavLink>
           <button type="button" onClick={toggle} aria-label="Toggle dark mode" className="text-muted-foreground hover:text-foreground">
             {dark ? "☀️" : "🌙"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setLocale(getLocale() === "en" ? "ar" : "en")}
+            aria-label="Switch language"
+            title={getLocale() === "en" ? "التبديل إلى العربية" : "Switch to English"}
+            className="font-medium text-muted-foreground hover:text-foreground"
+          >
+            {getLocale() === "en" ? "ع" : "EN"}
           </button>
         </nav>
       </header>

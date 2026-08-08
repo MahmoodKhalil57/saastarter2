@@ -1,5 +1,6 @@
 import { config } from "./config";
 import { authHeader } from "./auth";
+import { localeQuery } from "./locale";
 
 /** The storefront's data layer over the live baas commerce + collections. */
 const base = `${config.endpoint}/v1/projects/${config.project}`;
@@ -148,7 +149,7 @@ export async function track(event: string, properties: Record<string, unknown> =
 
 export type CatalogProduct = { path: string; slug: string; name: string; tagline?: string; description?: string; price_cents?: number; category?: string; featured?: boolean };
 export async function products(): Promise<CatalogProduct[]> {
-  const r = await fetch(`${base}/products?order_by=featured desc`);
+  const r = await fetch(`${base}/products?order_by=featured desc${localeQuery("&")}`);
   if (!r.ok) return [];
   return ((await r.json()) as { results: CatalogProduct[] }).results;
 }
@@ -162,6 +163,6 @@ export async function searchProducts(query: string): Promise<CatalogProduct[]> {
 }
 
 export async function product(slug: string): Promise<CatalogProduct | null> {
-  const r = await fetch(`${base}/products/${slug}`);
+  const r = await fetch(`${base}/products/${slug}${localeQuery()}`);
   return r.ok ? ((await r.json()) as CatalogProduct) : null;
 }
