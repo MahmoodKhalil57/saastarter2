@@ -6,6 +6,7 @@ import { Layout } from "./Layout";
 import { UiProvider } from "./ui";
 import { HomePage } from "./pages/Home";
 import { BlogPage } from "./pages/Blog";
+import { ProductPage } from "./pages/Product";
 import { PostPage } from "./pages/Post";
 import { ContactPage } from "./pages/Contact";
 import { LoginPage } from "./pages/Login";
@@ -27,6 +28,8 @@ const router = createBrowserRouter(
       Component: Layout,
       children: [
         { index: true, Component: HomePage },
+        { path: "product", Component: ProductPage },
+        { path: "changelog", Component: BlogPage },
         { path: "blog", Component: BlogPage },
         { path: "blog/:id", Component: PostPage },
         { path: "contact", Component: ContactPage },

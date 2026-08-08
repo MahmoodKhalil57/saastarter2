@@ -24,7 +24,7 @@ export function LoginPage() {
       setError(((await response.json()) as { message?: string }).message ?? "Something went wrong.");
       return;
     }
-    navigate("/account");
+    navigate(new URLSearchParams(location.search).get("buy") ? "/#pricing" : "/account");
   };
 
   return (

@@ -7,21 +7,16 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export function Layout() {
   const { user } = useSession();
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4">
+    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col px-4">
       <header className="flex items-center justify-between py-6">
         <Link to="/" className="text-lg font-semibold tracking-tight">
           saastarter2
         </Link>
         <nav className="flex gap-5 text-sm">
-          <NavLink to="/" end className={navLinkClass}>
-            Home
-          </NavLink>
-          <NavLink to="/blog" className={navLinkClass}>
-            Blog
-          </NavLink>
-          <NavLink to="/contact" className={navLinkClass}>
-            Contact
-          </NavLink>
+          <NavLink to="/" end className={navLinkClass}>Store</NavLink>
+          <NavLink to="/product" className={navLinkClass}>Product</NavLink>
+          <NavLink to="/changelog" className={navLinkClass}>Changelog</NavLink>
+          <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
           <NavLink to={user ? "/account" : "/login"} className={navLinkClass}>
             {user ? "Account" : "Sign in"}
           </NavLink>
@@ -31,7 +26,7 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className="border-t py-6 text-xs text-muted-foreground">
-        Static site on GitHub Pages · backend by mizan-gpp · declared in git
+        This shop sells its own source · static on GitHub Pages · backend on Cloudflare Workers · one git repo
       </footer>
     </div>
   );
