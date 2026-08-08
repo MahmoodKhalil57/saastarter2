@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
-import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateAvatar, updateProfile, useSession } from "../auth";
+import { authHeader, changeEmail, changePassword, confirm2fa, deleteAccount, enable2fa, signOut, updateAvatar, updateProfile, useSession } from "../auth";
 import { billingPortal, money, myOrders, myWishlist, owned as ownedProducts, proActive, subscribe, toggleWishlist, uploadMedia, type Order, type WishlistItem } from "../store";
 import { config } from "../config";
 
@@ -110,6 +110,20 @@ export function AccountPage() {
           </>
         )}
         {tab === "security" && (
+          <>
+          <Card className={user.twoFactorEnabled ? "border-primary ring-1 ring-primary/30" : ""}>
+            <CardHeader><CardTitle>Two-factor authentication {user.twoFactorEnabled ? "✓" : ""}</CardTitle>
+              <CardDescription>{user.twoFactorEnabled
+                ? "On — sign-in requires a code from your authenticator app."
+                : "Real server-side TOTP (RFC 6238) — the original template only stubbed this."}</CardDescription></CardHeader>
+            <CardContent>
+              {user.twoFactorEnabled ? (
+                <p className="text-sm text-muted-foreground">Enabled for {user.email}.</p>
+              ) : (
+                <TwoFactorSetup onDone={() => { refresh(); say("Two-factor enabled ✓"); }} />
+              )}
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader><CardTitle>Change password</CardTitle><CardDescription>Other sessions are signed out on success.</CardDescription></CardHeader>
             <CardContent>
@@ -120,6 +134,7 @@ export function AccountPage() {
               </form>
             </CardContent>
           </Card>
+          </>
         )}
         {tab === "billing" && (
           <>
@@ -175,5 +190,40 @@ export function AccountPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/** Enable-TOTP flow: password → secret (add to authenticator) → confirm code. */
+function TwoFactorSetup({ onDone }: { onDone: () => void }) {
+  const [secret, setSecret] = useState<string | null>(null);
+  const [uri, setUri] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  return secret ? (
+    <div className="space-y-3">
+      <p className="text-sm">Add this secret to your authenticator app, then confirm with a code:</p>
+      <code className="block break-all rounded bg-muted p-2 text-xs">{secret}</code>
+      {uri && <p className="break-all text-xs text-muted-foreground">{uri}</p>}
+      <form className="flex gap-2" onSubmit={async (e) => {
+        e.preventDefault();
+        const code = String(new FormData(e.currentTarget).get("code") ?? "");
+        if (await confirm2fa(code)) onDone(); else setError("Wrong code — try again.");
+      }}>
+        <input name="code" inputMode="numeric" placeholder="123456" className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
+        <Button type="submit">Confirm</Button>
+      </form>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
+  ) : (
+    <form className="flex gap-2" onSubmit={async (e) => {
+      e.preventDefault();
+      const pw = String(new FormData(e.currentTarget).get("pw") ?? "");
+      const r = await enable2fa(pw);
+      if (r.secret) { setSecret(r.secret); setUri(r.totpURI ?? null); setError(""); }
+      else setError("Wrong password?");
+    }}>
+      <input name="pw" type="password" placeholder="Current password" className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
+      <Button type="submit" variant="outline">Enable 2FA</Button>
+      {error && <p className="self-center text-sm text-destructive">{error}</p>}
+    </form>
   );
 }

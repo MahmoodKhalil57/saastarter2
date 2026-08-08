@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from "hono-aep-ui";
-import { requestReset, signIn, signUp } from "../auth";
+import { requestReset, signInWith2fa, signUp, verify2fa } from "../auth";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -12,20 +12,52 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [challenge, setChallenge] = useState<string | null>(null);
+  const [code, setCode] = useState("");
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setBusy(true);
     setError(null);
-    const response =
-      mode === "sign-in" ? await signIn(email, password) : await signUp(email, password, name || email);
-    setBusy(false);
-    if (!response.ok) {
-      setError(((await response.json()) as { message?: string }).message ?? "Something went wrong.");
-      return;
+    if (mode === "sign-in") {
+      const result = await signInWith2fa(email, password);
+      setBusy(false);
+      if (!result.ok) return setError("Wrong email or password.");
+      if (result.twoFactor) return setChallenge(result.twoFactor); // TOTP step
+    } else {
+      const response = await signUp(email, password, name || email);
+      setBusy(false);
+      if (!response.ok) {
+        setError(((await response.json()) as { message?: string }).message ?? "Something went wrong.");
+        return;
+      }
     }
-    navigate(new URLSearchParams(location.search).get("buy") ? "/#pricing" : "/account");
+    navigate(new URLSearchParams(location.search).get("next") ?? "/account");
   };
+
+  if (challenge) {
+    return (
+      <Card className="mx-auto max-w-sm">
+        <CardHeader>
+          <CardTitle>Two-factor code</CardTitle>
+          <CardDescription>Enter the 6-digit code from your authenticator app.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4" onSubmit={async (e) => {
+            e.preventDefault(); setBusy(true); setError(null);
+            const ok = await verify2fa(code, challenge);
+            setBusy(false);
+            if (!ok) return setError("Wrong code — try again.");
+            navigate(new URLSearchParams(location.search).get("next") ?? "/account");
+          }}>
+            <Input inputMode="numeric" autoFocus placeholder="123456" value={code} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value)} />
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" className="w-full" disabled={busy || code.length < 6}>{busy ? "…" : "Verify"}</Button>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mx-auto max-w-sm">

@@ -17,7 +17,7 @@ export const authHeader = (): Record<string, string> => {
   return t ? { Authorization: `Bearer ${t}` } : {};
 };
 
-export type PoolUser = { id: string; email: string; name: string; image?: string | null };
+export type PoolUser = { id: string; email: string; name: string; image?: string | null; twoFactorEnabled?: boolean | null };
 
 async function post(path: string, body: unknown): Promise<Response> {
   const response = await fetch(auth(path), {
@@ -80,3 +80,34 @@ export function useSession(): { user: PoolUser | null | undefined; refresh: () =
   }, [nonce]);
   return { user, refresh: () => setNonce((n) => n + 1) };
 }
+
+// --- TOTP two-factor (auth-pools.md §1.6): the pending challenge rides a
+// --- bridged header pair (set-two-factor-token / two-factor-token) because
+// --- static origins cannot round-trip the plugin's cookie.
+export const signInWith2fa = async (
+  email: string,
+  password: string,
+): Promise<{ ok: boolean; twoFactor?: string }> => {
+  const response = await post("/sign-in/email", { email, password });
+  const challenge = response.headers.get("set-two-factor-token");
+  if (challenge) return { ok: true, twoFactor: challenge };
+  return { ok: response.ok };
+};
+export const verify2fa = async (code: string, challenge: string): Promise<boolean> => {
+  const response = await fetch(auth("/two-factor/verify-totp"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "two-factor-token": challenge },
+    body: JSON.stringify({ code }),
+  });
+  const token = response.headers.get("set-auth-token");
+  if (token) localStorage.setItem(KEY, token);
+  if (response.ok) window.dispatchEvent(new Event("session-changed"));
+  return response.ok;
+};
+export const enable2fa = async (password: string): Promise<{ totpURI?: string; secret?: string }> => {
+  const response = await post("/two-factor/enable", { password });
+  if (!response.ok) return {};
+  const { totpURI } = (await response.json()) as { totpURI: string };
+  return { totpURI, secret: new URL(totpURI).searchParams.get("secret") ?? undefined };
+};
+export const confirm2fa = async (code: string): Promise<boolean> => (await post("/two-factor/verify-totp", { code })).ok;
