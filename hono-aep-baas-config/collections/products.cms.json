@@ -1,0 +1,65 @@
+{
+  "definition": {
+    "singular": "product",
+    "plural": "products",
+    "fields": [
+      {
+        "name": "slug",
+        "type": "string",
+        "required": true,
+        "unique": true
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "tagline",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "price_cents",
+        "type": "number",
+        "integer": true
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "enum_values": [
+          "starter",
+          "component",
+          "plugin",
+          "theme"
+        ]
+      },
+      {
+        "name": "featured",
+        "type": "boolean"
+      },
+      {
+        "name": "created_by",
+        "type": "string"
+      }
+    ],
+    "policy_create": "authenticated",
+    "policy_update": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "policy_delete": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "policy_list": "public",
+    "policy_get": "public",
+    "owner": "created_by"
+  },
+  "created_by": ""
+}

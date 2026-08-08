@@ -1,6 +1,6 @@
 {
   "endpoint": "https://mizan-gpp.the-montiapple.workers.dev",
-  "project": "saastarter2-app",
+  "project": "saastarter2-shop",
   "resources": [
     "forms/*.cms.json",
     "themes/*.cms.css",

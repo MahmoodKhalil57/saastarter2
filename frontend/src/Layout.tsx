@@ -14,7 +14,7 @@ export function Layout() {
         </Link>
         <nav className="flex gap-5 text-sm">
           <NavLink to="/" end className={navLinkClass}>Store</NavLink>
-          <NavLink to="/product" className={navLinkClass}>Product</NavLink>
+          <NavLink to="/products" className={navLinkClass}>Products</NavLink>
           <NavLink to="/changelog" className={navLinkClass}>Changelog</NavLink>
           <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
           <NavLink to={user ? "/account" : "/login"} className={navLinkClass}>

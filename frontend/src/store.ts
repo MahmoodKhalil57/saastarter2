@@ -46,3 +46,14 @@ export async function entitlements(): Promise<string[]> {
   if (flags["owns-lifetime"]) owned.push("lifetime");
   return owned;
 }
+
+export type CatalogProduct = { path: string; slug: string; name: string; tagline?: string; description?: string; price_cents?: number; category?: string; featured?: boolean };
+export async function products(): Promise<CatalogProduct[]> {
+  const r = await fetch(`${base}/products?order_by=featured desc`);
+  if (!r.ok) return [];
+  return ((await r.json()) as { results: CatalogProduct[] }).results;
+}
+export async function product(slug: string): Promise<CatalogProduct | null> {
+  const r = await fetch(`${base}/products/${slug}`);
+  return r.ok ? ((await r.json()) as CatalogProduct) : null;
+}
