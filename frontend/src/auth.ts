@@ -126,15 +126,13 @@ export async function ensureSession(): Promise<Record<string, string>> {
   if (!token()) await signInGuest().catch(() => {}); // pool without the knob → header stays empty
   return authHeader();
 }
-/** Redirects to Google; the callback returns to the SPA with the session
- *  token in the URL FRAGMENT (picked up by consumeAuthFragment below). */
-export const signInGoogle = async (): Promise<void> => {
-  const response = await post("/sign-in/social", {
-    provider: "google",
-    callbackURL: `${location.origin}${config.basename}/account`,
-  });
-  const { url } = (await response.json()) as { url?: string };
-  if (url) location.href = url;
+/** A top-level NAVIGATION to the pool's OAuth-start alias — the signed
+ *  state cookie must land first-party on the API origin (a cross-origin
+ *  fetch would drop it → state_mismatch at the callback). The callback
+ *  returns here with the session token in the URL fragment. */
+export const signInGoogle = (): void => {
+  const callbackURL = encodeURIComponent(`${location.origin}${config.basename}/account`);
+  location.href = auth(`/sign-in/social/google?callbackURL=${callbackURL}`);
 };
 /** OAuth return: #auth_token=… → stored bearer, URL cleaned. Call at boot. */
 export function consumeAuthFragment(): void {
