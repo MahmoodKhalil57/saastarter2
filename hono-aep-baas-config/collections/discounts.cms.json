@@ -1,0 +1,23 @@
+{
+  "definition": {
+    "singular": "discount",
+    "plural": "discounts",
+    "fields": [
+      { "name": "kind", "type": "string", "required": true, "enum_values": ["percent", "fixed"] },
+      { "name": "value", "type": "number", "integer": true, "required": true },
+      { "name": "min_cents", "type": "number", "integer": true },
+      { "name": "max_uses", "type": "number", "integer": true },
+      { "name": "used", "type": "number", "integer": true },
+      { "name": "valid_from", "type": "string" },
+      { "name": "valid_to", "type": "string" },
+      { "name": "created_by", "type": "string" }
+    ],
+    "policy_create": "authenticated",
+    "policy_update": { "owner": { "field": "created_by" } },
+    "policy_delete": { "owner": { "field": "created_by" } },
+    "policy_list": "public",
+    "policy_get": "public",
+    "owner": "created_by"
+  },
+  "created_by": ""
+}

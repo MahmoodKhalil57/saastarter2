@@ -55,13 +55,30 @@ export async function removeFromCart(variant: string): Promise<Cart> {
   return cart;
 }
 
-/** Checkout: server snapshots the cart into an order and bridges to billing —
- *  stripe returns a hosted session (redirect), local settles instantly. */
-export async function checkoutCart(): Promise<{ order: Order; redirect?: string; needsAuth?: boolean }> {
+/** Validate a coupon against the live cart (server-computed; emits
+ *  coupon_applied/denied). 422 carries the denial reason. */
+export async function validateDiscount(code: string): Promise<{ ok: true; discount_cents: number } | { ok: false; reason: string }> {
+  const r = await fetch(`${commerce}/discount:validate`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...authHeader() }, body: JSON.stringify({ code }),
+  });
+  return (await r.json()) as { ok: true; discount_cents: number } | { ok: false; reason: string };
+}
+
+/** Checkout: server snapshots the cart into an order (coupon applied as a
+ *  line adjustment) and bridges to billing — stripe returns a hosted
+ *  session (redirect), local settles instantly. */
+export async function checkoutCart(discount?: string): Promise<{ order: Order; redirect?: string; needsAuth?: boolean; rejected?: string }> {
   const header = authHeader();
   if (!("Authorization" in header)) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
-  const r = await fetch(`${commerce}/cart:checkout`, { method: "POST", headers: { "Content-Type": "application/json", ...header }, body: "{}" });
+  const r = await fetch(`${commerce}/cart:checkout`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header },
+    body: JSON.stringify(discount ? { discount } : {}),
+  });
   if (r.status === 401) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
+  if (r.status === 422) {
+    const problem = (await r.json()) as { title?: string };
+    return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, rejected: problem.title ?? "Checkout rejected" };
+  }
   const body = (await r.json()) as { order: Order; checkout?: { url?: string } };
   return { order: body.order, ...(body.checkout?.url ? { redirect: body.checkout.url } : {}) };
 }

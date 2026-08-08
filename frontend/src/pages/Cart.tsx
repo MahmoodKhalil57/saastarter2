@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button, Card, CardContent } from "hono-aep-ui";
-import { checkoutCart, money, removeFromCart, track } from "../store";
+import { checkoutCart, money, removeFromCart, track, validateDiscount } from "../store";
 import { useCart } from "../cart";
 import { useSession } from "../auth";
 
@@ -11,13 +11,25 @@ export function CartPage() {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [order, setOrder] = useState<{ id: string; status: string; total_cents: number } | null>(null);
+  const [code, setCode] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount_cents: number } | null>(null);
+  const [couponError, setCouponError] = useState("");
+
+  const applyCode = async () => {
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) return;
+    const v = await validateDiscount(trimmed); // server-computed off the live cart
+    if (v.ok) { setCoupon({ code: trimmed, discount_cents: v.discount_cents }); setCouponError(""); }
+    else { setCoupon(null); setCouponError(v.reason); }
+  };
 
   const checkout = async () => {
     setBusy(true);
-    void track("checkout_started", { cart_id: cart.id, total_cents: cart.total_cents, currency: cart.currency });
-    const r = await checkoutCart();
+    void track("checkout_started", { cart_id: cart.id, total_cents: cart.total_cents, currency: cart.currency, ...(coupon ? { coupon: coupon.code } : {}) });
+    const r = await checkoutCart(coupon?.code);
     setBusy(false);
     if (r.needsAuth) return navigate("/login?next=/cart");
+    if (r.rejected) return setCouponError(r.rejected);
     if (r.redirect) return void (window.location.href = r.redirect); // hosted Stripe Checkout
     setOrder(r.order); // local provider settled instantly → paid order
     refresh();
@@ -78,9 +90,26 @@ export function CartPage() {
               </Card>
             ))}
           </div>
+          <div className="mt-6 flex gap-2">
+            <input
+              value={code}
+              onChange={(e) => { setCode(e.target.value); setCouponError(""); }}
+              placeholder="Discount code (try LAUNCH20)"
+              className="flex-1 rounded-md border bg-background px-3 py-2 text-sm uppercase"
+              aria-label="Discount code"
+            />
+            <Button variant="outline" onClick={applyCode}>Apply</Button>
+          </div>
+          {couponError && <p className="mt-1 text-sm text-destructive">{couponError}</p>}
+          {coupon && (
+            <div className="mt-2 flex items-center justify-between text-sm">
+              <span className="text-primary">{coupon.code} applied ✓</span>
+              <span className="text-primary">−{money(coupon.discount_cents)}</span>
+            </div>
+          )}
           <div className="mt-6 flex items-center justify-between border-t pt-6">
             <span className="text-lg">Total</span>
-            <span className="text-2xl font-bold">{money(cart.total_cents)}</span>
+            <span className="text-2xl font-bold">{money(Math.max(0, cart.total_cents - (coupon?.discount_cents ?? 0)))}</span>
           </div>
           <Button size="lg" className="mt-4 w-full" disabled={busy} onClick={checkout}>
             {busy ? "…" : "Checkout"}
