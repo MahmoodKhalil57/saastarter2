@@ -45,12 +45,12 @@
 <script type="module" src="./js/ui.js"></script>
 <script type="module">
 import { addToCart } from "./js/store.js";
-import { toast } from "./js/ui.js";
+import { openCart } from "./js/cart-drawer.js";
 document.getElementById("pricing").addEventListener("click", async (event) => {
   const slug = event.target.closest?.("[data-buy]")?.dataset?.buy;
   if (!slug) return;
   await addToCart(slug);
-  toast("Added to cart ✓ — head to the cart to check out.");
+  openCart();
 });
 </script>
 </body>

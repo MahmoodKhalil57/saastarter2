@@ -1,5 +1,6 @@
 import { addToCart, money, myWishlist, postReview, product, reviewsFor, toggleWishlist, track } from "../store.js";
 import { toast } from "../ui.js";
+import { openCart } from "../cart-drawer.js";
 
 const slug = new URLSearchParams(location.search).get("slug");
 const detail = document.getElementById("detail");
@@ -18,15 +19,16 @@ else {
       <div class="fs-3 fw-bold">${p.price_cents ? money(p.price_cents) : "Free"}</div>
       <div class="d-flex gap-2 align-items-center">
         <button id="add" class="btn btn-primary btn-lg"><iconify-icon icon="lucide:shopping-cart" inline></iconify-icon> Add to cart</button>
-        <a id="view-cart" class="btn btn-outline-primary btn-lg d-none" href="./cart.html">View cart <iconify-icon icon="lucide:arrow-right" inline></iconify-icon></a>
+        <button id="view-cart" class="btn btn-outline-primary btn-lg d-none">View cart <iconify-icon icon="lucide:arrow-right" inline></iconify-icon></button>
         <button id="wish" class="btn btn-link fs-3 p-0" style="color:${wished ? "var(--s2-accent)" : "var(--bs-secondary-color)"}" aria-label="Toggle wishlist"><iconify-icon icon="${wished ? "lucide:heart" : "lucide:heart"}" inline></iconify-icon></button>
       </div>
     </div>`;
   document.getElementById("add").onclick = async () => {
     await addToCart(slug);
     document.getElementById("view-cart").classList.remove("d-none");
-    toast("Added to cart ✓");
+    openCart(); // the sidebar IS the cart
   };
+  document.getElementById("view-cart").onclick = () => openCart();
   document.getElementById("wish").onclick = async () => {
     const { wished: now } = await toggleWishlist(slug);
     document.getElementById("wish").style.color = now ? "var(--s2-accent)" : "var(--bs-secondary-color)";

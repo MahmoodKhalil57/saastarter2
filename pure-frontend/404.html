@@ -8,7 +8,7 @@ const [head, tail] = parts;
 const map = {
   products: tail ? `product.html?slug=${encodeURIComponent(tail)}` : "products.html",
   blog: tail ? `post.html?id=${encodeURIComponent(tail)}` : "blog.html",
-  changelog: "blog.html", cart: "cart.html", login: "login.html",
+  changelog: "blog.html", cart: "index.html#cart", login: "login.html",
   account: "account.html" + location.search, contact: "contact.html",
 };
 location.replace("/saastarter2/" + (map[head] ?? (head ? `page.html?slug=${encodeURIComponent(head)}` : "")));

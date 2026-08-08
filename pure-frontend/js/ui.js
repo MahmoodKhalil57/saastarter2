@@ -4,6 +4,7 @@
 import { consumeAuthFragment, getLocale, getSession, setLocale, signOut } from "./api.js";
 import { getCart } from "./store.js";
 import { icon } from "./icons.js";
+import { initCartDrawer, openCart } from "./cart-drawer.js";
 
 const dark = () => localStorage.getItem("theme") === "dark";
 const applyTheme = () => {
@@ -36,7 +37,7 @@ const NAV = `
       <ul class="navbar-nav ms-auto align-items-md-center gap-2">
         <li class="nav-item"><a class="nav-link" href="./products.html">${icon("package")} Products</a></li>
         <li class="nav-item"><a class="nav-link" href="./blog.html">${icon("file-text")} Blog</a></li>
-        <li class="nav-item"><a class="nav-link" href="./cart.html">${icon("shopping-cart")} Cart <span id="cart-count" class="badge text-bg-primary d-none"></span></a></li>
+        <li class="nav-item"><a class="nav-link" href="#cart" id="nav-cart">${icon("shopping-cart")} Cart <span id="cart-count" class="badge text-bg-primary d-none"></span></a></li>
         <li class="nav-item"><a class="nav-link" id="nav-account" href="./login.html">${icon("log-in")} Sign in</a></li>
         <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="theme-toggle" aria-label="Toggle dark mode">${icon("moon")}</button></li>
         <li class="nav-item"><button class="btn btn-sm btn-outline-secondary" id="locale-toggle" aria-label="Switch language">${icon("languages")} <span class="s2-mono">ع</span></button></li>
@@ -82,6 +83,8 @@ export function initChrome() {
     paintTheme();
   });
   document.getElementById("locale-toggle")?.addEventListener("click", () => setLocale(getLocale() === "en" ? "ar" : "en"));
+  initCartDrawer();
+  document.getElementById("nav-cart")?.addEventListener("click", (event) => { event.preventDefault(); openCart(); });
   addEventListener("session-changed", refreshSessionUi);
   addEventListener("cart-changed", refreshCartBadge);
   void refreshSessionUi();
