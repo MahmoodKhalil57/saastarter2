@@ -27,6 +27,9 @@ async function post(path: string, body: unknown): Promise<Response> {
   });
   const setToken = response.headers.get("set-auth-token");
   if (setToken) localStorage.setItem(KEY, setToken);
+  // Every session-affecting POST notifies ALL useSession instances (the
+  // header included) — client-side sign-in/profile edits update everywhere.
+  if (response.ok) window.dispatchEvent(new Event("session-changed"));
   return response;
 }
 
@@ -38,6 +41,7 @@ export const requestReset = (email: string) =>
   post("/request-password-reset", { email, redirectTo: `${location.origin}${config.basename}/` });
 export function signOut(): void {
   localStorage.removeItem(KEY);
+  window.dispatchEvent(new Event("session-changed"));
 }
 
 // --- Account lifecycle (auth-pools.md §1.5) — all server-side flows; the
@@ -67,8 +71,11 @@ export function useSession(): { user: PoolUser | null | undefined; refresh: () =
   useEffect(() => {
     let cancelled = false;
     void getSession().then((u) => !cancelled && setUser(u));
+    const on = () => setNonce((n) => n + 1);
+    window.addEventListener("session-changed", on);
     return () => {
       cancelled = true;
+      window.removeEventListener("session-changed", on);
     };
   }, [nonce]);
   return { user, refresh: () => setNonce((n) => n + 1) };
