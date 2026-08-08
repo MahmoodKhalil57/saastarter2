@@ -14,10 +14,14 @@ export type Post = {
 };
 
 export async function listPosts(): Promise<Post[]> {
-  const response = await fetch(v1(`/posts?order_by=create_time desc${localeQuery("&")}`));
+  // create_time is server-owned, not declared → not orderable on a JIT
+  // collection; newest-first is a client-side sort over the returned rows.
+  const response = await fetch(v1(`/posts${localeQuery()}`));
   if (!response.ok) return []; // collection not declared yet → empty blog
   const body = (await response.json()) as { results: Post[] };
-  return body.results.filter((post) => post.state !== "DRAFT");
+  return body.results
+    .filter((post) => post.state !== "DRAFT")
+    .sort((a, b) => (a.create_time < b.create_time ? 1 : -1));
 }
 
 export async function getPost(id: string): Promise<Post | null> {
