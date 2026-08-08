@@ -3,6 +3,9 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import { runtimeBasename } from "./config";
 import { applyLocale, localeQuery } from "./locale";
+import { consumeAuthFragment } from "./auth";
+
+consumeAuthFragment(); // OAuth return: #auth_token → bearer session
 
 applyLocale(); // lang + dir before first paint of the app tree
 import { Layout } from "./Layout";

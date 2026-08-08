@@ -17,7 +17,7 @@ export const authHeader = (): Record<string, string> => {
   return t ? { Authorization: `Bearer ${t}` } : {};
 };
 
-export type PoolUser = { id: string; email: string; name: string; image?: string | null; twoFactorEnabled?: boolean | null };
+export type PoolUser = { id: string; email: string; name: string; image?: string | null; twoFactorEnabled?: boolean | null; isAnonymous?: boolean | null };
 
 async function post(path: string, body: unknown): Promise<Response> {
   const response = await fetch(auth(path), {
@@ -111,3 +111,25 @@ export const enable2fa = async (password: string): Promise<{ totpURI?: string; s
   return { totpURI, secret: new URL(totpURI).searchParams.get("secret") ?? undefined };
 };
 export const confirm2fa = async (code: string): Promise<boolean> => (await post("/two-factor/verify-totp", { code })).ok;
+
+// --- Guest sessions + Google OAuth (auth-pools.md §1.2/§1.8) ---
+/** One call, no form — a real bearer session for guest checkout. */
+export const signInGuest = () => post("/sign-in/anonymous", {});
+/** Redirects to Google; the callback returns to the SPA with the session
+ *  token in the URL FRAGMENT (picked up by consumeAuthFragment below). */
+export const signInGoogle = async (): Promise<void> => {
+  const response = await post("/sign-in/social", {
+    provider: "google",
+    callbackURL: `${location.origin}${config.basename}/account`,
+  });
+  const { url } = (await response.json()) as { url?: string };
+  if (url) location.href = url;
+};
+/** OAuth return: #auth_token=… → stored bearer, URL cleaned. Call at boot. */
+export function consumeAuthFragment(): void {
+  const match = location.hash.match(/[#&]auth_token=([^&]+)/);
+  if (!match) return;
+  localStorage.setItem(KEY, decodeURIComponent(match[1]!));
+  history.replaceState(null, "", location.pathname + location.search);
+  window.dispatchEvent(new Event("session-changed"));
+}

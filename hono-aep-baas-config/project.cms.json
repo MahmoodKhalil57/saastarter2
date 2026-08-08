@@ -1,7 +1,27 @@
 {
   "auth_pool": {
+    "anonymous": {
+      "enabled": true
+    },
     "emailPassword": {
       "enabled": true
+    },
+    "social": {
+      "google": {
+        "clientId": {
+          "$env": "GOOGLE_CLIENT_ID"
+        },
+        "clientSecret": {
+          "$env": "GOOGLE_CLIENT_SECRET"
+        }
+      }
+    },
+    "trustedOrigins": [
+      "https://mahmoodkhalil57.github.io"
+    ],
+    "twoFactor": {
+      "enabled": true,
+      "issuer": "saastarter2"
     }
   },
   "create_time": "2026-08-08T02:08:28Z",
@@ -13,14 +33,14 @@
     },
     "description": "The flagship mizan-gpp consumer \u2014 static react-router + shadcn on GitHub Pages.",
     "locale": "en",
-    "url": "https://mahmoodkhalil57.github.io",
     "locales": {
       "default": "en",
       "supported": [
         "en",
         "ar"
       ]
-    }
+    },
+    "url": "https://mahmoodkhalil57.github.io"
   },
   "update_time": "2026-08-08T02:08:28Z"
 }

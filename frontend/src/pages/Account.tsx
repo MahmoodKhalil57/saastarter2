@@ -45,6 +45,13 @@ export function AccountPage() {
         {flash && <div className="rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-sm">{flash}</div>}
         {tab === "overview" && (
           <>
+            {user.isAnonymous && (
+              <Card className="border-primary/40 bg-primary/5">
+                <CardHeader><CardTitle>You're browsing as a guest</CardTitle>
+                  <CardDescription>Your cart and orders live on this guest session. Create an account and they come with you — the upgrade re-parents everything (commerce.md §3a).</CardDescription></CardHeader>
+                <CardContent><Button onClick={() => navigate("/login")}>Create an account</Button></CardContent>
+              </Card>
+            )}
             <Card>
               <CardHeader><CardTitle>Overview</CardTitle><CardDescription>{user.email}</CardDescription></CardHeader>
               <CardContent className="space-y-3">

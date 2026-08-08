@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from "hono-aep-ui";
-import { requestReset, signInWith2fa, signUp, verify2fa } from "../auth";
+import { requestReset, signInGoogle, signInGuest, signInWith2fa, signUp, verify2fa } from "../auth";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -66,6 +66,21 @@ export function LoginPage() {
         <CardDescription>End-user access — powered by this project's hosted auth pool.</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 space-y-2">
+          <Button type="button" variant="outline" className="w-full" onClick={() => void signInGoogle()}>
+            Continue with Google
+          </Button>
+          <Button type="button" variant="ghost" className="w-full" onClick={async () => {
+            const r = await signInGuest();
+            if (r.ok) navigate(new URLSearchParams(location.search).get("next") ?? "/products");
+            else setError("Guest sessions are not enabled.");
+          }}>
+            Continue as guest — checkout without an account
+          </Button>
+          <div className="flex items-center gap-3 py-1 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" />
+          </div>
+        </div>
         <form onSubmit={submit} className="space-y-4">
           {mode === "sign-up" && (
             <div className="space-y-1.5">
