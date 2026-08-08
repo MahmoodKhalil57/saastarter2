@@ -51,7 +51,7 @@ export function ProductDetailPage() {
         <div className="text-3xl font-bold">{p.price_cents ? money(p.price_cents) : "Free"}</div>
         <div className="flex items-center gap-3">
           <Button size="lg" disabled={busy} onClick={add}>
-            {busy ? "…" : user ? "Add to cart" : "Sign in to add"}
+            {busy ? "…" : "Add to cart"}
           </Button>
           {added && <Button size="lg" variant="outline" onClick={() => navigate("/cart")}>View cart →</Button>}
           <button

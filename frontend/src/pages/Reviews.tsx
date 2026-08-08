@@ -64,7 +64,7 @@ export function ProductReviews({ product }: { product: string }) {
 
       <Card className="mt-6">
         <CardContent className="space-y-3 py-5">
-          <h3 className="font-medium">{user ? "Write a review" : "Sign in to review"}</h3>
+          <h3 className="font-medium">Write a review</h3>
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} type="button" onClick={() => setRating(n)} className={`text-2xl ${n <= rating ? "text-amber-500" : "text-muted-foreground/40"}`} aria-label={`${n} star`}>★</button>
@@ -72,7 +72,7 @@ export function ProductReviews({ product }: { product: string }) {
           </div>
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="w-full rounded-md border bg-background px-3 py-2 text-sm" />
           <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="What did you think?" rows={3} className="w-full rounded-md border bg-background px-3 py-2 text-sm" />
-          <Button disabled={busy || (!title && !body)} onClick={submit}>{busy ? "…" : user ? "Post review" : "Sign in to post"}</Button>
+          <Button disabled={busy || (!title && !body)} onClick={submit}>{busy ? "…" : "Post review"}</Button>
         </CardContent>
       </Card>
     </section>

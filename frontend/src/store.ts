@@ -1,5 +1,5 @@
 import { config } from "./config";
-import { authHeader } from "./auth";
+import { authHeader, ensureSession } from "./auth";
 import { localeQuery } from "./locale";
 
 /** The storefront's data layer over the live baas commerce + collections. */
@@ -34,7 +34,7 @@ export async function getCart(): Promise<Cart> {
 }
 
 export async function addToCart(variant: string, quantity = 1): Promise<Cart | { needsAuth: true }> {
-  const header = authHeader();
+  const header = await ensureSession(); // guest-by-default (§3a.5)
   if (!("Authorization" in header)) return { needsAuth: true };
   const r = await fetch(`${commerce}/cart:add`, {
     method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify({ variant, quantity }),
@@ -68,7 +68,7 @@ export async function validateDiscount(code: string): Promise<{ ok: true; discou
  *  line adjustment) and bridges to billing — stripe returns a hosted
  *  session (redirect), local settles instantly. */
 export async function checkoutCart(discount?: string): Promise<{ order: Order; redirect?: string; needsAuth?: boolean; rejected?: string }> {
-  const header = authHeader();
+  const header = await ensureSession();
   if (!("Authorization" in header)) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
   const r = await fetch(`${commerce}/cart:checkout`, {
     method: "POST", headers: { "Content-Type": "application/json", ...header },
@@ -177,7 +177,7 @@ export async function reviewsFor(product: string): Promise<Review[]> {
 }
 
 export async function postReview(review: { product: string; rating: number; title?: string; body?: string; author_name?: string }): Promise<Review | { needsAuth: true }> {
-  const header = authHeader();
+  const header = await ensureSession(); // guests review too (§3a.5)
   if (!("Authorization" in header)) return { needsAuth: true };
   const r = await fetch(`${base}/reviews`, {
     method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify(review),
@@ -202,7 +202,7 @@ export async function myWishlist(): Promise<WishlistItem[]> {
 }
 
 export async function toggleWishlist(product: string): Promise<{ wished: boolean } | { needsAuth: true }> {
-  const header = authHeader();
+  const header = await ensureSession(); // guest-by-default (§3a.5)
   if (!("Authorization" in header)) return { needsAuth: true };
   const items = await myWishlist();
   const existing = items.find((w) => w.product === product);

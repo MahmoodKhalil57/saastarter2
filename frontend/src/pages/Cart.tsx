@@ -35,16 +35,6 @@ export function CartPage() {
     refresh();
   };
 
-  if (!user)
-    return (
-      <div className="py-16 text-center">
-        <h1 className="text-2xl font-bold">Your cart</h1>
-        <p className="mt-2 text-muted-foreground">
-          <Link to="/login?next=/cart" className="text-primary underline">Sign in</Link> to start a cart.
-        </p>
-      </div>
-    );
-
   if (order)
     return (
       <div className="py-16 text-center">

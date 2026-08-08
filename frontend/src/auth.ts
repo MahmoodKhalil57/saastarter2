@@ -115,6 +115,17 @@ export const confirm2fa = async (code: string): Promise<boolean> => (await post(
 // --- Guest sessions + Google OAuth (auth-pools.md §1.2/§1.8) ---
 /** One call, no form — a real bearer session for guest checkout. */
 export const signInGuest = () => post("/sign-in/anonymous", {});
+
+/**
+ * Guest-by-default (commerce.md §3a.5): the auth header for shopping
+ * actions — minting an anonymous session IMPLICITLY on first need, so a
+ * fresh visitor adds to cart with zero interruption. Sign-in later
+ * re-parents everything.
+ */
+export async function ensureSession(): Promise<Record<string, string>> {
+  if (!token()) await signInGuest().catch(() => {}); // pool without the knob → header stays empty
+  return authHeader();
+}
 /** Redirects to Google; the callback returns to the SPA with the session
  *  token in the URL FRAGMENT (picked up by consumeAuthFragment below). */
 export const signInGoogle = async (): Promise<void> => {

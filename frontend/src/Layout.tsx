@@ -26,10 +26,12 @@ export function Layout() {
           <NavLink to="/cart" className={navLinkClass}>
             Cart{count > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">{count}</span>}
           </NavLink>
-          <NavLink to={user ? "/account" : "/login"} className={navLinkClass}>
-            {user?.image
-              ? <span className="inline-flex items-center gap-1.5"><img src={user.image} alt="" className="h-5 w-5 rounded-full border object-cover" />Account</span>
-              : user ? "Account" : "Sign in"}
+          <NavLink to={user && !user.isAnonymous ? "/account" : "/login"} className={navLinkClass}>
+            {user && !user.isAnonymous
+              ? user.image
+                ? <span className="inline-flex items-center gap-1.5"><img src={user.image} alt="" className="h-5 w-5 rounded-full border object-cover" />Account</span>
+                : "Account"
+              : "Sign in"}
           </NavLink>
           <button type="button" onClick={toggle} aria-label="Toggle dark mode" className="text-muted-foreground hover:text-foreground">
             {dark ? "☀️" : "🌙"}
