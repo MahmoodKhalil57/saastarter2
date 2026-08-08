@@ -1,9 +1,11 @@
 import { Link, NavLink, Outlet } from "react-router";
+import { useSession } from "./auth";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground";
 
 export function Layout() {
+  const { user } = useSession();
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4">
       <header className="flex items-center justify-between py-6">
@@ -19,6 +21,9 @@ export function Layout() {
           </NavLink>
           <NavLink to="/contact" className={navLinkClass}>
             Contact
+          </NavLink>
+          <NavLink to={user ? "/account" : "/login"} className={navLinkClass}>
+            {user ? "Account" : "Sign in"}
           </NavLink>
         </nav>
       </header>

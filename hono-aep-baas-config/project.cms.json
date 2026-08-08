@@ -1,4 +1,9 @@
 {
+  "auth_pool": {
+    "emailPassword": {
+      "enabled": true
+    }
+  },
   "display_name": "saastarter2",
   "site": {
     "app": {

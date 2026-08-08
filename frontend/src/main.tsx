@@ -8,6 +8,8 @@ import { HomePage } from "./pages/Home";
 import { BlogPage } from "./pages/Blog";
 import { PostPage } from "./pages/Post";
 import { ContactPage } from "./pages/Contact";
+import { LoginPage } from "./pages/Login";
+import { AccountPage } from "./pages/Account";
 import { CmsPage, CmsPageError } from "hono-aep-blocks";
 import { config } from "./config";
 
@@ -21,6 +23,8 @@ const router = createBrowserRouter(
         { path: "blog", Component: BlogPage },
         { path: "blog/:id", Component: PostPage },
         { path: "contact", Component: ContactPage },
+        { path: "login", Component: LoginPage },
+        { path: "account", Component: AccountPage },
         {
           // "A cms for some pages": any path that is not a code route tries
           // the project's hosted Puck pages (public read, CORS-open).
