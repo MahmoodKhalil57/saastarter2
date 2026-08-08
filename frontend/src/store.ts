@@ -83,6 +83,30 @@ export async function owned(): Promise<Set<string>> {
   return set;
 }
 
+// ---------------------------------------------------------------------------
+// Reviews — a hosted collection (hono-aep-baas-config/collections/reviews.cms.json).
+// A whole "reviews subsystem" is one declarative JSON file: public read,
+// authenticated create, owner edit/delete. The app just calls the contract.
+// ---------------------------------------------------------------------------
+
+export type Review = { path?: string; product: string; rating: number; title?: string; body?: string; author_name?: string; created_by?: string };
+
+export async function reviewsFor(product: string): Promise<Review[]> {
+  const r = await fetch(`${base}/reviews?filter=${encodeURIComponent(`product=='${product}'`)}`);
+  if (!r.ok) return [];
+  return ((await r.json()) as { results: Review[] }).results;
+}
+
+export async function postReview(review: { product: string; rating: number; title?: string; body?: string; author_name?: string }): Promise<Review | { needsAuth: true }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { needsAuth: true };
+  const r = await fetch(`${base}/reviews`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify(review),
+  });
+  if (r.status === 401) return { needsAuth: true };
+  return (await r.json()) as Review;
+}
+
 /** Client analytics event (untrusted; order_completed is server-derived). */
 export async function track(event: string, properties: Record<string, unknown> = {}): Promise<void> {
   await fetch(`${commerce}/track`, {

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { Badge, Button, Card, CardContent } from "hono-aep-ui";
 import { addToCart, money, product, track, type CatalogProduct } from "../store";
 import { useSession } from "../auth";
+import { ProductReviews } from "./Reviews";
 
 export function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -30,7 +31,8 @@ export function ProductDetailPage() {
   };
 
   return (
-    <div className="grid gap-8 pb-16 pt-6 md:grid-cols-2">
+    <div className="pb-16 pt-6">
+    <div className="grid gap-8 md:grid-cols-2">
       <Card className="flex aspect-square items-center justify-center bg-muted/30">
         <CardContent className="text-center">
           <div className="text-6xl">{p.category === "starter" ? "🛍️" : p.category === "theme" ? "🎨" : p.category === "plugin" ? "🔌" : "🧩"}</div>
@@ -54,6 +56,8 @@ export function ProductDetailPage() {
         {added && <p className="text-sm text-muted-foreground">Added ✓ — the cart total is derived server-side from live prices.</p>}
         <p className="text-xs text-muted-foreground">This product is row <code>{p.path}</code> in a public hosted collection.</p>
       </div>
+    </div>
+    <ProductReviews product={p.slug} />
     </div>
   );
 }
