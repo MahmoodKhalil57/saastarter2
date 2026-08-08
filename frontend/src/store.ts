@@ -17,7 +17,12 @@ export const money = (cents: number, currency = "usd") =>
 
 export type LineItem = { product_id: string; name?: string; variant?: string; price_cents: number; quantity: number };
 export type Cart = { id: string; items: LineItem[]; total_cents: number; currency: string; status: string };
-export type Order = { id: string; items: LineItem[]; total_cents: number; currency: string; status: string };
+export type Artifact =
+  | { kind: "download"; label: string; claim: string }
+  | { kind: "tracking"; label: string; url?: string; code?: string; eta?: string }
+  | { kind: "note"; label: string; text: string };
+export type Delivery = { id: string; status: string; artifacts: Artifact[] };
+export type Order = { id: string; items: LineItem[]; total_cents: number; currency: string; status: string; deliveries?: Delivery[] };
 
 const commerce = `${base}/commerce`;
 

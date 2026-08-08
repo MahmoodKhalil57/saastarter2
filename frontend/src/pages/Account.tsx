@@ -171,7 +171,21 @@ export function AccountPage() {
           <Card><CardHeader><CardTitle>Orders</CardTitle><CardDescription>Your commerce orders (baas/commerce.md) — snapshot totals, newest first.</CardDescription></CardHeader>
             <CardContent>{orders === null ? <p className="text-sm text-muted-foreground">Loading…</p> : orders.length === 0
               ? <p className="text-sm text-muted-foreground">No orders yet.</p>
-              : <ul className="space-y-1 text-sm">{orders.slice(0, 10).map((o) => <li key={o.id} className="flex justify-between border-b py-1 last:border-0"><span>{o.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span><span className="flex gap-3"><span>{money(o.total_cents)}</span><span className={o.status === "paid" ? "text-primary" : "text-muted-foreground"}>{o.status}</span></span></li>)}</ul>}
+              : <ul className="space-y-2 text-sm">{orders.slice(0, 10).map((o) => (
+                  <li key={o.id} className="border-b pb-2 last:border-0">
+                    <div className="flex justify-between">
+                      <span>{o.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span>
+                      <span className="flex gap-3"><span>{money(o.total_cents)}</span><span className={["paid","delivered","shipped","fulfilled"].includes(o.status) ? "text-primary" : "text-muted-foreground"}>{o.status}</span></span>
+                    </div>
+                    {(o.deliveries ?? []).flatMap((d) => d.artifacts).map((a, at) =>
+                      a.kind === "download"
+                        ? <a key={at} className="mt-1 inline-block rounded-md border border-primary px-2 py-1 text-xs text-primary hover:bg-primary/10" href={`${config.endpoint}/v1${a.claim.startsWith("/v1") ? a.claim.slice(3) : a.claim}`} target="_blank" rel="noreferrer">⬇ {a.label}</a>
+                        : a.kind === "tracking"
+                          ? <span key={at} className="mt-1 mr-2 inline-block text-xs text-muted-foreground">📦 {a.label}{a.code ? ` — ${a.code}` : ""}</span>
+                          : <span key={at} className="mt-1 mr-2 inline-block text-xs text-muted-foreground">{a.label}</span>
+                    )}
+                  </li>
+                ))}</ul>}
             </CardContent></Card>
         )}
         {tab === "wishlist" && (

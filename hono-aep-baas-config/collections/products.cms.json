@@ -44,6 +44,10 @@
         "type": "boolean"
       },
       {
+        "name": "file",
+        "type": "string"
+      },
+      {
         "name": "created_by",
         "type": "string"
       }
