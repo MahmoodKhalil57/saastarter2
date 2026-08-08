@@ -70,3 +70,12 @@ createRoot(document.getElementById("root")!).render(
     <RouterProvider router={router} />
   </UiProvider>,
 );
+
+// PWA: deferred service-worker registration (production only — the SW is a
+// build artifact; dev serves no sw.js). Registration after load keeps it
+// off the critical path; no clients.claim, control begins next navigation.
+if ("serviceWorker" in navigator && runtimeBasename() === config.basename) {
+  addEventListener("load", () => {
+    void navigator.serviceWorker.register(`${config.basename}/sw.js`).catch(() => {});
+  });
+}

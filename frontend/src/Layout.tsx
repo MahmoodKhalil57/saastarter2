@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from "react-router";
 import { useSession } from "./auth";
 import { cartCount, useCart } from "./cart";
+import { useTheme } from "./theme";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground";
@@ -9,6 +10,7 @@ export function Layout() {
   const { user } = useSession();
   const { cart } = useCart();
   const count = cartCount(cart);
+  const { dark, toggle } = useTheme();
   return (
     <div className="mx-auto flex min-h-dvh max-w-4xl flex-col px-4">
       <header className="flex items-center justify-between py-6">
@@ -26,6 +28,9 @@ export function Layout() {
           <NavLink to={user ? "/account" : "/login"} className={navLinkClass}>
             {user ? "Account" : "Sign in"}
           </NavLink>
+          <button type="button" onClick={toggle} aria-label="Toggle dark mode" className="text-muted-foreground hover:text-foreground">
+            {dark ? "☀️" : "🌙"}
+          </button>
         </nav>
       </header>
       <main className="flex-1 pb-16">

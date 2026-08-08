@@ -40,6 +40,17 @@ export function signOut(): void {
   localStorage.removeItem(KEY);
 }
 
+// --- Account lifecycle (auth-pools.md §1.5) — all server-side flows; the
+// --- pool's better-auth surface is the API, mail rides notifications.
+export const updateProfile = (name: string) => post("/update-user", { name });
+export const changeEmail = (newEmail: string) =>
+  post("/change-email", { newEmail, callbackURL: `${location.origin}${config.basename}/account` });
+export const changePassword = (currentPassword: string, newPassword: string, revokeOtherSessions = true) =>
+  post("/change-password", { currentPassword, newPassword, revokeOtherSessions });
+/** Sends a confirmation email; the link ANONYMIZES the account (server veto on hard delete). */
+export const deleteAccount = (password: string) =>
+  post("/delete-user", { password, callbackURL: `${location.origin}${config.basename}/` });
+
 async function getSession(): Promise<PoolUser | null> {
   if (!token()) return null;
   const response = await fetch(auth("/get-session"), { headers: authHeader() });

@@ -107,6 +107,38 @@ export async function postReview(review: { product: string; rating: number; titl
   return (await r.json()) as Review;
 }
 
+// ---------------------------------------------------------------------------
+// Wishlist — an OWNER-PRIVATE hosted collection (wishlist.cms.json): each
+// user lists only their own rows (policy_list owner). Toggle = create/delete.
+// ---------------------------------------------------------------------------
+
+export type WishlistItem = { path: string; product: string };
+
+export async function myWishlist(): Promise<WishlistItem[]> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return [];
+  const r = await fetch(`${base}/wishlist`, { headers: header });
+  if (!r.ok) return [];
+  return ((await r.json()) as { results: WishlistItem[] }).results;
+}
+
+export async function toggleWishlist(product: string): Promise<{ wished: boolean } | { needsAuth: true }> {
+  const header = authHeader();
+  if (!("Authorization" in header)) return { needsAuth: true };
+  const items = await myWishlist();
+  const existing = items.find((w) => w.product === product);
+  if (existing) {
+    await fetch(`${config.endpoint}/v1/${existing.path}`, { method: "DELETE", headers: header });
+    return { wished: false };
+  }
+  const r = await fetch(`${base}/wishlist`, {
+    method: "POST", headers: { "Content-Type": "application/json", ...header }, body: JSON.stringify({ product }),
+  });
+  if (r.status === 401) return { needsAuth: true };
+  void track("product_added_to_wishlist", { product_id: product });
+  return { wished: true };
+}
+
 /** Client analytics event (untrusted; order_completed is server-derived). */
 export async function track(event: string, properties: Record<string, unknown> = {}): Promise<void> {
   await fetch(`${commerce}/track`, {

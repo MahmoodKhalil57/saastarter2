@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "hono-aep-ui";
-import { authHeader, signOut, useSession } from "../auth";
-import { money, myOrders, owned as ownedProducts, type Order } from "../store";
+import { authHeader, changeEmail, changePassword, deleteAccount, signOut, updateProfile, useSession } from "../auth";
+import { money, myOrders, myWishlist, owned as ownedProducts, toggleWishlist, type Order, type WishlistItem } from "../store";
 import { config } from "../config";
 
-const TABS = ["overview", "billing", "orders", "developer"] as const;
+const TABS = ["overview", "settings", "security", "billing", "orders", "wishlist", "developer"] as const;
 type Tab = (typeof TABS)[number];
 
 export function AccountPage() {
@@ -15,10 +15,14 @@ export function AccountPage() {
   const tab = (params.get("tab") as Tab) || "overview";
   const [owns, setOwns] = useState<Set<string>>(new Set());
   const [orders, setOrders] = useState<Order[] | null>(null);
+  const [wishlist, setWishlist] = useState<WishlistItem[] | null>(null);
   const [devKey, setDevKey] = useState<string | null>(null);
+  const [flash, setFlash] = useState("");
+  const say = (m: string) => { setFlash(m); setTimeout(() => setFlash(""), 5000); };
 
   useEffect(() => { if (user) void ownedProducts().then(setOwns); }, [user]);
   useEffect(() => { if (user && tab === "orders") void myOrders().then(setOrders); }, [user, tab]);
+  useEffect(() => { if (user && tab === "wishlist") void myWishlist().then(setWishlist); }, [user, tab]);
 
   if (user === undefined) return <p className="text-muted-foreground">Loading…</p>;
   if (user === null) { navigate("/login"); return null; }
@@ -36,6 +40,7 @@ export function AccountPage() {
         ))}
       </nav>
       <div className="space-y-6">
+        {flash && <div className="rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-sm">{flash}</div>}
         {tab === "overview" && (
           <>
             <Card>
@@ -56,6 +61,49 @@ export function AccountPage() {
             </Card>
           </>
         )}
+        {tab === "settings" && (
+          <>
+            <Card>
+              <CardHeader><CardTitle>Profile</CardTitle><CardDescription>Signed in as {user.email}</CardDescription></CardHeader>
+              <CardContent>
+                <form className="flex gap-2" onSubmit={async (e) => { e.preventDefault(); const name = String(new FormData(e.currentTarget).get("name") ?? ""); if (!name) return; const r = await updateProfile(name); say(r.ok ? "Name updated ✓" : "Update failed"); }}>
+                  <input name="name" defaultValue={user.name} className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
+                  <Button type="submit">Save</Button>
+                </form>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>Change email</CardTitle><CardDescription>A confirmation link goes to the NEW address — the change lands only after you click it.</CardDescription></CardHeader>
+              <CardContent>
+                <form className="flex gap-2" onSubmit={async (e) => { e.preventDefault(); const v = String(new FormData(e.currentTarget).get("email") ?? ""); if (!v) return; const r = await changeEmail(v); say(r.ok ? "Confirmation sent to the new address ✓" : "Request failed"); }}>
+                  <input name="email" type="email" placeholder="new@email.com" className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
+                  <Button type="submit" variant="outline">Send confirmation</Button>
+                </form>
+              </CardContent>
+            </Card>
+            <Card className="border-destructive/40">
+              <CardHeader><CardTitle>Delete account</CardTitle><CardDescription>Emails a confirmation link; the account is anonymized in place (a server-side veto blocks hard deletes).</CardDescription></CardHeader>
+              <CardContent>
+                <form className="flex gap-2" onSubmit={async (e) => { e.preventDefault(); const v = String(new FormData(e.currentTarget).get("pw") ?? ""); if (!v) return; const r = await deleteAccount(v); say(r.ok ? "Deletion email sent — check your inbox" : "Wrong password?"); }}>
+                  <input name="pw" type="password" placeholder="Current password" className="flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
+                  <Button type="submit" variant="destructive">Request deletion</Button>
+                </form>
+              </CardContent>
+            </Card>
+          </>
+        )}
+        {tab === "security" && (
+          <Card>
+            <CardHeader><CardTitle>Change password</CardTitle><CardDescription>Other sessions are signed out on success.</CardDescription></CardHeader>
+            <CardContent>
+              <form className="space-y-2" onSubmit={async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const r = await changePassword(String(f.get("cur") ?? ""), String(f.get("next") ?? "")); say(r.ok ? "Password changed ✓" : "Change failed — check the current password"); if (r.ok) (e.target as HTMLFormElement).reset(); }}>
+                <input name="cur" type="password" required placeholder="Current password" className="w-full rounded-md border bg-background px-3 py-2 text-sm" />
+                <input name="next" type="password" required minLength={8} placeholder="New password (8+ chars)" className="w-full rounded-md border bg-background px-3 py-2 text-sm" />
+                <Button type="submit">Change password</Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
         {tab === "billing" && (
           <Card><CardHeader><CardTitle>Billing</CardTitle><CardDescription>Test mode — Stripe.</CardDescription></CardHeader>
             <CardContent className="space-y-2 text-sm text-muted-foreground">
@@ -69,6 +117,16 @@ export function AccountPage() {
             <CardContent>{orders === null ? <p className="text-sm text-muted-foreground">Loading…</p> : orders.length === 0
               ? <p className="text-sm text-muted-foreground">No orders yet.</p>
               : <ul className="space-y-1 text-sm">{orders.slice(0, 10).map((o) => <li key={o.id} className="flex justify-between border-b py-1 last:border-0"><span>{o.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span><span className="flex gap-3"><span>{money(o.total_cents)}</span><span className={o.status === "paid" ? "text-primary" : "text-muted-foreground"}>{o.status}</span></span></li>)}</ul>}
+            </CardContent></Card>
+        )}
+        {tab === "wishlist" && (
+          <Card><CardHeader><CardTitle>Wishlist</CardTitle><CardDescription>Owner-private hosted collection — only you can list your rows.</CardDescription></CardHeader>
+            <CardContent>{wishlist === null ? <p className="text-sm text-muted-foreground">Loading…</p> : wishlist.length === 0
+              ? <p className="text-sm text-muted-foreground">Nothing saved yet — tap ❤️ on a product.</p>
+              : <ul className="space-y-1 text-sm">{wishlist.map((w) => <li key={w.path} className="flex justify-between border-b py-1.5 last:border-0">
+                  <button className="text-primary underline" onClick={() => navigate(`/products/${w.product}`)}>{w.product}</button>
+                  <button className="text-muted-foreground hover:text-destructive" onClick={async () => { await toggleWishlist(w.product); void myWishlist().then(setWishlist); }}>Remove</button>
+                </li>)}</ul>}
             </CardContent></Card>
         )}
         {tab === "developer" && (

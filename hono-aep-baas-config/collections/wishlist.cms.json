@@ -1,0 +1,40 @@
+{
+  "definition": {
+    "singular": "wishlist-item",
+    "plural": "wishlist",
+    "fields": [
+      {
+        "name": "product",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "created_by",
+        "type": "string"
+      }
+    ],
+    "policy_create": "authenticated",
+    "policy_update": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "policy_delete": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "policy_list": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "policy_get": {
+      "owner": {
+        "field": "created_by"
+      }
+    },
+    "owner": "created_by"
+  },
+  "created_by": ""
+}
