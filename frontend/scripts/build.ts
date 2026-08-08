@@ -36,7 +36,8 @@ for (const name of ["index.html"]) {
     target,
     html.replace(
       "</head>",
-      `<link rel="manifest" href="${config.basename}/manifest.webmanifest"></head>`,
+      `<link rel="icon" type="image/svg+xml" href="${config.basename}/favicon.svg">` +
+        `<link rel="manifest" href="${config.basename}/manifest.webmanifest"></head>`,
     ),
   );
 }

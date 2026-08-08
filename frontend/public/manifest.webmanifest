@@ -1,0 +1,13 @@
+{
+  "name": "saastarter2",
+  "short_name": "saastarter2",
+  "description": "The self-aware SaaS template that sells its own source.",
+  "start_url": "/saastarter2/",
+  "scope": "/saastarter2/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/saastarter2/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
