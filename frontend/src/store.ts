@@ -233,7 +233,7 @@ export async function products(): Promise<CatalogProduct[]> {
 }
 /** Hybrid product search (search kind — lexical + semantic RRF, AEP-136 :search). */
 export async function searchProducts(query: string): Promise<CatalogProduct[]> {
-  const r = await fetch(`${base}/products:search`, {
+  const r = await fetch(`${base}/products:search${localeQuery()}`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }),
   });
   if (!r.ok) return [];
