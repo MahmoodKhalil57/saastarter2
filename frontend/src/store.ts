@@ -67,20 +67,39 @@ export async function validateDiscount(code: string): Promise<{ ok: true; discou
 /** Checkout: server snapshots the cart into an order (coupon applied as a
  *  line adjustment) and bridges to billing — stripe returns a hosted
  *  session (redirect), local settles instantly. */
-export async function checkoutCart(discount?: string): Promise<{ order: Order; redirect?: string; needsAuth?: boolean; rejected?: string }> {
+export async function checkoutCart(
+  discount?: string,
+  mode: "embedded" | "hosted" = "embedded",
+): Promise<{ order: Order; redirect?: string; needsAuth?: boolean; rejected?: string; payment?: { gateway: string; clientToken: string; client: { publishableKey?: string } } }> {
   const header = await ensureSession();
   if (!("Authorization" in header)) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
   const r = await fetch(`${commerce}/cart:checkout`, {
     method: "POST", headers: { "Content-Type": "application/json", ...header },
-    body: JSON.stringify(discount ? { discount } : {}),
+    body: JSON.stringify({ ...(discount ? { discount } : {}), ...(mode === "embedded" ? { payment: "embedded" } : {}) }),
   });
   if (r.status === 401) return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, needsAuth: true };
   if (r.status === 422) {
     const problem = (await r.json()) as { title?: string };
     return { order: { id: "", items: [], total_cents: 0, currency: "usd", status: "" }, rejected: problem.title ?? "Checkout rejected" };
   }
-  const body = (await r.json()) as { order: Order; checkout?: { url?: string } };
-  return { order: body.order, ...(body.checkout?.url ? { redirect: body.checkout.url } : {}) };
+  const body = (await r.json()) as { order: Order; checkout?: { url?: string }; payment?: { gateway: string; clientToken: string; client: { publishableKey?: string } } };
+  return {
+    order: body.order,
+    ...(body.checkout?.url ? { redirect: body.checkout.url } : {}),
+    ...(body.payment ? { payment: body.payment } : {}),
+  };
+}
+
+/** Poll my orders until `orderId` reaches a settled status (webhook lag). */
+export async function waitForOrder(orderId: string, timeoutMs = 30_000): Promise<Order | null> {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    const orders = await myOrders();
+    const found = orders.find((o) => o.id === orderId);
+    if (found && found.status !== "pending") return found;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  return null;
 }
 
 /** The signed-in user's orders, newest first (purchase history + ownership). */

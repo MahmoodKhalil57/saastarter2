@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button, Card, CardContent } from "hono-aep-ui";
-import { checkoutCart, money, removeFromCart, track, validateDiscount } from "../store";
+import { checkoutCart, money, removeFromCart, track, validateDiscount, waitForOrder } from "../store";
+import { PaymentStep, type PaymentHandle } from "../payment";
 import { useCart } from "../cart";
 import { useSession } from "../auth";
 
@@ -11,6 +12,8 @@ export function CartPage() {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [order, setOrder] = useState<{ id: string; status: string; total_cents: number } | null>(null);
+  const [paying, setPaying] = useState<{ payment: PaymentHandle; orderId: string; amount: number } | null>(null);
+  const [settling, setSettling] = useState(false);
   const [code, setCode] = useState("");
   const [coupon, setCoupon] = useState<{ code: string; discount_cents: number } | null>(null);
   const [couponError, setCouponError] = useState("");
@@ -26,20 +29,48 @@ export function CartPage() {
   const checkout = async () => {
     setBusy(true);
     void track("checkout_started", { cart_id: cart.id, total_cents: cart.total_cents, currency: cart.currency, ...(coupon ? { coupon: coupon.code } : {}) });
-    const r = await checkoutCart(coupon?.code);
+    const r = await checkoutCart(coupon?.code); // embedded by default (gateway.md)
     setBusy(false);
     if (r.needsAuth) return navigate("/login?next=/cart");
     if (r.rejected) return setCouponError(r.rejected);
-    if (r.redirect) return void (window.location.href = r.redirect); // hosted Stripe Checkout
+    if (r.payment) return setPaying({ payment: r.payment, orderId: r.order.id, amount: r.order.total_cents }); // in-page element
+    if (r.redirect) return void (window.location.href = r.redirect); // hosted fallback
     setOrder(r.order); // local provider settled instantly → paid order
     refresh();
   };
+
+  const settle = async (orderId: string, amount: number) => {
+    setSettling(true);
+    const settled = await waitForOrder(orderId); // the WEBHOOK settles the order
+    setSettling(false);
+    setPaying(null);
+    setOrder(settled ?? { id: orderId, status: "processing", total_cents: amount });
+    refresh();
+  };
+
+  if (paying)
+    return (
+      <div className="mx-auto max-w-md py-10">
+        <h1 className="text-2xl font-bold tracking-tight">Payment</h1>
+        <p className="mb-6 mt-1 text-sm text-muted-foreground">You never leave the store — the card fields below are the gateway's embedded element.</p>
+        {settling ? (
+          <p className="text-center text-muted-foreground">Confirming with the payment provider…</p>
+        ) : (
+          <PaymentStep
+            payment={paying.payment}
+            amountLabel={money(paying.amount)}
+            onPaid={() => void settle(paying.orderId, paying.amount)}
+            onError={(message) => { setCouponError(message); setPaying(null); }}
+          />
+        )}
+      </div>
+    );
 
   if (order)
     return (
       <div className="py-16 text-center">
         <div className="text-5xl">✅</div>
-        <h1 className="mt-4 text-2xl font-bold">Order {order.status}</h1>
+        <h1 className="mt-4 text-2xl font-bold">{order.status === "processing" ? "Payment received — order settling" : `Order ${order.status}`}</h1>
         <p className="mt-2 text-muted-foreground">{money(order.total_cents)} — a confirmation email is on its way.</p>
         <div className="mt-6 flex justify-center gap-3">
           <Button onClick={() => navigate("/account")}>Get your source →</Button>
