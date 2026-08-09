@@ -8,17 +8,22 @@
 #   ./cli.sh add SPEC [--as ALIAS]         pin an npm / gh: module into every import map
 #   ./cli.sh remove ALIAS                  drop a pin
 #   ./cli.sh serve                         the site (docs/) on :8899
+#   ./cli.sh ci [secrets|status]           creds → repo secrets; CI sync status
 #   ./cli.sh publish                       git push — Pages serves master:/docs directly
 #   ./cli.sh init PROJECT_ID [SITE_URL]    re-point a fresh clone at YOUR project
 # Keys come from .owner-creds.json, secret values from platform-creds.json.
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Pinned: 1.0.0 on npm still looks for the UNDOTTED platform-creds.json,
+# so an unpinned bunx silently fails to find this repo's .platform-creds.json.
+BAAS_CLI_VERSION="${BAAS_CLI_VERSION:-1.0.2}"
+
 baas() { # the suite checkout when developing the platform, npm otherwise
   if [ -f ../customPackages/hono-aep-baas-cli/bin/baas.ts ]; then
     bun ../customPackages/hono-aep-baas-cli/bin/baas.ts "$@"
   else
-    bunx hono-aep-baas-cli "$@"
+    bunx "hono-aep-baas-cli@${BAAS_CLI_VERSION}" "$@"
   fi
 }
 
@@ -33,6 +38,30 @@ case "${1:-help}" in
             mode=--write; [ "${2:-}" = check ] && mode=--check
             bunx prettier@3.9.6 "$mode" --ignore-path .gitignore --ignore-path .prettierignore --log-level warn . ;;
   add|remove) exec bun tools/importmap.ts "$@" ;;
+  ci)       shift # GitHub Actions plumbing (.github/workflows/baas-sync.yml)
+            case "${1:-help}" in
+              secrets) # creds → repo secrets, so CI can push config + seed
+                for f in .owner-creds.json .platform-creds.json; do
+                  [ -f "$f" ] || { echo "missing $f — fill it in before pushing secrets"; exit 1; }
+                done
+                # A placeholder creds file uploads fine and then fails every
+                # workflow run at the first API call — check before, not after.
+                bun -e '
+                  const owner = JSON.parse(await Bun.file(".owner-creds.json").text());
+                  const usable = owner.sk_key || (owner.email && owner.password);
+                  if (!usable) { console.error("✗ .owner-creds.json has no sk_key and no email+password"); process.exit(1); }
+                  if (!owner.project) console.warn("⚠ .owner-creds.json has no project id — the CLI may fall back to baas.json");
+                '
+                gh secret set BAAS_OWNER_CREDS < .owner-creds.json
+                gh secret set BAAS_PLATFORM_CREDS < .platform-creds.json
+                echo "pushed BAAS_OWNER_CREDS + BAAS_PLATFORM_CREDS to $(gh repo view --json nameWithOwner -q .nameWithOwner)"
+                echo "note: repo secrets are NOT exposed to workflows from forked PRs — the sync job runs on push to master only." ;;
+              status)
+                gh secret list
+                echo "---"
+                gh run list --workflow=baas-sync.yml --limit 5 2>/dev/null || echo "(no runs yet)" ;;
+              *) echo "usage: ./cli.sh ci [secrets|status]" ; exit 1 ;;
+            esac ;;
   serve)    exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", fetch(r) {
               const p = new URL(r.url).pathname.replace(/\/$/, "/index.html");
               return new Response(Bun.file("docs" + p));
@@ -57,5 +86,5 @@ case "${1:-help}" in
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
-  *)        sed -n '3,13p' "$0" ;;
+  *)        sed -n '3,14p' "$0" ;;
 esac

@@ -1,0 +1,73 @@
+name: baas sync
+
+# The repo is the source of truth for the hosted project's shape and its
+# seed content. When either changes on master, push it to the baas so the
+# two can't drift. Credentials come from repo secrets — put them there
+# with `./cli.sh ci secrets`.
+#
+# Runs on push to master only. Repo secrets are not exposed to workflows
+# triggered from forked pull requests, and push to master requires write
+# access, so a fork cannot reach these credentials.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "hono-aep-baas-config/**"
+      - "hono-aep-baas-idempotent-seed/**"
+      - ".github/workflows/baas-sync.yml"
+  workflow_dispatch: # re-run by hand after fixing creds
+
+# One sync at a time, and never cancel one mid-flight: these calls mutate
+# a live project, and a half-applied push is worse than a late one.
+concurrency:
+  group: baas-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Restore credentials
+        env:
+          OWNER_CREDS: ${{ secrets.BAAS_OWNER_CREDS }}
+          PLATFORM_CREDS: ${{ secrets.BAAS_PLATFORM_CREDS }}
+        run: |
+          if [ -z "$OWNER_CREDS" ]; then
+            echo "::error::BAAS_OWNER_CREDS is empty. Run './cli.sh ci secrets' locally."
+            exit 1
+          fi
+          printf '%s' "$OWNER_CREDS" > .owner-creds.json
+          printf '%s' "$PLATFORM_CREDS" > .platform-creds.json
+
+      # Fail before touching the project: schema errors caught here cost
+      # nothing, the same errors caught mid-push leave it half-applied.
+      - name: Validate against the hosted schemas
+        run: ./cli.sh validate
+
+      - name: Show what will change
+        run: |
+          ./cli.sh sync diff
+          ./cli.sh seed diff
+
+      # `sync push` is additive without --prune: it never deletes a
+      # collection or form that exists on the project but not in the repo.
+      # Deletions stay a deliberate local act.
+      - name: Push config
+        run: ./cli.sh sync push
+
+      - name: Push seed
+        run: ./cli.sh seed push
+
+      - name: Shred credentials
+        if: always()
+        run: rm -f .owner-creds.json .platform-creds.json
