@@ -46,6 +46,7 @@ Break either and things fail *silently*, which is worse than loudly.
 | animate | see `references/motion-ladder.md` | tier-dependent — 0KB for CSS, 23KB+ for a JS engine |
 | move between pages | real MPA links + cross-document View Transitions + speculation rules | zero navigation JS |
 | edit the deployed site from a browser | devgit (`</>` button once a token is configured) | only loads when configured; never for visitors |
+| embed a deck, animation, diagram or 3D scene made with Claude Design | export its files into the repo, then isolate/integrate/flatten — see the `hono-aep-design-embed` skill | Design URLs cannot be hotlinked; an export is a snapshot you own |
 
 Details: `references/component-tiers.md` (how to pick a tier, and the
 `wrap` workflow), `references/motion-ladder.md` (animation, fallbacks,

@@ -5,13 +5,19 @@
       "source": "MahmoodKhalil57/hono-aep-baas",
       "sourceType": "github",
       "skillPath": "skills/client/SKILL.md",
-      "computedHash": "1d77b1b3bec8bf0b2d8bc9e1056a60d581cff045422d2b5b4e8c22de5230391d"
+      "computedHash": "e2d57ed57bc67f8e431ba631d40db080876adab47c04fbdd46292c8e3c1ca85f"
+    },
+    "hono-aep-design-embed": {
+      "source": "MahmoodKhalil57/hono-aep-design-embed-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "587cee055d4bfc9a65703680faa4f84cb26ce551f29e87c5bbc8298d7bf2b17c"
     },
     "hono-aep-frontend": {
       "source": "MahmoodKhalil57/hono-aep-frontend-skill",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "558b24f29e0664cdc59da384a0f79c6f30b11c409edb3dac9416417da62f18d5"
+      "computedHash": "f4c9e4bad4cf30c2dfe05a23542a99ea0b95ddeab0baaeff3e83e853d9617d59"
     }
   }
 }
