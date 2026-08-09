@@ -35,8 +35,20 @@ toolchain is still deleted — but this time the _workarounds_ are too:
   atoms (`$session`, `$cart`, …), imported by every tier through the
   `#stores` import-map alias so each page has exactly one instance of
   each atom. Components subscribe; api/store mutations refresh.
-- **No file over ~200 lines** — `js/` is the client core (config/api/
-  store/chrome/cart/payment), `js/pages/` one small script per page.
+- **The plumbing is packaged, the app is not** — auth/commerce/state came
+  out as [hono-aep-baas-client], devgit as [hono-aep-devgit], the lazy
+  React engine as [hono-aep-react-jit], the compiler as
+  [hono-aep-webc-factory] (npm). All three browser packages are pinned in
+  each page's import map and served **unminified** from jsDelivr, so
+  "view source" still reaches every line. `js/api.js`, `js/store.js` and
+  `js/payment.js` are now one-line shims that keep the local seam for
+  overriding.
+- **`./cli.sh add <pkg>`** — the no-build answer to `npm install`: resolve
+  a version and pin it into every page's import map, npm (`nanostores`)
+  or GitHub (`gh:owner/repo@v1/src/`) alike. Nothing is downloaded or
+  bundled; the browser fetches it at a pinned version.
+- **No file over ~200 lines** — `js/` is the site's own core (config,
+  chrome, page scripts), `js/pages/` one small script per page.
 
 Everything server-side is the baas: guest-by-default sessions, hybrid
 search, discounts, the embedded payment element (gateway.md), digital
@@ -94,10 +106,11 @@ or a Claude browser extension can mutate it. Review the line diff, commit
 loop — the browser talks to api.github.com directly. Not just HTML:
 "Edit css / js / any file" opens any repo file as text — `css/app.css`
 previews live on the page as you type. Agents get console hooks:
-`s2devgit.enterEdit()` → mutate → `s2devgit.push("msg")` for pages;
-`s2devgit.readFile(path)` / `s2devgit.writeFile(path, text, "msg")` for
-everything else. Four files: `js/devgit.js`, `js/devgit-github.js`,
-`js/devgit-diff.js`, `js/devgit-files.js`.
+`devgit.enterEdit()` → mutate → `devgit.push("msg")` for pages;
+`devgit.readFile(path)` / `devgit.writeFile(path, text, "msg")` for
+everything else. It now lives in the [hono-aep-devgit] package (pinned as
+`devgit/`), so it works on any static site hosted from a GitHub repo —
+config key `devgit:config` in localStorage.
 
 ## Theming (tweakcn → Web Awesome)
 
@@ -111,3 +124,7 @@ Dark mode is one toggle setting `.dark` (the theme's scope) + `.wa-dark`
 Restyle = edit the theme + `sync push` — or the studio, or MCP.
 
 [Web Awesome]: https://webawesome.com
+[hono-aep-baas-client]: https://github.com/MahmoodKhalil57/hono-aep-baas-client
+[hono-aep-devgit]: https://github.com/MahmoodKhalil57/hono-aep-devgit
+[hono-aep-react-jit]: https://github.com/MahmoodKhalil57/hono-aep-react-jit
+[hono-aep-webc-factory]: https://github.com/MahmoodKhalil57/hono-aep-webc-factory

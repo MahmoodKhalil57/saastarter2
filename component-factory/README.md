@@ -13,6 +13,16 @@ bun install
 bun run build      # → docs/js/components/counter-*.gen.js
 ```
 
+The compiler itself is the npm package
+[hono-aep-webc-factory](https://www.npmjs.com/package/hono-aep-webc-factory);
+this directory is only sources + `webc.config.json`. To pull in a
+component you did NOT write:
+
+```bash
+bun add react-select
+bunx webc-factory wrap react react-select --tag s2-select --build
+```
+
 ## Directories
 
 | dir       | authored as                                                                                                               | compiled by                                                                                                                  | example                        |

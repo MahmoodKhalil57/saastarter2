@@ -1,5 +1,5 @@
-// dev.html — enable/disable the devgit module (see js/devgit.js).
-import { clearConfig, getFile, loadConfig, repoInfo, saveConfig, targets } from "../devgit-github.js";
+// dev.html — enable/disable devgit (the module lives in the hono-aep-devgit package).
+import { clearConfig, getFile, loadConfig, repoInfo, saveConfig, targets } from "devgit/devgit-github.js";
 import { toast } from "../chrome.js";
 
 const form = document.getElementById("devgit-form");

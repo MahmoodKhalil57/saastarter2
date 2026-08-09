@@ -56,7 +56,7 @@ void refreshCart();
 
 // devgit (edit-the-site-from-the-site, dev.html): visitors never load it —
 // the import only happens in a browser where a developer saved a token.
-if (localStorage.getItem("s2:devgit")) void import("./devgit.js");
+if (localStorage.getItem("devgit:config")) void import("devgit/devgit.js");
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   addEventListener("load", () => void navigator.serviceWorker.register("./sw.js").catch(() => {}));
 }

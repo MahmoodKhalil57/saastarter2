@@ -5,6 +5,8 @@
 #   ./cli.sh secrets [list|set N|delete N] per-project secrets
 #   ./cli.sh validate                      both repos vs hosted $schemas
 #   ./cli.sh fmt [check]                   prettier every non-git-ignored file
+#   ./cli.sh add SPEC [--as ALIAS]         pin an npm / gh: module into every import map
+#   ./cli.sh remove ALIAS                  drop a pin
 #   ./cli.sh serve                         the site (docs/) on :8899
 #   ./cli.sh publish                       git push — Pages serves master:/docs directly
 #   ./cli.sh init PROJECT_ID [SITE_URL]    re-point a fresh clone at YOUR project
@@ -30,6 +32,7 @@ case "${1:-help}" in
             # (generated *.gen.js; config/seed dirs — `sync fmt`/`seed fmt` own those)
             mode=--write; [ "${2:-}" = check ] && mode=--check
             bunx prettier@3.9.6 "$mode" --ignore-path .gitignore --ignore-path .prettierignore --log-level warn . ;;
+  add|remove) exec bun tools/importmap.ts "$@" ;;
   serve)    exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", fetch(r) {
               const p = new URL(r.url).pathname.replace(/\/$/, "/index.html");
               return new Response(Bun.file("docs" + p));
@@ -54,5 +57,5 @@ case "${1:-help}" in
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
-  *)        sed -n '3,11p' "$0" ;;
+  *)        sed -n '3,13p' "$0" ;;
 esac

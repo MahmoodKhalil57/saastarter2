@@ -2,15 +2,11 @@
   "name": "component-factory",
   "private": true,
   "type": "module",
-  "description": "Build-once producer: compiles react/ vue/ svelte/ lit/ sources into self-registering custom-element artifacts at docs/js/components/*.gen.js. The site itself never runs this.",
+  "description": "Build-once sources for this site's compiled custom elements. The compiler itself is hono-aep-webc-factory; this directory is just sources + webc.config.json. The site never runs any of it.",
   "scripts": {
-    "build": "bun run build.ts"
+    "build": "webc-factory build"
   },
-  "dependencies": {
-    "lit": "3.3.3",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "svelte": "5.56.8",
-    "vue": "3.5.41"
+  "devDependencies": {
+    "hono-aep-webc-factory": "^0.1.0"
   }
 }

@@ -24,12 +24,16 @@
     <script type="importmap">
       {
         "imports": {
-          "wa/": "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/",
+          "#baas-config": "./js/config.js",
           "#stores": "./js/stores.js",
+          "baas/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-baas-client@v0.1.0/src/",
+          "devgit/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/",
+          "htm": "https://esm.sh/htm@3.1.1?target=es2022",
           "nanostores": "https://esm.sh/nanostores@1.4.2?target=es2022",
           "react": "https://esm.sh/react@19.2.8?target=es2022",
           "react-dom/client": "https://esm.sh/react-dom@19.2.8/client?target=es2022&deps=react@19.2.8",
-          "htm": "https://esm.sh/htm@3.1.1?target=es2022"
+          "react-jit/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-react-jit@v0.1.0/src/",
+          "wa/": "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/"
         }
       }
     </script>
@@ -104,15 +108,17 @@
     </main>
     <s2-footer></s2-footer>
     <footer class="s2-center s2-small s2-quiet" style="padding-block-end: 1.5rem">
-      the module is four files —
-      <a href="./js/devgit.js">devgit.js</a>
+      the module is four files, now its own package —
+      <a href="https://github.com/MahmoodKhalil57/hono-aep-devgit">hono-aep-devgit</a>
       ·
-      <a href="./js/devgit-github.js">devgit-github.js</a>
+      <a href="https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/devgit.js">devgit.js</a>
       ·
-      <a href="./js/devgit-diff.js">devgit-diff.js</a>
+      <a href="https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/devgit-github.js">github.js</a>
       ·
-      <a href="./js/devgit-files.js">devgit-files.js</a>
-      — view source, as always
+      <a href="https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/devgit-diff.js">diff.js</a>
+      ·
+      <a href="https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/devgit-files.js">files.js</a>
+      — unminified, view source as always
     </footer>
     <script type="module" src="./js/pages/dev.js"></script>
   </body>

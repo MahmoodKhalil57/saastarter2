@@ -4,12 +4,8 @@
   "workspaces": {
     "": {
       "name": "component-factory",
-      "dependencies": {
-        "lit": "3.3.3",
-        "react": "19.2.8",
-        "react-dom": "19.2.8",
-        "svelte": "5.56.8",
-        "vue": "3.5.41",
+      "devDependencies": {
+        "hono-aep-webc-factory": "^0.1.0",
       },
     },
   },
@@ -79,6 +75,8 @@
     "esrap": ["esrap@2.3.2", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.4.15" }, "peerDependencies": { "@typescript-eslint/types": "^8.2.0" }, "optionalPeers": ["@typescript-eslint/types"] }, "sha512-40GyiEJevYKXzYTHtZkFqAgTjLOuFcaXMao8TPyOlnWTlkHDlvZ6mPMJaJyOqVwrVCgomEG1WhJd81w0X+IcCw=="],
 
     "estree-walker": ["estree-walker@2.0.2", "", {}, "sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w=="],
+
+    "hono-aep-webc-factory": ["hono-aep-webc-factory@0.1.0", "", { "dependencies": { "lit": "^3.3.3", "react": "^19.2.8", "react-dom": "^19.2.8", "svelte": "^5.56.8", "vue": "^3.5.41" }, "bin": { "webc-factory": "bin/webc-factory.ts", "hono-aep-webc-factory": "bin/webc-factory.ts" } }, "sha512-6HnZqamxVo4zbVNVUKb1HE0vPd7GNePA+GsWfFJtO8kiQzpGgCQpzDm9hdCinKhupwWp0lDeKougO6geEmJViA=="],
 
     "is-reference": ["is-reference@3.0.3", "", { "dependencies": { "@types/estree": "^1.0.6" } }, "sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw=="],
 
