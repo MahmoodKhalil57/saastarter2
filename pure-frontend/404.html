@@ -9,7 +9,7 @@ const map = {
   products: tail ? `product.html?slug=${encodeURIComponent(tail)}` : "products.html",
   blog: tail ? `post.html?id=${encodeURIComponent(tail)}` : "blog.html",
   changelog: "blog.html", cart: "index.html#cart", login: "login.html",
-  account: "account.html" + location.search, admin: "admin.html", contact: "contact.html",
+  account: "account.html" + location.search, admin: "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/admin.html", contact: "contact.html",
 };
 location.replace("/saastarter2/" + (map[head] ?? (head ? `page.html?slug=${encodeURIComponent(head)}` : "")));
 </script>

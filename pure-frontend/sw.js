@@ -1,19 +1,4 @@
-/* Minimal MPA service worker: network-first everything, cache fallback —
-   no precache list to maintain because there are no hashed assets. */
-const CACHE = "pure-v1";
-self.addEventListener("install", (e) => self.skipWaiting());
-self.addEventListener("activate", (e) =>
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))));
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(
-    fetch(event.request)
-      .then(async (response) => {
-        if (response.ok && new URL(event.request.url).origin === location.origin) {
-          (await caches.open(CACHE)).put(event.request, response.clone());
-        }
-        return response;
-      })
-      .catch(async () => (await caches.match(event.request)) ?? Response.error()),
-  );
-});
+/* Same-origin registration stub (service workers are origin-bound);
+   the worker LOGIC is the baas-hosted generated sw — one importScripts.
+   Configure it in hono-aep-baas-config (site.app.cacheName). */
+importScripts("https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/sw.js");
