@@ -30,29 +30,54 @@
   "site": {
     "admin": {
       "collections": [
-        { "idField": "slug", "media": ["file"], "slug": "products" },
-        { "slug": "discounts" },
-        { "idField": "slug", "slug": "posts" },
-        { "slug": "reviews" }
+        {
+          "idField": "slug",
+          "media": [
+            "file"
+          ],
+          "slug": "products"
+        },
+        {
+          "slug": "discounts"
+        },
+        {
+          "idField": "slug",
+          "slug": "posts"
+        },
+        {
+          "slug": "reviews"
+        }
       ],
       "commerce": true
     },
     "app": {
       "backgroundColor": "#0a0a0a",
       "cacheName": "pure-v1",
+      "favicon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 32 32\"><rect width=\"32\" height=\"32\" rx=\"7\" fill=\"#0a0a0a\"/><text x=\"16\" y=\"22\" font-family=\"ui-sans-serif,system-ui,sans-serif\" font-size=\"18\" font-weight=\"700\" fill=\"#fafafa\" text-anchor=\"middle\">s2</text></svg>",
       "icons": [
         {
           "purpose": "any maskable",
           "sizes": "any",
-          "src": "https://mahmoodkhalil57.github.io/saastarter2/favicon.svg",
+          "src": "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg",
           "type": "image/svg+xml"
         }
       ],
       "name": "saastarter2",
       "shortName": "SaaS2",
-      "themeColor": "#0a0a0a"
+      "themeColor": "#0a0a0a",
+      "accentColor": "#d9482b"
     },
     "assets": {
+      "og": {
+        "posts": {
+          "title": "title"
+        },
+        "products": {
+          "money": "price_cents",
+          "subtitle": "tagline",
+          "title": "name"
+        }
+      },
       "llms": {
         "intro": "No build step: the deployed files ARE the source. View source on any page.",
         "links": [
@@ -63,22 +88,47 @@
           }
         ],
         "sections": [
-          { "collection": "products", "label": "name", "note": "tagline", "title": "Products", "url": "/product.html?slug={id}" },
-          { "collection": "posts", "label": "title", "title": "Blog", "url": "/post.html?slug={id}" }
+          {
+            "collection": "products",
+            "label": "name",
+            "note": "tagline",
+            "title": "Products",
+            "url": "/product.html?slug={id}"
+          },
+          {
+            "collection": "posts",
+            "label": "title",
+            "title": "Blog",
+            "url": "/post.html?slug={id}"
+          }
         ]
       },
       "robots": {
-        "extra": ["Disallow: /admin.html"]
+        "extra": [
+          "Disallow: /admin.html"
+        ]
       },
       "sitemap": {
         "collections": [
-          { "slug": "products", "url": "/product.html?slug={id}" },
-          { "slug": "posts", "url": "/post.html?slug={id}" }
+          {
+            "slug": "products",
+            "url": "/product.html?slug={id}"
+          },
+          {
+            "slug": "posts",
+            "url": "/post.html?slug={id}"
+          }
         ],
-        "urls": ["/", "/products.html", "/blog.html", "/contact.html", "/page.html?slug=story"]
+        "urls": [
+          "/",
+          "/products.html",
+          "/blog.html",
+          "/contact.html",
+          "/page.html?slug=story"
+        ]
       }
     },
-    "description": "The flagship mizan-gpp consumer \u2014 static react-router + shadcn on GitHub Pages.",
+    "description": "The flagship mizan-gpp consumer — static react-router + shadcn on GitHub Pages.",
     "locale": "en",
     "locales": {
       "default": "en",
