@@ -1,0 +1,19 @@
+{
+  "name": "hono-aep-baas-cli",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The layer-3 CLI for a hono-aep-baas project: sync config, seed data, manage secrets, validate against the hosted schemas",
+  "bin": { "baas": "./bin/baas.ts" },
+  "exports": {
+    ".": "./bin/baas.ts",
+    "./sync": "./src/sync.ts",
+    "./seed": "./src/seed.ts",
+    "./validate": "./src/validate.ts",
+    "./creds": "./src/creds.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "scripts": { "test": "bun test" }
+}

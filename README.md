@@ -1,61 +1,67 @@
 # saastarter2
 
-The **flagship mizan-gpp consumer**: a beginner-friendly STATIC
-react-router + shadcn site on **GitHub Pages**, with its whole backend
-declared in git and hosted by the baas. No server anywhere in this repo.
+A complete, self-serve ecommerce/SaaS site with **no build step and no
+server in this repo**: raw HTML + Bootstrap on any static host (GitHub
+Pages reference), with the whole backend *declared in git* and hosted
+by a [hono-aep-baas](https://mizan-gpp.the-montiapple.workers.dev) —
+auth (email/password, Google, 2FA), commerce (cart → Stripe → orders →
+fulfillment), blog, reviews, i18n (en/ar), PWA, generated admin panel,
+SEO/OG/llms.txt. The deployed files ARE the source.
 
 ```
-hono-aep-baas-config/   the backend, declared (sync push/pull)
-frontend/               static react-router SPA + shadcn (hono-aep-ui)
-.github/workflows/      build → deploy-pages
-PORT-PLAN.md            the saastarter feature map (P0–P4)
+pure-frontend/                  the site (publish = copy these files)
+hono-aep-baas-config/           the backend, declared   (./cli.sh sync)
+hono-aep-baas-idempotent-seed/  the data, declared      (./cli.sh seed)
+tools/baas-cli/                 vendored maintenance CLI (also on npm: hono-aep-baas-cli)
+cli.sh                          the one entry — run it bare for help
 ```
 
-## Two-minute setup
+## Use this as YOUR template (no contact with the author needed)
+
+1. **Fork/clone**, then create your backend project:
+   open the platform **studio** → <https://mizan-gpp.the-montiapple.workers.dev/studio>,
+   sign up, click **New project**, and mint an **sk_ key** on the Keys tab.
+2. **Save two gitignored files at the repo root** (both have hosted
+   `$schema`s; never commit them):
+   - `.owner-creds.json` — `{ "email": …, "password": …, "sk_key": "sk_live_…" }`
+   - `platform-creds.json` — `{ "GOOGLE_CLIENT_ID": …, "STRIPE_SECRET_KEY": …, … }`
+     (your own OAuth/Stripe values; referenced from `secrets.cms.json` as EnvRefs)
+3. **Re-point the clone at your coordinates** (rewrites every file + resets the seed ledger):
+   ```sh
+   ./cli.sh init <your-project-id> https://<you>.github.io/<repo>
+   ```
+4. **Push the declared backend, data, and secrets; go live:**
+   ```sh
+   ./cli.sh sync push     # definitions, theme, pages, forms, project doc, secrets
+   ./cli.sh seed push     # products, posts, discounts, demo users (idempotent)
+   ./cli.sh publish       # force-push pure-frontend → gh-pages
+   ```
+5. Day-2: edit config/seed files (every JSON declares a hosted
+   `$schema` — your editor validates as you type; `./cli.sh validate`
+   enforces in CI), or use the **studio** (visual), or the project
+   **MCP** (`/v1/projects/{id}/mcp`) from an agent. Store admin lives at
+   `/v1/projects/{id}/site/admin.html` (unlock with your sk_ key).
+
+Everything above goes through the platform's public API with YOUR
+account — same contract for the CLI, the studio, and MCP.
+
+## Local development
 
 ```sh
-# 0. account + sync key (once): sign up on the baas, then
-#    POST /v1/keys:mint with your session → export BAAS_KEY=sk_live_…
-
-# 1. push the declared backend (project + contact form):
-bun ../hono-aep-baas/bin/sync.ts push --dir hono-aep-baas-config
-
-# 2. declare the blog collection (or click it together in the dashboard —
-#    three surfaces, one API):
-curl -X PUT "$ENDPOINT/v1/projects/saastarter2/collections/blog" \
-  -H "Authorization: Bearer $BAAS_KEY" -H "Content-Type: application/json" \
-  -d '{"definition":{"singular":"post","plural":"posts",
-       "fields":[{"name":"title","type":"string","required":true},
-                 {"name":"body","type":"string","required":true},
-                 {"name":"category","type":"string","enum_values":["news","guide"]}],
-       "states":["DRAFT","PUBLISHED"],"initial_state":"DRAFT",
-       "transitions":[{"verb":"publish","from":["DRAFT"],"to":"PUBLISHED"}],
-       "policy_create":"authenticated","policy_update":"authenticated",
-       "policy_delete":"authenticated"}}'
-#    It is LIVE immediately — no migration, no restart (JIT mode).
-
-# 3. pull the reified config (brings the contact form's pk_ key):
-bun ../hono-aep-baas/bin/sync.ts pull --dir hono-aep-baas-config
-#    → paste endpoint/project/key into frontend/src/config.ts
-
-# 4. run it:
-cd frontend && bun install && bun run dev
+./cli.sh serve         # pure-frontend at http://localhost:8899 (binds 0.0.0.0)
+./cli.sh sync          # bare = diff (safe); same for seed
+./cli.sh secrets       # bare = list (digests only; values are write-only)
 ```
 
-## Deploy
+## Known limits
 
-Push to `main` → the workflow builds and deploys to GitHub Pages.
-`frontend/src/config.ts` `basename` must match your repo name (or "" for
-a user site / custom domain). The build emits `404.html` (deep-link
-fallback) and `.nojekyll` automatically; assets resolve under the base
-path. The API serves wildcard CORS without credentials (site.md §2a), so
-the Pages origin talks to it with keys — never cookies.
-
-## What this proves
-
-- Backend-in-git: `git clone` + `sync push` reproduces the product.
-- Hosted collections (JIT): declare → live, policies/transitions/filters
-  included; blog reads are public, writes need your key.
-- The founding constraint survives sophistication: the contact form is
-  STILL a plain HTML POST (honeypot, `_replyto`, `_redirect`) — no
-  JavaScript in the submit path.
+- Stripe **webhook confirmation** currently verifies with the platform
+  operator's webhook secret — embedded payments with your own Stripe
+  keys create PaymentIntents in your account, but automatic
+  paid-transition via webhook is pending per-project webhook
+  verification (spec/secrets.md). Ask-the-platform-free workaround:
+  fulfil from the admin panel.
+- `robots.txt`/`sw.js` are origin-bound: the hosted generated copies
+  are canonical; this repo carries a same-origin `sw.js` importScripts
+  stub and no robots.txt (GitHub project pages can't serve one at the
+  domain root anyway).
