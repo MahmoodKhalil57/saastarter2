@@ -11,12 +11,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-baas() { # suite checkout → vendored tools/baas-cli → npm
+baas() { # the suite checkout when developing the platform, npm otherwise
   if [ -f ../customPackages/hono-aep-baas-cli/bin/baas.ts ]; then
     bun ../customPackages/hono-aep-baas-cli/bin/baas.ts "$@"
-  elif [ -f tools/baas-cli/bin/baas.ts ]; then
-    [ -d tools/baas-cli/node_modules ] || (cd tools/baas-cli && bun install)
-    bun tools/baas-cli/bin/baas.ts "$@"
   else
     bunx hono-aep-baas-cli "$@"
   fi

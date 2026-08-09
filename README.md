@@ -12,8 +12,7 @@ SEO/OG/llms.txt. The deployed files ARE the source.
 pure-frontend/                  the site (publish = copy these files)
 hono-aep-baas-config/           the backend, declared   (./cli.sh sync)
 hono-aep-baas-idempotent-seed/  the data, declared      (./cli.sh seed)
-tools/baas-cli/                 vendored maintenance CLI (also on npm: hono-aep-baas-cli)
-cli.sh                          the one entry — run it bare for help
+cli.sh                          the one entry (npm: hono-aep-baas-cli) — run it bare for help
 ```
 
 ## Use this as YOUR template (no contact with the author needed)

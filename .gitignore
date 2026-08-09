@@ -1,4 +1,3 @@
 .owner-creds.json
 .playwright-cli/
 platform-creds.json
-tools/baas-cli/node_modules/
