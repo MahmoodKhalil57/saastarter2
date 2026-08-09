@@ -102,6 +102,23 @@ Two rules that matter more than tier choice:
   slower". Jump to the final state. It is an accessibility signal, and
   for some users it is a medical one.
 
+## What ships in this repo
+
+`js/motion.js` — capability detection only, no animation engine:
+`prefersReducedMotion()`, `prefersSaveData()`, `looksLowSpec()`,
+`supportsHtmlInCanvas()`, `measureFps()`, `resolveTier()`,
+`onReducedMotionChange()`, `whenVisible()`. Delete it if your motion
+never leaves tier 1 — that is the common case and needs no detection.
+
+`js/lab-motion.js` + the motion card in `lab.html` demonstrate the
+two-applier shape (one state value, a canvas applier and a CSS applier).
+Measured behavior of that demo: idle while offscreen, animating when
+scrolled into view, frozen again on leaving; reduced motion resolves to
+tier 0; an unreachable fps floor demotes to tier 1.
+
+HTML-in-Canvas is confined to `lab.html` deliberately — it graduates to a
+real page when there is a real use for it, not because it exists.
+
 ## Adding an engine
 
 Nothing above tier 1 is pinned by default — 23KB should not be mandatory

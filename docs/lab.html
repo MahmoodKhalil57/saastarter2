@@ -75,6 +75,19 @@
           </div>
         </wa-card>
         <wa-card>
+          <div class="s2-stack">
+            <div class="s2-motion-host" id="motion-host">
+              <strong>Live DOM, not a picture of it</strong>
+              <p class="s2-quiet s2-small" style="margin-block: 0.25rem 0.5rem">
+                This text stays selectable and the button stays focusable at every tier.
+              </p>
+              <wa-button size="s" appearance="outlined">Still a real button</wa-button>
+            </div>
+            <canvas id="motion-canvas" class="s2-hidden"></canvas>
+            <span class="s2-quiet s2-small" id="motion-tier">resolving tier…</span>
+          </div>
+        </wa-card>
+        <wa-card>
           <div class="s2-row">
             <strong class="s2-price" id="native-count"></strong>
             <wa-button size="s" appearance="outlined" id="reset">Reset</wa-button>
@@ -106,6 +119,7 @@
       import "./js/components/counter-react.gen.js";
       import "./js/components/react-jit/counter.element.js";
       import "./js/components/s2-price-slider.gen.js";
+      import "./js/lab-motion.js";
       import { $counter } from "#stores";
 
       $counter.subscribe((value) => {
