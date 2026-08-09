@@ -9,22 +9,41 @@ export const money = (cents, currency = "usd") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
 
 // --- catalog + search + blog + reviews ---
+// Short-TTL memory cache: modules persist across SPA navigations
+// (js/router.js), so back/forward and repeat visits render in ONE paint
+// instead of empty-then-filled. Keys carry the locale.
+const CACHE_MS = 30_000;
+const cacheStore = new Map();
+async function cached(key, load) {
+  const hit = cacheStore.get(key);
+  if (hit && Date.now() - hit.at < CACHE_MS) return hit.value;
+  const value = await load();
+  cacheStore.set(key, { at: Date.now(), value });
+  return value;
+}
+
 export async function products() {
-  const r = await fetch(`${base}/products?order_by=featured desc${localeQuery("&")}`);
-  return r.ok ? (await r.json()).results : [];
+  return cached(`products:${localeQuery()}`, async () => {
+    const r = await fetch(`${base}/products?order_by=featured desc${localeQuery("&")}`);
+    return r.ok ? (await r.json()).results : [];
+  });
 }
 export async function product(slug) {
-  const r = await fetch(`${base}/products/${slug}${localeQuery()}`);
-  return r.ok ? r.json() : null;
+  return cached(`product:${slug}:${localeQuery()}`, async () => {
+    const r = await fetch(`${base}/products/${slug}${localeQuery()}`);
+    return r.ok ? r.json() : null;
+  });
 }
 export async function searchProducts(query) {
   const r = await fetch(`${base}/products:search${localeQuery()}`, { method: "POST", headers: json, body: JSON.stringify({ query }) });
   return r.ok ? (await r.json()).results : [];
 }
 export async function posts() {
-  const r = await fetch(`${base}/posts${localeQuery()}`);
-  if (!r.ok) return [];
-  return (await r.json()).results.filter((p) => p.state !== "DRAFT").sort((a, b) => (a.create_time < b.create_time ? 1 : -1));
+  return cached(`posts:${localeQuery()}`, async () => {
+    const r = await fetch(`${base}/posts${localeQuery()}`);
+    if (!r.ok) return [];
+    return (await r.json()).results.filter((p) => p.state !== "DRAFT").sort((a, b) => (a.create_time < b.create_time ? 1 : -1));
+  });
 }
 export async function post(id) {
   const r = await fetch(`${base}/posts/${id}${localeQuery()}`);
