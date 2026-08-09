@@ -32,18 +32,27 @@ class S2Nav extends HTMLElement {
       event.preventDefault();
       document.querySelector("s2-cart-drawer")?.show();
     });
-    this.#unsubs.push($session.subscribe((user) => {
-      const link = this.querySelector("#nav-account");
-      if (!link) return;
-      if (user && !user.isAnonymous) { link.innerHTML = `${icon("user")} Account`; link.href = "./account.html"; }
-      else { link.innerHTML = `${icon("log-in")} Sign in`; link.href = "./login.html"; }
-    }));
-    this.#unsubs.push($cartCount.subscribe((count) => {
-      const badge = this.querySelector("#cart-count");
-      if (!badge) return;
-      badge.textContent = String(count);
-      badge.classList.toggle("s2-hidden", count === 0);
-    }));
+    this.#unsubs.push(
+      $session.subscribe((user) => {
+        const link = this.querySelector("#nav-account");
+        if (!link) return;
+        if (user && !user.isAnonymous) {
+          link.innerHTML = `${icon("user")} Account`;
+          link.href = "./account.html";
+        } else {
+          link.innerHTML = `${icon("log-in")} Sign in`;
+          link.href = "./login.html";
+        }
+      }),
+    );
+    this.#unsubs.push(
+      $cartCount.subscribe((count) => {
+        const badge = this.querySelector("#cart-count");
+        if (!badge) return;
+        badge.textContent = String(count);
+        badge.classList.toggle("s2-hidden", count === 0);
+      }),
+    );
   }
   disconnectedCallback() {
     this.#unsubs.forEach((unsub) => unsub());

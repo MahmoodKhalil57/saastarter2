@@ -7,7 +7,8 @@ const detail = document.getElementById("detail");
 // render (content arrives async) — the card's title morphs into this h1,
 // then the real data replaces the text under the same name.
 const vt = slug ? `view-transition-name:product-${slug}` : "";
-if (slug) detail.innerHTML = `<div><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1><wa-skeleton effect="sheen" style="inline-size:60%"></wa-skeleton></div>`;
+if (slug)
+  detail.innerHTML = `<div><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1><wa-skeleton effect="sheen" style="inline-size:60%"></wa-skeleton></div>`;
 const p = await product(slug);
 if (!p) detail.innerHTML = '<p>Not found. <a href="./products.html">Back to catalog</a></p>';
 else {
@@ -36,7 +37,9 @@ else {
     document.getElementById("view-cart").classList.remove("s2-hidden");
     void document.querySelector("s2-cart-drawer")?.show(); // the sidebar IS the cart
   });
-  document.getElementById("view-cart").addEventListener("click", () => void document.querySelector("s2-cart-drawer")?.show());
+  document
+    .getElementById("view-cart")
+    .addEventListener("click", () => void document.querySelector("s2-cart-drawer")?.show());
   document.getElementById("wish").addEventListener("click", async () => {
     const { wished: now } = await toggleWishlist(slug);
     document.getElementById("wish").style.color = now ? "var(--s2-accent)" : "var(--s2-muted)";
@@ -46,16 +49,21 @@ else {
 // reviews — wa-rating both ways: interactive in the form, readonly in rows
 async function renderReviews() {
   const rows = await reviewsFor(slug);
-  document.getElementById("reviews").innerHTML = rows.length === 0
-    ? '<p class="s2-quiet">No reviews yet — be the first.</p>'
-    : rows.map((r) => `<wa-card>
+  document.getElementById("reviews").innerHTML =
+    rows.length === 0
+      ? '<p class="s2-quiet">No reviews yet — be the first.</p>'
+      : rows
+          .map(
+            (r) => `<wa-card>
         <div class="s2-row" style="justify-content:space-between">
           <strong>${r.title ?? "Review"}</strong>
           <wa-rating label="Rated ${r.rating} of 5" value="${r.rating}" readonly size="s"></wa-rating>
         </div>
         <p class="s2-quiet s2-small" style="margin-block:0.25rem 0">${r.body ?? ""}</p>
         <small class="s2-quiet">— ${r.author_name ?? "Anonymous"}</small>
-      </wa-card>`).join("");
+      </wa-card>`,
+          )
+          .join("");
 }
 document.getElementById("rev-post").addEventListener("click", async () => {
   const response = await postReview({
@@ -65,7 +73,9 @@ document.getElementById("rev-post").addEventListener("click", async () => {
     body: document.getElementById("rev-body").value,
     author_name: "Pure shopper",
   });
-  if (response.ok) { void toast("Review posted ✓"); void renderReviews(); }
-  else void toast("Could not post review", false);
+  if (response.ok) {
+    void toast("Review posted ✓");
+    void renderReviews();
+  } else void toast("Could not post review", false);
 });
 await renderReviews();

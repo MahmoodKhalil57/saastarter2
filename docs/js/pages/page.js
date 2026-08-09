@@ -40,13 +40,15 @@ if (!response.ok) {
   const doc = await response.json();
   document.title = `${doc.title} — saastarter2`;
   const content = doc.data?.content ?? [];
-  mount.replaceChildren(...content.map((block) => {
-    if (block.type === "Markdown") return markdownBlock(block.props?.content ?? "");
-    if (block.type === "Hero") return heroBlock(block.props ?? {});
-    const note = document.createElement("p");
-    note.className = "s2-quiet s2-small";
-    note.textContent = `[${block.type} block]`;
-    return note;
-  }));
+  mount.replaceChildren(
+    ...content.map((block) => {
+      if (block.type === "Markdown") return markdownBlock(block.props?.content ?? "");
+      if (block.type === "Hero") return heroBlock(block.props ?? {});
+      const note = document.createElement("p");
+      note.className = "s2-quiet s2-small";
+      note.textContent = `[${block.type} block]`;
+      return note;
+    }),
+  );
   if (!mount.hasChildNodes()) mount.innerHTML = `<h1>${doc.title}</h1>`;
 }

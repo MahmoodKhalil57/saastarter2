@@ -21,32 +21,35 @@ const camel = (name) => name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
 export function defineReactComponent(tag, loadFactory) {
   if (customElements.get(tag)) return;
-  customElements.define(tag, class extends HTMLElement {
-    #root = null;
-    async connectedCallback() {
-      this.setAttribute("engine-state", "loading");
-      let engine, factory;
-      try {
-        [engine, factory] = await Promise.all([loadEngine(), loadFactory()]);
-      } catch {
-        this.setAttribute("engine-state", "failed");
-        return; // pre-engine fallback stays — that's the contract
+  customElements.define(
+    tag,
+    class extends HTMLElement {
+      #root = null;
+      async connectedCallback() {
+        this.setAttribute("engine-state", "loading");
+        let engine, factory;
+        try {
+          [engine, factory] = await Promise.all([loadEngine(), loadFactory()]);
+        } catch {
+          this.setAttribute("engine-state", "failed");
+          return; // pre-engine fallback stays — that's the contract
+        }
+        if (!this.isConnected || this.#root) return;
+        const Component = (factory.default ?? factory)(engine);
+        const props = Object.fromEntries(
+          [...this.attributes].filter((a) => a.name !== "engine-state").map((a) => [camel(a.name), a.value]),
+        );
+        const mount = document.createElement("div");
+        mount.style.display = "contents";
+        this.#root = engine.createRoot(mount);
+        this.#root.render(engine.React.createElement(Component, props));
+        this.replaceChildren(mount);
+        this.setAttribute("engine-state", "ready");
       }
-      if (!this.isConnected || this.#root) return;
-      const Component = (factory.default ?? factory)(engine);
-      const props = Object.fromEntries([...this.attributes]
-        .filter((a) => a.name !== "engine-state")
-        .map((a) => [camel(a.name), a.value]));
-      const mount = document.createElement("div");
-      mount.style.display = "contents";
-      this.#root = engine.createRoot(mount);
-      this.#root.render(engine.React.createElement(Component, props));
-      this.replaceChildren(mount);
-      this.setAttribute("engine-state", "ready");
-    }
-    disconnectedCallback() {
-      this.#root?.unmount();
-      this.#root = null;
-    }
-  });
+      disconnectedCallback() {
+        this.#root?.unmount();
+        this.#root = null;
+      }
+    },
+  );
 }

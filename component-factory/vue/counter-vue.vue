@@ -15,11 +15,21 @@ import { $counter } from "#stores";
 
 export default {
   data: () => ({ count: $counter.get() }),
-  mounted() { this.unsub = $counter.subscribe((value) => { this.count = value; }); },
-  unmounted() { this.unsub?.(); },
+  mounted() {
+    this.unsub = $counter.subscribe((value) => {
+      this.count = value;
+    });
+  },
+  unmounted() {
+    this.unsub?.();
+  },
   methods: {
-    inc() { $counter.set(this.count + 1); },
-    dec() { $counter.set(this.count - 1); },
+    inc() {
+      $counter.set(this.count + 1);
+    },
+    dec() {
+      $counter.set(this.count - 1);
+    },
   },
 };
 </script>

@@ -1,16 +1,26 @@
 // Plain LCS line diff — pages here are ~50 lines, a DP table costs nothing.
 export function diffLines(beforeText, afterText) {
-  const a = beforeText.split("\n"), b = afterText.split("\n");
+  const a = beforeText.split("\n"),
+    b = afterText.split("\n");
   const dp = Array.from({ length: a.length + 1 }, () => new Uint32Array(b.length + 1));
   for (let i = a.length - 1; i >= 0; i--)
     for (let j = b.length - 1; j >= 0; j--)
       dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
   const ops = []; // [type, line, aIndex, bIndex]
-  let i = 0, j = 0;
+  let i = 0,
+    j = 0;
   while (i < a.length || j < b.length) {
-    if (i < a.length && j < b.length && a[i] === b[j]) { ops.push([" ", a[i], i, j]); i++; j++; }
-    else if (j >= b.length || (i < a.length && dp[i + 1][j] >= dp[i][j + 1])) { ops.push(["-", a[i], i, -1]); i++; }
-    else { ops.push(["+", b[j], -1, j]); j++; }
+    if (i < a.length && j < b.length && a[i] === b[j]) {
+      ops.push([" ", a[i], i, j]);
+      i++;
+      j++;
+    } else if (j >= b.length || (i < a.length && dp[i + 1][j] >= dp[i][j + 1])) {
+      ops.push(["-", a[i], i, -1]);
+      i++;
+    } else {
+      ops.push(["+", b[j], -1, j]);
+      j++;
+    }
   }
   return ops;
 }
@@ -26,7 +36,10 @@ export function mergeToSource(source, baseline, edited) {
   let pending = [];
   for (const [type, , ai, bi] of diffLines(source, baseline)) {
     if (type === "-") pending.push(src[ai]);
-    else if (type === " ") { spans.set(bi, [...pending, src[ai]]); pending = []; }
+    else if (type === " ") {
+      spans.set(bi, [...pending, src[ai]]);
+      pending = [];
+    }
     // a rewritten line (e.g. disabled → disabled="") owns its source original
     else spans.set(bi, pending.length ? [pending.shift()] : []);
   }
@@ -55,7 +68,10 @@ export function renderDiff(ops, context = 2) {
     folded = 0;
   };
   ops.forEach(([type, line], index) => {
-    if (type === " " && !keep.has(index)) { folded++; return; }
+    if (type === " " && !keep.has(index)) {
+      folded++;
+      return;
+    }
     flush();
     pre.append(span(type === "+" ? "add" : type === "-" ? "del" : "ctx", `${type} ${line}\n`));
   });

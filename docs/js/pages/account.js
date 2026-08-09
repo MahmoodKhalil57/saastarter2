@@ -1,5 +1,25 @@
-import { changeEmail, changePassword, confirm2fa, deleteAccount, enable2fa, getSession, signOut, updateAvatar, updateProfile } from "../api.js";
-import { billingPortal, mintKey, money, myOrders, myWishlist, proActive, subscribe, toggleWishlist, uploadMedia } from "../store.js";
+import {
+  changeEmail,
+  changePassword,
+  confirm2fa,
+  deleteAccount,
+  enable2fa,
+  getSession,
+  signOut,
+  updateAvatar,
+  updateProfile,
+} from "../api.js";
+import {
+  billingPortal,
+  mintKey,
+  money,
+  myOrders,
+  myWishlist,
+  proActive,
+  subscribe,
+  toggleWishlist,
+  uploadMedia,
+} from "../store.js";
 import { config } from "../config.js";
 import { toast } from "../chrome.js";
 
@@ -12,10 +32,15 @@ el("prof-name").value = user?.name ?? "";
 el("tf-state").textContent = user?.twoFactorEnabled ? "✓ on" : "";
 if (user?.twoFactorEnabled) el("tf-setup").classList.add("s2-hidden");
 
-el("prof-save").addEventListener("click", async () => toast((await updateProfile(el("prof-name").value)).ok ? "Saved ✓" : "Failed", true));
+el("prof-save").addEventListener("click", async () =>
+  toast((await updateProfile(el("prof-name").value)).ok ? "Saved ✓" : "Failed", true),
+);
 // avatar (per-project media behind the seam)
-if (user?.image) { el("avatar").src = user.image; el("avatar").classList.remove("s2-hidden"); el("avatar-fallback").classList.add("s2-hidden"); }
-else el("avatar-fallback").textContent = (user?.name || "?").slice(0, 1).toUpperCase();
+if (user?.image) {
+  el("avatar").src = user.image;
+  el("avatar").classList.remove("s2-hidden");
+  el("avatar-fallback").classList.add("s2-hidden");
+} else el("avatar-fallback").textContent = (user?.name || "?").slice(0, 1).toUpperCase();
 el("avatar-file").addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
@@ -26,24 +51,43 @@ el("avatar-file").addEventListener("change", async (event) => {
   location.reload();
 });
 el("email-change").addEventListener("click", async () =>
-  toast((await changeEmail(el("new-email").value)).ok ? "Confirmation sent to the new address ✓" : "Request failed", true));
+  toast(
+    (await changeEmail(el("new-email").value)).ok ? "Confirmation sent to the new address ✓" : "Request failed",
+    true,
+  ),
+);
 el("del-req").addEventListener("click", async () =>
-  toast((await deleteAccount(el("del-pw").value)).ok ? "Deletion email sent — check your inbox" : "Wrong password?", true));
+  toast(
+    (await deleteAccount(el("del-pw").value)).ok ? "Deletion email sent — check your inbox" : "Wrong password?",
+    true,
+  ),
+);
 
 async function renderWishlist() {
   const rows = await myWishlist();
-  el("wishlist").innerHTML = rows.length === 0
-    ? '<p class="s2-quiet">Nothing saved yet — tap ❤️ on a product.</p>'
-    : rows.map((w) => `<wa-card><div class="s2-row" style="justify-content:space-between">
+  el("wishlist").innerHTML =
+    rows.length === 0
+      ? '<p class="s2-quiet">Nothing saved yet — tap ❤️ on a product.</p>'
+      : rows
+          .map(
+            (w) => `<wa-card><div class="s2-row" style="justify-content:space-between">
         <a href="./product.html?slug=${encodeURIComponent(w.product)}">${w.product}</a>
-        <wa-button size="s" appearance="plain" variant="danger" data-unwish="${w.product}">Remove</wa-button></div></wa-card>`).join("");
+        <wa-button size="s" appearance="plain" variant="danger" data-unwish="${w.product}">Remove</wa-button></div></wa-card>`,
+          )
+          .join("");
 }
 el("wishlist").addEventListener("click", async (event) => {
   const product = event.target.closest?.("[data-unwish]")?.dataset?.unwish;
-  if (product) { await toggleWishlist(product); void renderWishlist(); }
+  if (product) {
+    await toggleWishlist(product);
+    void renderWishlist();
+  }
 });
 await renderWishlist();
-el("sign-out").addEventListener("click", () => { signOut(); location.href = "./index.html"; });
+el("sign-out").addEventListener("click", () => {
+  signOut();
+  location.href = "./index.html";
+});
 
 // 2FA: the totpURI becomes a scannable wa-qr-code + a wa-copy-button secret.
 el("tf-enable").addEventListener("click", async () => {
@@ -57,23 +101,33 @@ el("tf-enable").addEventListener("click", async () => {
   el("tf-confirm").classList.remove("s2-hidden");
 });
 const confirmTotp = async () => {
-  if ((await confirm2fa(el("tf-code").value)).ok) { void toast("Two-factor enabled ✓"); location.reload(); }
-  else void toast("Wrong code", false);
+  if ((await confirm2fa(el("tf-code").value)).ok) {
+    void toast("Two-factor enabled ✓");
+    location.reload();
+  } else void toast("Wrong code", false);
 };
 el("tf-verify").addEventListener("click", confirmTotp);
 el("tf-code").addEventListener("wa-change", confirmTotp);
 el("pw-change").addEventListener("click", async () =>
-  toast((await changePassword(el("pw-cur").value, el("pw-next").value)).ok ? "Password changed ✓" : "Change failed", true));
+  toast(
+    (await changePassword(el("pw-cur").value, el("pw-next").value)).ok ? "Password changed ✓" : "Change failed",
+    true,
+  ),
+);
 
 if (await proActive()) {
   el("pro-state").textContent = "✓ active";
   el("sub").classList.add("s2-hidden");
   el("portal").classList.remove("s2-hidden");
 }
-el("sub").addEventListener("click", async () => { const { url } = await subscribe(); if (url) location.href = url; });
+el("sub").addEventListener("click", async () => {
+  const { url } = await subscribe();
+  if (url) location.href = url;
+});
 el("portal").addEventListener("click", async () => {
   const { url } = await billingPortal();
-  if (url) location.href = url; else void toast("No billing history yet", false);
+  if (url) location.href = url;
+  else void toast("No billing history yet", false);
 });
 
 el("mint").addEventListener("click", async () => {
@@ -87,9 +141,12 @@ el("mint").addEventListener("click", async () => {
 
 async function renderOrders() {
   const orders = await myOrders();
-  el("orders").innerHTML = orders.length === 0
-    ? '<p class="s2-quiet">No orders yet.</p>'
-    : orders.map((order) => `
+  el("orders").innerHTML =
+    orders.length === 0
+      ? '<p class="s2-quiet">No orders yet.</p>'
+      : orders
+          .map(
+            (order) => `
       <wa-card>
         <div class="s2-row" style="justify-content:space-between">
           <span>${order.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span>
@@ -97,13 +154,19 @@ async function renderOrders() {
             <wa-badge variant="${["paid", "delivered", "shipped", "fulfilled"].includes(order.status) ? "success" : "neutral"}">${order.status}</wa-badge></span>
         </div>
         <div class="s2-row" style="margin-block-start:0.4rem">
-        ${(order.deliveries ?? []).flatMap((d) => d.artifacts).map((artifact) =>
-          artifact.kind === "download"
-            ? `<wa-button size="s" appearance="outlined" variant="brand" href="${config.endpoint}${artifact.claim}" target="_blank"><iconify-icon icon="lucide:download" inline></iconify-icon> ${artifact.label}</wa-button>`
-            : artifact.kind === "tracking"
-              ? `<wa-badge variant="neutral">📦 ${artifact.label}${artifact.code ? " — " + artifact.code : ""}</wa-badge>`
-              : `<small class="s2-quiet">${artifact.label}</small>`).join(" ")}
+        ${(order.deliveries ?? [])
+          .flatMap((d) => d.artifacts)
+          .map((artifact) =>
+            artifact.kind === "download"
+              ? `<wa-button size="s" appearance="outlined" variant="brand" href="${config.endpoint}${artifact.claim}" target="_blank"><iconify-icon icon="lucide:download" inline></iconify-icon> ${artifact.label}</wa-button>`
+              : artifact.kind === "tracking"
+                ? `<wa-badge variant="neutral">📦 ${artifact.label}${artifact.code ? " — " + artifact.code : ""}</wa-badge>`
+                : `<small class="s2-quiet">${artifact.label}</small>`,
+          )
+          .join(" ")}
         </div>
-      </wa-card>`).join("");
+      </wa-card>`,
+          )
+          .join("");
 }
 await renderOrders();

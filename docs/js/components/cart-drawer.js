@@ -48,7 +48,9 @@ class S2CartDrawer extends HTMLElement {
     this.unsubCart = $cart.subscribe((cart) => this.render(cart));
   }
 
-  el(id) { return this.querySelector(`#${id}`); }
+  el(id) {
+    return this.querySelector(`#${id}`);
+  }
   view(name) {
     for (const box of this.querySelectorAll("[data-view]")) {
       box.classList.toggle("s2-hidden", box.dataset.view !== name);
@@ -68,7 +70,9 @@ class S2CartDrawer extends HTMLElement {
       items.innerHTML = '<p class="s2-quiet s2-small">Empty. <a href="./products.html">Browse the catalog →</a></p>';
       this.el("cd-checkout").disabled = true;
     } else {
-      items.innerHTML = cart.items.map((item) => `
+      items.innerHTML = cart.items
+        .map(
+          (item) => `
         <div class="s2-row" style="justify-content:space-between; border-block-end:1px solid var(--s2-line); padding-block-end:0.5rem">
           <div><strong class="s2-small">${item.name ?? item.product_id}</strong><br>
             <small class="s2-quiet">${money(item.price_cents)} × ${item.quantity}</small></div>
@@ -76,7 +80,9 @@ class S2CartDrawer extends HTMLElement {
             <span class="s2-price s2-small">${money(item.price_cents * item.quantity)}</span>
             <wa-button size="s" appearance="plain" variant="danger" data-variant="${item.variant ?? item.product_id}" aria-label="Remove">${icon("trash-2")}</wa-button>
           </div>
-        </div>`).join("");
+        </div>`,
+        )
+        .join("");
       this.el("cd-checkout").disabled = false;
     }
     this.el("cd-total").textContent = money(Math.max(0, (cart.total_cents ?? 0) - (this.coupon?.discount_cents ?? 0)));
@@ -86,15 +92,18 @@ class S2CartDrawer extends HTMLElement {
     const code = (this.el("cd-code").value ?? "").trim().toUpperCase();
     if (!code) return;
     const verdict = await validateDiscount(code);
-    const line = this.el("cd-coupon-line"), error = this.el("cd-coupon-error");
+    const line = this.el("cd-coupon-line"),
+      error = this.el("cd-coupon-error");
     if (verdict.ok) {
       this.coupon = { code, discount_cents: verdict.discount_cents };
       line.textContent = `${code} ✓ −${money(verdict.discount_cents)}`;
-      line.classList.remove("s2-hidden"); error.classList.add("s2-hidden");
+      line.classList.remove("s2-hidden");
+      error.classList.add("s2-hidden");
     } else {
       this.coupon = null;
       error.textContent = verdict.reason;
-      error.classList.remove("s2-hidden"); line.classList.add("s2-hidden");
+      error.classList.remove("s2-hidden");
+      line.classList.add("s2-hidden");
     }
     this.render($cart.get());
   }
@@ -119,7 +128,10 @@ class S2CartDrawer extends HTMLElement {
           const settled = await waitForOrder(body.order.id);
           void finish(settled?.status === "delivered" ? "Order delivered" : `Order ${settled?.status ?? "settling"}`);
         },
-        onError: (message) => { void toast(message, false); this.view("cart"); },
+        onError: (message) => {
+          void toast(message, false);
+          this.view("cart");
+        },
       });
     } else if (body.order) {
       void finish(`Order ${body.order.status}`);

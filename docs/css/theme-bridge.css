@@ -72,4 +72,6 @@
   --s2-muted: var(--muted-foreground, #a89c8d);
 }
 
-body { letter-spacing: var(--letter-spacing, var(--tracking-normal, 0)); }
+body {
+  letter-spacing: var(--letter-spacing, var(--tracking-normal, 0));
+}

@@ -9,16 +9,18 @@ function render(items) {
     grid.innerHTML = '<p class="s2-quiet">No matches.</p>';
     return;
   }
-  grid.replaceChildren(...items.map((p) => {
-    const card = document.createElement("s2-product-card");
-    card.setAttribute("slug", p.slug);
-    card.setAttribute("name", p.name ?? p.slug);
-    card.setAttribute("tagline", p.tagline ?? "");
-    card.setAttribute("price", p.price_cents ? money(p.price_cents) : "Free");
-    if (p.category) card.setAttribute("category", p.category);
-    if (p.featured) card.setAttribute("featured", "");
-    return card;
-  }));
+  grid.replaceChildren(
+    ...items.map((p) => {
+      const card = document.createElement("s2-product-card");
+      card.setAttribute("slug", p.slug);
+      card.setAttribute("name", p.name ?? p.slug);
+      card.setAttribute("tagline", p.tagline ?? "");
+      card.setAttribute("price", p.price_cents ? money(p.price_cents) : "Free");
+      if (p.category) card.setAttribute("category", p.category);
+      if (p.featured) card.setAttribute("featured", "");
+      return card;
+    }),
+  );
 }
 
 document.getElementById("search").addEventListener("s2-search", async (event) => {

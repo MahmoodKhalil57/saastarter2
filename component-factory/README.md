@@ -15,12 +15,12 @@ bun run build      # → docs/js/components/counter-*.gen.js
 
 ## Directories
 
-| dir | authored as | compiled by | example |
-| --- | --- | --- | --- |
-| `lit/` | LitElement (plain JS) | Bun bundler | `counter-lit.js` → 15KB |
-| `react/` | real JSX / TSX | Bun (native JSX) + a `createRoot` custom-element wrapper | `counter-react.tsx` → 182KB |
-| `svelte/` | Svelte 5 **runes mode** (`runes: true` — legacy Svelte-4 syntax is a compile error) with `<svelte:options customElement>` | svelte/compiler → Bun | `counter-svelte.svelte` → 51KB |
-| `vue/` | SFC (options API) | vue/compiler-sfc (template → render fn, no runtime compiler shipped) + `defineCustomElement(…, { shadowRoot: false })` → Bun | `counter-vue.vue` → 69KB |
+| dir       | authored as                                                                                                               | compiled by                                                                                                                  | example                        |
+| --------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `lit/`    | LitElement (plain JS)                                                                                                     | Bun bundler                                                                                                                  | `counter-lit.js` → 15KB        |
+| `react/`  | real JSX / TSX                                                                                                            | Bun (native JSX) + a `createRoot` custom-element wrapper                                                                     | `counter-react.tsx` → 182KB    |
+| `svelte/` | Svelte 5 **runes mode** (`runes: true` — legacy Svelte-4 syntax is a compile error) with `<svelte:options customElement>` | svelte/compiler → Bun                                                                                                        | `counter-svelte.svelte` → 51KB |
+| `vue/`    | SFC (options API)                                                                                                         | vue/compiler-sfc (template → render fn, no runtime compiler shipped) + `defineCustomElement(…, { shadowRoot: false })` → Bun | `counter-vue.vue` → 69KB       |
 
 There is a FIFTH React path that deliberately isn't here:
 `docs/js/components/react-jit/` ships React components as source with a

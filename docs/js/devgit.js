@@ -21,7 +21,10 @@ const el = (tag, className, html) => {
   return node;
 };
 
-const style = el("style", "", `
+const style = el(
+  "style",
+  "",
+  `
   .s2-devgit-fab{position:fixed;bottom:1rem;left:1rem;z-index:2000;font-family:monospace;background:#1c1917;color:#faf6f0;border:none;border-radius:.375rem;padding:.5rem .75rem;cursor:pointer;box-shadow:0 .25rem .75rem rgba(0,0,0,.3)}
   .s2-devgit-panel{position:fixed;bottom:4rem;left:1rem;z-index:2000;width:min(34rem,calc(100vw - 2rem));max-height:70vh;overflow:auto;background:var(--s2-card,#fdfaf5);color:var(--s2-ink,#1c1917);border:1px solid var(--s2-line,#d8d0c4);border-radius:.5rem;padding:.75rem;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.25);font-size:.9rem}
   .s2-devgit-panel .dg-stack{display:flex;flex-direction:column;gap:.5rem}
@@ -43,25 +46,35 @@ const style = el("style", "", `
   .s2-devgit-diff{font-size:.75rem;line-height:1.5;background:rgba(128,128,128,.12);padding:.5rem;border-radius:.375rem;max-height:14rem;overflow:auto;margin:0}
   .s2-devgit-add{color:#276749}.s2-devgit-del{color:#b3261e}.s2-devgit-fold{opacity:.5}
   .s2-devgit-panel textarea{font-family:monospace;font-size:.75rem;line-height:1.45;white-space:pre;overflow-x:auto;min-height:12rem}
-  [contenteditable="true"]:focus-visible{outline:2px dashed var(--s2-accent,#d9482b);outline-offset:2px}`);
+  [contenteditable="true"]:focus-visible{outline:2px dashed var(--s2-accent,#d9482b);outline-offset:2px}`,
+);
 const fab = el("button", "s2-devgit-fab", "&lt;/&gt;");
 const panel = el("div", "s2-devgit-panel", "");
 panel.hidden = true;
 panel.setAttribute("contenteditable", "false");
-fab.addEventListener("click", () => { panel.hidden = !panel.hidden; });
+fab.addEventListener("click", () => {
+  panel.hidden = !panel.hidden;
+});
 
 function paint(html) {
   panel.innerHTML = `<div class="dg-stack"><div class="dg-row"><strong style="font-family:monospace">devgit</strong><span class="dg-badge ${state.editing ? "dg-badge-warn" : ""}">${state.editing ? "editing" : "live"}</span></div>${html}</div>`;
   panel.hidden = false;
 }
 
-const status = (message, ok = true) => { const box = panel.querySelector("[data-status]"); if (box) box.innerHTML = `<div class="dg-alert dg-alert-${ok ? "info" : "danger"}">${message}</div>`; };
+const status = (message, ok = true) => {
+  const box = panel.querySelector("[data-status]");
+  if (box) box.innerHTML = `<div class="dg-alert dg-alert-${ok ? "info" : "danger"}">${message}</div>`;
+};
 
 function paintHome() {
   paint(`<p class="dg-muted">Freeze this page and edit the DOM, or open any file in the repo (by hand, DevTools, or a browser agent), then commit the diff straight to GitHub. Configure on <a href="./dev.html">dev.html</a>.</p>
     <div data-status></div><div class="dg-row"><button class="dg-btn dg-btn-warn" data-edit>Edit this page</button><button class="dg-btn dg-btn-warn-outline" data-files>Edit css / js / any file</button></div>`);
-  panel.querySelector("[data-edit]").addEventListener("click", () => enterEdit().catch((error) => status(error.message, false)));
-  panel.querySelector("[data-files]").addEventListener("click", () => paintFiles({ paint, status, panel, back: paintHome }));
+  panel
+    .querySelector("[data-edit]")
+    .addEventListener("click", () => enterEdit().catch((error) => status(error.message, false)));
+  panel
+    .querySelector("[data-files]")
+    .addEventListener("click", () => paintFiles({ paint, status, panel, back: paintHome }));
 }
 
 // Swap the live DOM for the pristine repo file: scripts come in inert (they
@@ -83,7 +96,9 @@ function paintEditing() {
     <div data-diff></div><input class="dg-input" data-message placeholder="commit message"><div data-status></div>
     <div class="dg-row"><button class="dg-btn" data-review>Review diff</button><button class="dg-btn dg-btn-primary" data-push>Commit &amp; push</button><button class="dg-btn dg-btn-danger dg-end" data-discard>Discard</button></div>`);
   panel.querySelector("[data-review]").addEventListener("click", review);
-  panel.querySelector("[data-push]").addEventListener("click", () => push().catch((error) => status(error.message, false)));
+  panel
+    .querySelector("[data-push]")
+    .addEventListener("click", () => push().catch((error) => status(error.message, false)));
   panel.querySelector("[data-discard]").addEventListener("click", () => location.reload());
 }
 
@@ -110,8 +125,13 @@ function review() {
 
 async function push(message) {
   const edited = committedText();
-  if (edited === state.files[0].text) { status("no changes to commit"); return; }
-  message ||= panel.querySelector("[data-message]")?.value || `devgit: edit ${targets(cfg)[0].path.split("/").pop()} in the browser`;
+  if (edited === state.files[0].text) {
+    status("no changes to commit");
+    return;
+  }
+  message ||=
+    panel.querySelector("[data-message]")?.value ||
+    `devgit: edit ${targets(cfg)[0].path.split("/").pop()} in the browser`;
   const links = [];
   for (const [index, target] of targets(cfg).entries()) {
     status(`pushing ${target.label}…`);

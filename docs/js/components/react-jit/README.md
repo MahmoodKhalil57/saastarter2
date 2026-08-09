@@ -19,11 +19,11 @@ renders** — and not guaranteed to load at all (offline, CDN outage).
 Every jit component must therefore be smooth in three states, which
 `define.js` manages via the `engine-state` attribute:
 
-| state | what the user sees |
-| --- | --- |
+| state     | what the user sees                                                                                                                                                  |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `loading` | the element's author-provided light-DOM children, untouched — write honest fallback content (static text, a skeleton, the no-JS version), never an infinite spinner |
-| `ready` | the mounted React tree (fallback swapped out in one `replaceChildren` — no flash of empty) |
-| `failed` | the fallback again, permanently — degradation, not breakage |
+| `ready`   | the mounted React tree (fallback swapped out in one `replaceChildren` — no flash of empty)                                                                          |
+| `failed`  | the fallback again, permanently — degradation, not breakage                                                                                                         |
 
 Style states from CSS if needed: `s2-counter-jit[engine-state="loading"] { … }`.
 

@@ -38,13 +38,13 @@ can join it later.
 
 ## The three tiers
 
-| Tier | When | Example here |
-| --- | --- | --- |
-| **Compose** Web Awesome | the component exists, you're arranging it | `cart-drawer.js` — `<s2-cart-drawer>` is a `wa-drawer` plus store logic |
-| **Extend** Web Awesome | the component almost exists | `search.js` — `<s2-search>` is `class extends WaInput` (imported via the `wa/` import map) plus a debounced `s2-search` event |
-| **From scratch** | the library has no such thing | `nav.js`, `footer.js`, `product-card.js` — plain `HTMLElement` subclasses |
-| **Compiled** (`*.gen.js`) | authored in React/Vue/Svelte/Lit, built ONCE in `component-factory/` | `counter-*.gen.js` — self-registering artifacts, runtime bundled in, never edited by hand |
-| **react-jit** (`react-jit/`) | React without any build — a shared engine lazy-loads on first use | `react-jit/counter.element.js` — see `react-jit/README.md` for the pre/post-engine contract |
+| Tier                         | When                                                                 | Example here                                                                                                                  |
+| ---------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Compose** Web Awesome      | the component exists, you're arranging it                            | `cart-drawer.js` — `<s2-cart-drawer>` is a `wa-drawer` plus store logic                                                       |
+| **Extend** Web Awesome       | the component almost exists                                          | `search.js` — `<s2-search>` is `class extends WaInput` (imported via the `wa/` import map) plus a debounced `s2-search` event |
+| **From scratch**             | the library has no such thing                                        | `nav.js`, `footer.js`, `product-card.js` — plain `HTMLElement` subclasses                                                     |
+| **Compiled** (`*.gen.js`)    | authored in React/Vue/Svelte/Lit, built ONCE in `component-factory/` | `counter-*.gen.js` — self-registering artifacts, runtime bundled in, never edited by hand                                     |
+| **react-jit** (`react-jit/`) | React without any build — a shared engine lazy-loads on first use    | `react-jit/counter.element.js` — see `react-jit/README.md` for the pre/post-engine contract                                   |
 
 Web Awesome's classes are real ESM exports on the pinned CDN, so tier 2
 is ordinary subclassing — you inherit the shadow template, form

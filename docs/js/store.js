@@ -21,13 +21,19 @@ export async function product(slug) {
   return r.ok ? r.json() : null;
 }
 export async function searchProducts(query) {
-  const r = await fetch(`${base}/products:search${localeQuery()}`, { method: "POST", headers: json, body: JSON.stringify({ query }) });
+  const r = await fetch(`${base}/products:search${localeQuery()}`, {
+    method: "POST",
+    headers: json,
+    body: JSON.stringify({ query }),
+  });
   return r.ok ? (await r.json()).results : [];
 }
 export async function posts() {
   const r = await fetch(`${base}/posts${localeQuery()}`);
   if (!r.ok) return [];
-  return (await r.json()).results.filter((p) => p.state !== "DRAFT").sort((a, b) => (a.create_time < b.create_time ? 1 : -1));
+  return (await r.json()).results
+    .filter((p) => p.state !== "DRAFT")
+    .sort((a, b) => (a.create_time < b.create_time ? 1 : -1));
 }
 export async function post(id) {
   const r = await fetch(`${base}/posts/${id}${localeQuery()}`);
@@ -51,24 +57,37 @@ export async function getCart() {
 }
 export async function addToCart(variant, quantity = 1) {
   const header = await ensureSession();
-  const r = await fetch(`${commerce}/cart:add`, { method: "POST", headers: { ...json, ...header }, body: JSON.stringify({ variant, quantity }) });
+  const r = await fetch(`${commerce}/cart:add`, {
+    method: "POST",
+    headers: { ...json, ...header },
+    body: JSON.stringify({ variant, quantity }),
+  });
   void refreshCart();
   return r.ok ? r.json() : null;
 }
 export async function removeFromCart(variant) {
-  const r = await fetch(`${commerce}/cart:remove`, { method: "POST", headers: { ...json, ...authHeader() }, body: JSON.stringify({ variant }) });
+  const r = await fetch(`${commerce}/cart:remove`, {
+    method: "POST",
+    headers: { ...json, ...authHeader() },
+    body: JSON.stringify({ variant }),
+  });
   void refreshCart();
   return r.ok ? r.json() : null;
 }
 export async function validateDiscount(code) {
-  const r = await fetch(`${commerce}/discount:validate`, { method: "POST", headers: { ...json, ...authHeader() }, body: JSON.stringify({ code }) });
+  const r = await fetch(`${commerce}/discount:validate`, {
+    method: "POST",
+    headers: { ...json, ...authHeader() },
+    body: JSON.stringify({ code }),
+  });
   return r.json();
 }
 /** Embedded checkout: {order, payment:{gateway, clientToken, client}}. */
 export async function checkoutCart(discount) {
   const header = await ensureSession();
   const r = await fetch(`${commerce}/cart:checkout`, {
-    method: "POST", headers: { ...json, ...header },
+    method: "POST",
+    headers: { ...json, ...header },
     body: JSON.stringify({ payment: "embedded", ...(discount ? { discount } : {}) }),
   });
   return { status: r.status, body: await r.json() };
@@ -103,7 +122,11 @@ export async function toggleWishlist(productId) {
     await fetch(`${config.endpoint}/v1/${existing.path}`, { method: "DELETE", headers: header });
     return { wished: false };
   }
-  await fetch(`${base}/wishlist`, { method: "POST", headers: { ...json, ...header }, body: JSON.stringify({ product: productId }) });
+  await fetch(`${base}/wishlist`, {
+    method: "POST",
+    headers: { ...json, ...header },
+    body: JSON.stringify({ product: productId }),
+  });
   return { wished: true };
 }
 
@@ -111,14 +134,16 @@ export async function toggleWishlist(productId) {
 export async function subscribe() {
   const header = await ensureSession();
   const r = await fetch(`${base}/billing/checkout`, {
-    method: "POST", headers: { ...json, ...header },
+    method: "POST",
+    headers: { ...json, ...header },
     body: JSON.stringify({ product: "pro-monthly", price: "monthly" }),
   });
   return r.ok ? r.json() : {};
 }
 export async function billingPortal() {
   const r = await fetch(`${base}/billing/portal`, {
-    method: "POST", headers: { ...json, ...authHeader() },
+    method: "POST",
+    headers: { ...json, ...authHeader() },
     body: JSON.stringify({ returnUrl: location.href }),
   });
   return r.ok ? r.json() : {};
@@ -145,5 +170,9 @@ export async function mintKey() {
   return { ok: r.ok, ...(await r.json()) };
 }
 export async function track(event, properties = {}) {
-  fetch(`${commerce}/track`, { method: "POST", headers: { ...json, ...authHeader() }, body: JSON.stringify({ event, properties }) }).catch(() => {});
+  fetch(`${commerce}/track`, {
+    method: "POST",
+    headers: { ...json, ...authHeader() },
+    body: JSON.stringify({ event, properties }),
+  }).catch(() => {});
 }

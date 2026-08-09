@@ -4,6 +4,7 @@
 #   ./cli.sh seed [diff|push|pull|fmt]     data repo → baas
 #   ./cli.sh secrets [list|set N|delete N] per-project secrets
 #   ./cli.sh validate                      both repos vs hosted $schemas
+#   ./cli.sh fmt [check]                   prettier every non-git-ignored file
 #   ./cli.sh serve                         the site (docs/) on :8899
 #   ./cli.sh publish                       git push — Pages serves master:/docs directly
 #   ./cli.sh init PROJECT_ID [SITE_URL]    re-point a fresh clone at YOUR project
@@ -25,6 +26,10 @@ case "${1:-help}" in
   secrets)  shift; baas secrets "${@:-list}" --dir hono-aep-baas-config ;;
   validate) baas validate --dir hono-aep-baas-config
             baas validate --dir hono-aep-baas-idempotent-seed ;;
+  fmt)      # prettier over everything git doesn't ignore, minus .prettierignore
+            # (generated *.gen.js; config/seed dirs — `sync fmt`/`seed fmt` own those)
+            mode=--write; [ "${2:-}" = check ] && mode=--check
+            bunx prettier@3.9.6 "$mode" --ignore-path .gitignore --ignore-path .prettierignore --log-level warn . ;;
   serve)    exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", fetch(r) {
               const p = new URL(r.url).pathname.replace(/\/$/, "/index.html");
               return new Response(Bun.file("docs" + p));
@@ -49,5 +54,5 @@ case "${1:-help}" in
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
-  *)        sed -n '3,10p' "$0" ;;
+  *)        sed -n '3,11p' "$0" ;;
 esac

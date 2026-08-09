@@ -1,0 +1,15 @@
+# Layered on top of .gitignore (cli.sh fmt passes both) — what prettier
+# must NOT touch even though git tracks it:
+
+# generated artifacts — the factory build owns their bytes
+docs/js/components/*.gen.js
+
+# the baas config + seed dirs — `./cli.sh sync fmt` / `seed fmt` are the
+# canonical formatters there; prettier fighting them = churn loops
+hono-aep-baas-config/
+hono-aep-baas-idempotent-seed/
+
+# lockfiles + vendored skill content
+skills-lock.json
+component-factory/bun.lock
+.agents/

@@ -12,12 +12,17 @@ class S2Search extends WaInput {
     if (!this.type || this.type === "text") this.type = "search";
     this.addEventListener("input", () => {
       clearTimeout(this.#timer);
-      this.#timer = setTimeout(() => {
-        this.dispatchEvent(new CustomEvent("s2-search", {
-          detail: { query: (this.value ?? "").trim() },
-          bubbles: true,
-        }));
-      }, Number(this.getAttribute("delay") ?? 250));
+      this.#timer = setTimeout(
+        () => {
+          this.dispatchEvent(
+            new CustomEvent("s2-search", {
+              detail: { query: (this.value ?? "").trim() },
+              bubbles: true,
+            }),
+          );
+        },
+        Number(this.getAttribute("delay") ?? 250),
+      );
     });
   }
   disconnectedCallback() {

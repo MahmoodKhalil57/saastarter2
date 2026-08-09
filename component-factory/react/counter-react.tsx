@@ -16,9 +16,13 @@ function Counter() {
   const count = useStore($counter);
   return (
     <div className="s2-row">
-      <wa-button size="s" appearance="outlined" onClick={() => $counter.set(count - 1)}>−</wa-button>
+      <wa-button size="s" appearance="outlined" onClick={() => $counter.set(count - 1)}>
+        −
+      </wa-button>
       <strong className="s2-price">{count}</strong>
-      <wa-button size="s" appearance="outlined" onClick={() => $counter.set(count + 1)}>+</wa-button>
+      <wa-button size="s" appearance="outlined" onClick={() => $counter.set(count + 1)}>
+        +
+      </wa-button>
       <span className="s2-quiet s2-small">react (compiled artifact)</span>
     </div>
   );
@@ -41,6 +45,8 @@ if (!customElements.get("s2-counter-react")) customElements.define("s2-counter-r
 
 declare global {
   namespace JSX {
-    interface IntrinsicElements { "wa-button": any }
+    interface IntrinsicElements {
+      "wa-button": any;
+    }
   }
 }

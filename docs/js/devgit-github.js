@@ -4,7 +4,13 @@
 // so a commit is a single authenticated PUT. Set it up on dev.html.
 const KEY = "s2:devgit";
 
-export const loadConfig = () => { try { return JSON.parse(localStorage.getItem(KEY) ?? "null"); } catch { return null; } };
+export const loadConfig = () => {
+  try {
+    return JSON.parse(localStorage.getItem(KEY) ?? "null");
+  } catch {
+    return null;
+  }
+};
 export const saveConfig = (cfg) => localStorage.setItem(KEY, JSON.stringify(cfg));
 export const clearConfig = () => localStorage.removeItem(KEY);
 
@@ -27,13 +33,19 @@ async function api(cfg, path, init = {}) {
 export const repoInfo = (cfg) => api(cfg, `/repos/${cfg.owner}/${cfg.repo}`);
 
 export async function getFile(cfg, branch, path) {
-  const data = await api(cfg, `/repos/${cfg.owner}/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(branch)}`);
+  const data = await api(
+    cfg,
+    `/repos/${cfg.owner}/${cfg.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(branch)}`,
+  );
   return { sha: data.sha, text: fromBase64(data.content) };
 }
 
 export async function putFile(cfg, branch, path, text, message, sha) {
   const body = { message, branch, content: toBase64(text), ...(sha ? { sha } : {}) };
-  const data = await api(cfg, `/repos/${cfg.owner}/${cfg.repo}/contents/${encodePath(path)}`, { method: "PUT", body: JSON.stringify(body) });
+  const data = await api(cfg, `/repos/${cfg.owner}/${cfg.repo}/contents/${encodePath(path)}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
   return data.commit; // { sha, html_url }
 }
 
@@ -43,7 +55,8 @@ const toBase64 = (text) => {
   for (const byte of new TextEncoder().encode(text)) bin += String.fromCharCode(byte);
   return btoa(bin);
 };
-const fromBase64 = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replaceAll("\n", "")), (c) => c.charCodeAt(0)));
+const fromBase64 = (b64) =>
+  new TextDecoder().decode(Uint8Array.from(atob(b64.replaceAll("\n", "")), (c) => c.charCodeAt(0)));
 
 // The site is flat, so this page's file is the last path segment.
 export const pageFile = () => decodeURIComponent(location.pathname.split("/").pop() || "index.html");

@@ -1,7 +1,7 @@
 # docs — the platform-native edition
 
 THE frontend, rebuilt on what the web platform ships in 2026. The
-toolchain is still deleted — but this time the *workarounds* are too:
+toolchain is still deleted — but this time the _workarounds_ are too:
 
 - **No build step** — browser-native ES modules; `css/app.css` is the
   "bundle" (plain `@import`). Deploying is copying this folder to any
@@ -72,6 +72,7 @@ exactly that — hence "site can't be reached"). Bound to `0.0.0.0` it is
 reachable as `localhost` and via the WSL IP (`hostname -I`).
 
 Notes:
+
 - `file://` (double-clicking index.html) will NOT work — browsers block
   ES-module imports without a server.
 - View Transitions + speculation rules are progressive enhancement:

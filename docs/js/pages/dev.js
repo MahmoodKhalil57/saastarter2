@@ -4,12 +4,18 @@ import { toast } from "../chrome.js";
 
 const form = document.getElementById("devgit-form");
 const status = document.getElementById("devgit-status");
-const say = (html, tone = "neutral") => { status.innerHTML = `<wa-callout variant="${tone}">${html}</wa-callout>`; };
+const say = (html, tone = "neutral") => {
+  status.innerHTML = `<wa-callout variant="${tone}">${html}</wa-callout>`;
+};
 
 const saved = loadConfig();
 if (saved) {
-  for (const [key, value] of Object.entries(saved)) if (form.elements[key] && key !== "token") form.elements[key].value = value;
-  say(`Enabled as <code>${saved.owner}/${saved.repo}</code> @ <code>${saved.branch}</code>. Token stays hidden — re-paste to change it.`, "success");
+  for (const [key, value] of Object.entries(saved))
+    if (form.elements[key] && key !== "token") form.elements[key].value = value;
+  say(
+    `Enabled as <code>${saved.owner}/${saved.repo}</code> @ <code>${saved.branch}</code>. Token stays hidden — re-paste to change it.`,
+    "success",
+  );
 }
 
 form.addEventListener("submit", async (event) => {
@@ -27,7 +33,10 @@ form.addEventListener("submit", async (event) => {
       throw new Error(`no index.html under ${cfg.branch}:${cfg.sourceDir || "/"} — wrong branch or dir?`);
     });
     saveConfig(cfg);
-    say(`Verified — devgit enabled on <code>${probe.branch}</code>${cfg.deployBranch ? ` + deploy to <code>${cfg.deployBranch}</code>` : ""}. Open any page and hit the <code>&lt;/&gt;</code> button.`, "success");
+    say(
+      `Verified — devgit enabled on <code>${probe.branch}</code>${cfg.deployBranch ? ` + deploy to <code>${cfg.deployBranch}</code>` : ""}. Open any page and hit the <code>&lt;/&gt;</code> button.`,
+      "success",
+    );
     void toast("devgit enabled");
   } catch (error) {
     say(error.message, "danger");

@@ -13,14 +13,14 @@ Reproducible from nothing: `sync push` (definitions) + `seed push` (data,
 baas/seed.md — idempotent, lock-ledgered). 491 tests green across 19 suites;
 every feature below verified in a real browser against the live deployment.
 
-| Phase | State |
-|---|---|
-| P0 forms (contact/newsletter) | ✅ live |
-| P1 collections (blog, reviews, wishlist, discounts as .cms.json) | ✅ live |
-| P2 auth pool (email+password, sessions, reset, change-email, verified anonymizing delete, profile+avatar) | ✅ live (OAuth/passkeys: capability built, not yet exposed per-pool) |
-| P3 commerce (cart/checkout/discounts/fulfillment/orders/stats + Stripe payment→order bridge) | ✅ live — all 5 commerce.md flows |
-| P3+ subscriptions ($9/mo recurring + renew/lapse lifecycle + customer portal) | ✅ live — the original had NONE of this |
-| P4 site (dark mode, PWA SW, SEO artifacts, hosted pages, localized pages `slug@locale`, field i18n en/ar + RTL, hybrid search, media/R2 avatars, wide events + merchant stats) | ✅ live |
+| Phase                                                                                                                                                                          | State                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| P0 forms (contact/newsletter)                                                                                                                                                  | ✅ live                                                              |
+| P1 collections (blog, reviews, wishlist, discounts as .cms.json)                                                                                                               | ✅ live                                                              |
+| P2 auth pool (email+password, sessions, reset, change-email, verified anonymizing delete, profile+avatar)                                                                      | ✅ live (OAuth/passkeys: capability built, not yet exposed per-pool) |
+| P3 commerce (cart/checkout/discounts/fulfillment/orders/stats + Stripe payment→order bridge)                                                                                   | ✅ live — all 5 commerce.md flows                                    |
+| P3+ subscriptions ($9/mo recurring + renew/lapse lifecycle + customer portal)                                                                                                  | ✅ live — the original had NONE of this                              |
+| P4 site (dark mode, PWA SW, SEO artifacts, hosted pages, localized pages `slug@locale`, field i18n en/ar + RTL, hybrid search, media/R2 avatars, wide events + merchant stats) | ✅ live                                                              |
 
 Beyond the original: subscriptions + portal, semantic search (no SaaSignal
 rent), installable PWA, localized hosted pages, idempotent data seed,

@@ -22,5 +22,9 @@ export const $counter = atom(0);
 
 // --- refreshers: mutations in api.js/store.js call these instead of
 // dispatching DOM events; components just subscribe to the atoms.
-export async function refreshSession() { $session.set(await getSession()); }
-export async function refreshCart() { $cart.set(await getCart()); }
+export async function refreshSession() {
+  $session.set(await getSession());
+}
+export async function refreshCart() {
+  $cart.set(await getCart());
+}

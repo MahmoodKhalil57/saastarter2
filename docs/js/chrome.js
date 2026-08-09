@@ -33,7 +33,7 @@ export function applyPrefs() {
   const dark = localStorage.getItem("theme") === "dark";
   const classes = document.documentElement.classList;
   classes.toggle("wa-dark", dark); // Web Awesome's dark scope
-  classes.toggle("dark", dark);    // the hosted theme's dark scope
+  classes.toggle("dark", dark); // the hosted theme's dark scope
   const locale = getLocale();
   document.documentElement.lang = locale;
   document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
@@ -44,7 +44,9 @@ addEventListener("pageshow", applyPrefs);
 if (!document.querySelector("s2-cart-drawer")) {
   document.body.append(document.createElement("s2-cart-drawer"));
 }
-const maybeOpenCart = () => { if (location.hash === "#cart") document.querySelector("s2-cart-drawer")?.show(); };
+const maybeOpenCart = () => {
+  if (location.hash === "#cart") document.querySelector("s2-cart-drawer")?.show();
+};
 addEventListener("hashchange", maybeOpenCart);
 maybeOpenCart();
 

@@ -2,7 +2,7 @@
 
 A complete, self-serve ecommerce/SaaS site with **no build step and no
 server in this repo**: raw HTML + Bootstrap on any static host (GitHub
-Pages reference), with the whole backend *declared in git* and hosted
+Pages reference), with the whole backend _declared in git_ and hosted
 by a [hono-aep-baas](https://mizan-gpp.the-montiapple.workers.dev) —
 auth (email/password, Google, 2FA), commerce (cart → Stripe → orders →
 fulfillment), blog, reviews, i18n (en/ar), PWA, generated admin panel,
@@ -19,7 +19,7 @@ cli.sh                          the one entry (npm: hono-aep-baas-cli) — run i
 
 1. **Fork/clone**, then create your backend project:
    open the platform **studio** → <https://mizan-gpp.the-montiapple.workers.dev/studio>,
-   sign up, click **New project**, and mint an **sk_ key** on the Keys tab.
+   sign up, click **New project**, and mint an **sk\_ key** on the Keys tab.
 2. **Save two gitignored files at the repo root** (both have hosted
    `$schema`s; never commit them):
    - `.owner-creds.json` — `{ "email": …, "password": …, "sk_key": "sk_live_…" }`

@@ -3,7 +3,10 @@ import { requestReset, signInGoogle, signInWith2fa, signUp, verify2fa } from "..
 let mode = "sign-in";
 let challenge = null;
 const el = (id) => document.getElementById(id);
-const fail = (id, message) => { el(id).textContent = message; el(id).classList.remove("s2-hidden"); };
+const fail = (id, message) => {
+  el(id).textContent = message;
+  el(id).classList.remove("s2-hidden");
+};
 
 el("google").addEventListener("click", () => signInGoogle());
 el("mode").addEventListener("click", () => {
@@ -15,7 +18,8 @@ el("mode").addEventListener("click", () => {
 });
 el("submit").addEventListener("click", async () => {
   el("auth-error").classList.add("s2-hidden");
-  const email = el("email").value, password = el("password").value;
+  const email = el("email").value,
+    password = el("password").value;
   if (mode === "sign-up") {
     const response = await signUp(email, password, el("name").value || email);
     if (!response.ok) return fail("auth-error", (await response.json()).message ?? "Something went wrong.");

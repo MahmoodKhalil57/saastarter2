@@ -8,7 +8,10 @@ export const authHeader = () => (token() ? { Authorization: `Bearer ${token()}` 
 
 // --- locale (en/ar) — the baas resolves localized fields server-side ---
 export const getLocale = () => (localStorage.getItem("locale") === "ar" ? "ar" : "en");
-export const setLocale = (locale) => { localStorage.setItem("locale", locale); location.reload(); };
+export const setLocale = (locale) => {
+  localStorage.setItem("locale", locale);
+  location.reload();
+};
 export const localeQuery = (joiner = "?") => `${joiner}locale=${getLocale()}`;
 
 const authPath = (path) => `${base}/auth${path}`;
@@ -29,7 +32,10 @@ export const signUp = (email, password, name) => post("/sign-up/email", { email,
 export const signIn = (email, password) => post("/sign-in/email", { email, password });
 export const requestReset = (email) => post("/request-password-reset", { email, redirectTo: location.origin });
 export const signInGuest = () => post("/sign-in/anonymous", {});
-export const signOut = () => { localStorage.removeItem(KEY); void refreshSession(); };
+export const signOut = () => {
+  localStorage.removeItem(KEY);
+  void refreshSession();
+};
 export const updateProfile = (name) => post("/update-user", { name });
 export const updateAvatar = (image) => post("/update-user", { image });
 export const changeEmail = (newEmail) => post("/change-email", { newEmail, callbackURL: location.href });
@@ -53,13 +59,18 @@ export async function verify2fa(code, challenge) {
     body: JSON.stringify({ code }),
   });
   const t = response.headers.get("set-auth-token");
-  if (t) { localStorage.setItem(KEY, t); void refreshSession(); }
+  if (t) {
+    localStorage.setItem(KEY, t);
+    void refreshSession();
+  }
   return response.ok;
 }
 
 /** Google OAuth = a top-level navigation (state cookie must land first-party). */
 export const signInGoogle = () => {
-  location.href = authPath(`/sign-in/social/google?callbackURL=${encodeURIComponent(location.origin + location.pathname)}`);
+  location.href = authPath(
+    `/sign-in/social/google?callbackURL=${encodeURIComponent(location.origin + location.pathname)}`,
+  );
 };
 /** OAuth return: #auth_token → stored bearer. Call on every page load. */
 export function consumeAuthFragment() {

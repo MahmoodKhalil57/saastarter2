@@ -38,15 +38,24 @@ export async function writeFile(path, text, message = `devgit: edit ${path} in t
 }
 
 function livePreview(path, text) {
-  const link = [...document.querySelectorAll("link[rel='stylesheet']")]
-    .find((el) => (el.getAttribute("href") ?? "").replace(/^\.\//, "").split("?")[0] === path);
+  const link = [...document.querySelectorAll("link[rel='stylesheet']")].find(
+    (el) => (el.getAttribute("href") ?? "").replace(/^\.\//, "").split("?")[0] === path,
+  );
   if (!link) return null;
   const mirror = document.createElement("style");
   mirror.setAttribute("data-s2devgit", "");
   mirror.textContent = text;
   link.after(mirror);
   link.disabled = true;
-  return { update: (value) => { mirror.textContent = value; }, stop: () => { mirror.remove(); link.disabled = false; } };
+  return {
+    update: (value) => {
+      mirror.textContent = value;
+    },
+    stop: () => {
+      mirror.remove();
+      link.disabled = false;
+    },
+  };
 }
 
 // ui = { paint, status, panel, back } supplied by devgit.js.
@@ -57,7 +66,14 @@ export function paintFiles(ui) {
     <div data-status></div><button class="dg-btn-link" data-back>&larr; back</button>`);
   ui.panel.querySelector("[data-back]").addEventListener("click", ui.back);
   ui.panel.querySelector("[data-open]").addEventListener("click", () =>
-    openEditor(ui, ui.panel.querySelector("[data-path]").value.trim().replace(/^\.?\//, "")).catch((error) => ui.status(error.message, false)));
+    openEditor(
+      ui,
+      ui.panel
+        .querySelector("[data-path]")
+        .value.trim()
+        .replace(/^\.?\//, ""),
+    ).catch((error) => ui.status(error.message, false)),
+  );
 }
 
 async function openEditor(ui, path) {
@@ -83,8 +99,15 @@ async function openEditor(ui, path) {
       const message = ui.panel.querySelector("[data-message]").value || undefined;
       const links = await writeFile(path, area.value, message, files);
       preview?.stop();
-      ui.status(`committed → ${links.map((l) => `<a href="${l.url}" target="_blank" rel="noreferrer">${l.label}</a>`).join(" · ")} — <a href="#" onclick="location.reload();return false">reload</a>`);
-    } catch (error) { ui.status(error.message, false); }
+      ui.status(
+        `committed → ${links.map((l) => `<a href="${l.url}" target="_blank" rel="noreferrer">${l.label}</a>`).join(" · ")} — <a href="#" onclick="location.reload();return false">reload</a>`,
+      );
+    } catch (error) {
+      ui.status(error.message, false);
+    }
   });
-  ui.panel.querySelector("[data-discard]").addEventListener("click", () => { preview?.stop(); paintFiles(ui); });
+  ui.panel.querySelector("[data-discard]").addEventListener("click", () => {
+    preview?.stop();
+    paintFiles(ui);
+  });
 }
