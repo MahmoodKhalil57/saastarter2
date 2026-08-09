@@ -48,21 +48,30 @@
       <h1>devgit</h1>
       <p class="s2-quiet">
         There is no build step, so the file you are reading IS the deployed source. Save a GitHub token here and every
-        page grows a <code>&lt;/&gt;</code> button: freeze the page, edit the DOM — by hand, DevTools, or a Claude
-        browser extension — review the line diff, and commit. The push is the deploy.
+        page grows a
+        <code>&lt;/&gt;</code>
+        button: freeze the page, edit the DOM — by hand, DevTools, or a Claude browser extension — review the line diff,
+        and commit. The push is the deploy.
       </p>
       <ol class="s2-small s2-quiet">
         <li>
           Create a
-          <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer"
-            >fine-grained personal access token</a
-          >: <strong>Only select repositories</strong> → this repo, Repository permissions →
-          <strong>Contents: Read and write</strong>, shortest expiration you can live with.
+          <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">
+            fine-grained personal access token
+          </a>
+          :
+          <strong>Only select repositories</strong>
+          → this repo, Repository permissions →
+          <strong>Contents: Read and write</strong>
+          , shortest expiration you can live with.
         </li>
         <li>
-          Paste it below. It is stored in <em>this browser's</em> localStorage only — never sent anywhere but
-          <code>api.github.com</code>. Anyone with this browser profile (or an XSS on this origin) can use it, which is
-          exactly why the token must see one repo and nothing else.
+          Paste it below. It is stored in
+          <em>this browser's</em>
+          localStorage only — never sent anywhere but
+          <code>api.github.com</code>
+          . Anyone with this browser profile (or an XSS on this origin) can use it, which is exactly why the token must
+          see one repo and nothing else.
         </li>
       </ol>
       <form id="devgit-form" class="s2-stack">
@@ -95,9 +104,15 @@
     </main>
     <s2-footer></s2-footer>
     <footer class="s2-center s2-small s2-quiet" style="padding-block-end: 1.5rem">
-      the module is four files — <a href="./js/devgit.js">devgit.js</a> ·
-      <a href="./js/devgit-github.js">devgit-github.js</a> · <a href="./js/devgit-diff.js">devgit-diff.js</a> ·
-      <a href="./js/devgit-files.js">devgit-files.js</a> — view source, as always
+      the module is four files —
+      <a href="./js/devgit.js">devgit.js</a>
+      ·
+      <a href="./js/devgit-github.js">devgit-github.js</a>
+      ·
+      <a href="./js/devgit-diff.js">devgit-diff.js</a>
+      ·
+      <a href="./js/devgit-files.js">devgit-files.js</a>
+      — view source, as always
     </footer>
     <script type="module" src="./js/pages/dev.js"></script>
   </body>

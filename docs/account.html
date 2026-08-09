@@ -80,7 +80,8 @@
       <wa-callout id="guest-hint" variant="brand" class="s2-hidden" style="margin-block-end: 1rem">
         <iconify-icon slot="icon" icon="lucide:info"></iconify-icon>
         You're browsing as a guest — your cart and orders live on this session.
-        <a href="./login.html">Create an account</a> and they come with you.
+        <a href="./login.html">Create an account</a>
+        and they come with you.
       </wa-callout>
 
       <wa-tab-group>
@@ -95,7 +96,8 @@
           <div class="s2-stack">
             <wa-card>
               <div class="s2-stack">
-                <strong>Profile</strong><span class="s2-quiet" id="who"></span>
+                <strong>Profile</strong>
+                <span class="s2-quiet" id="who"></span>
                 <div class="s2-row">
                   <img
                     id="avatar"
@@ -131,16 +133,18 @@
                       padding: 0.25rem 0.6rem;
                       font-size: 0.85rem;
                     "
-                    >Change avatar<input id="avatar-file" type="file" accept="image/*" class="s2-hidden"
-                  /></label>
+                  >
+                    Change avatar
+                    <input id="avatar-file" type="file" accept="image/*" class="s2-hidden" />
+                  </label>
                 </div>
                 <div class="s2-row" style="max-inline-size: 22rem">
                   <wa-input id="prof-name" placeholder="Name" style="flex: 1"></wa-input>
                   <wa-button id="prof-save" appearance="outlined">Save</wa-button>
                 </div>
-                <wa-button id="sign-out" size="s" appearance="outlined" variant="danger" style="align-self: start"
-                  >Sign out</wa-button
-                >
+                <wa-button id="sign-out" size="s" appearance="outlined" variant="danger" style="align-self: start">
+                  Sign out
+                </wa-button>
               </div>
             </wa-card>
             <wa-card>
@@ -172,7 +176,10 @@
           <div class="s2-stack">
             <wa-card>
               <div class="s2-stack">
-                <strong>Two-factor authentication <span id="tf-state"></span></strong>
+                <strong>
+                  Two-factor authentication
+                  <span id="tf-state"></span>
+                </strong>
                 <div id="tf-setup" class="s2-stack">
                   <div class="s2-row" style="max-inline-size: 26rem">
                     <wa-input id="tf-pw" type="password" placeholder="Current password" style="flex: 1"></wa-input>
@@ -181,7 +188,9 @@
                   <div id="tf-confirm" class="s2-hidden s2-stack">
                     <wa-qr-code id="tf-qr" label="Scan with your authenticator app"></wa-qr-code>
                     <p class="s2-small" style="margin: 0">
-                      Secret: <code id="tf-secret"></code> <wa-copy-button id="tf-copy" value=""></wa-copy-button>
+                      Secret:
+                      <code id="tf-secret"></code>
+                      <wa-copy-button id="tf-copy" value=""></wa-copy-button>
                     </p>
                     <wa-otp-input id="tf-code" label="Code from the app"></wa-otp-input>
                     <wa-button id="tf-verify" variant="brand" style="align-self: start">Confirm</wa-button>
@@ -203,7 +212,10 @@
         <wa-tab-panel name="billing">
           <wa-card>
             <div class="s2-stack">
-              <strong>Pro subscription <span id="pro-state"></span></strong>
+              <strong>
+                Pro subscription
+                <span id="pro-state"></span>
+              </strong>
               <p class="s2-quiet s2-small" style="margin: 0">
                 $9/mo — a real recurring checkout; the webhook lifecycle grants, renews, and revokes the entitlement.
               </p>
@@ -215,12 +227,12 @@
           </wa-card>
         </wa-tab-panel>
 
-        <wa-tab-panel name="orders"
-          ><div id="orders" class="s2-stack"><p class="s2-quiet">Loading…</p></div></wa-tab-panel
-        >
-        <wa-tab-panel name="wishlist"
-          ><div id="wishlist" class="s2-stack"><p class="s2-quiet">Loading…</p></div></wa-tab-panel
-        >
+        <wa-tab-panel name="orders">
+          <div id="orders" class="s2-stack"><p class="s2-quiet">Loading…</p></div>
+        </wa-tab-panel>
+        <wa-tab-panel name="wishlist">
+          <div id="wishlist" class="s2-stack"><p class="s2-quiet">Loading…</p></div>
+        </wa-tab-panel>
 
         <wa-tab-panel name="dev">
           <wa-card>

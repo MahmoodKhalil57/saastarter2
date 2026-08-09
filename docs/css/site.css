@@ -72,7 +72,7 @@ code {
    here so the injected chrome never shifts the page (CLS 0). */
 s2-nav {
   display: block;
-  min-block-size: 57px;
+  min-block-size: 63px;
   border-block-end: 1px solid var(--s2-line);
 
   & .s2-nav-row {
@@ -150,7 +150,7 @@ main {
   padding-block: 1.5rem;
   /* main fills the viewport below the nav: the footer never jumps into
      view while async content is still streaming in */
-  min-block-size: calc(100dvh - 57px);
+  min-block-size: calc(100dvh - 63px);
 }
 
 /* --- cards ---------------------------------------------------------------

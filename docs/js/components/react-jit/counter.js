@@ -8,10 +8,12 @@ import { $counter } from "#stores";
 export default ({ html, useStore }) =>
   function Counter() {
     const count = useStore($counter);
-    return html` <div class="s2-row">
-      <wa-button size="s" appearance="outlined" onClick=${() => $counter.set(count - 1)}>−</wa-button>
-      <strong class="s2-price">${count}</strong>
-      <wa-button size="s" appearance="outlined" onClick=${() => $counter.set(count + 1)}>+</wa-button>
-      <span class="s2-quiet s2-small">react-jit (engine lazy-loaded)</span>
-    </div>`;
+    return html`
+      <div class="s2-row">
+        <wa-button size="s" appearance="outlined" onClick=${() => $counter.set(count - 1)}>−</wa-button>
+        <strong class="s2-price">${count}</strong>
+        <wa-button size="s" appearance="outlined" onClick=${() => $counter.set(count + 1)}>+</wa-button>
+        <span class="s2-quiet s2-small">react-jit (engine lazy-loaded)</span>
+      </div>
+    `;
   };

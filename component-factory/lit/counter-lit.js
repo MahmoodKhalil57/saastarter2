@@ -23,12 +23,14 @@ class S2CounterLit extends LitElement {
     this.unsub?.();
   }
   render() {
-    return html` <div class="s2-row">
-      <wa-button size="s" appearance="outlined" @click=${() => $counter.set(this.count - 1)}>−</wa-button>
-      <strong class="s2-price">${this.count}</strong>
-      <wa-button size="s" appearance="outlined" @click=${() => $counter.set(this.count + 1)}>+</wa-button>
-      <span class="s2-quiet s2-small">lit (compiled artifact)</span>
-    </div>`;
+    return html`
+      <div class="s2-row">
+        <wa-button size="s" appearance="outlined" @click=${() => $counter.set(this.count - 1)}>−</wa-button>
+        <strong class="s2-price">${this.count}</strong>
+        <wa-button size="s" appearance="outlined" @click=${() => $counter.set(this.count + 1)}>+</wa-button>
+        <span class="s2-quiet s2-small">lit (compiled artifact)</span>
+      </div>
+    `;
   }
 }
 

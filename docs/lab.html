@@ -73,11 +73,15 @@
       <section style="margin-block-start: 2rem">
         <h2 style="font-size: 1.1rem">What this page proves</h2>
         <p class="s2-quiet s2-small">
-          The first four counters are <code>.gen.js</code> artifacts compiled once in
-          <code>component-factory/</code> (runtime bundled in: lit 15KB · svelte 52KB · vue 71KB · react 182KB, min).
-          The fifth ships as source and lazy-loads a shared React engine from the CDN on first connect — watch its
-          fallback text until the engine lands. All five import the same <code>#stores</code> module through the page
-          import map, so one atom instance drives every engine.
+          The first four counters are
+          <code>.gen.js</code>
+          artifacts compiled once in
+          <code>component-factory/</code>
+          (runtime bundled in: lit 15KB · svelte 52KB · vue 71KB · react 182KB, min). The fifth ships as source and
+          lazy-loads a shared React engine from the CDN on first connect — watch its fallback text until the engine
+          lands. All five import the same
+          <code>#stores</code>
+          module through the page import map, so one atom instance drives every engine.
         </p>
       </section>
     </main>
