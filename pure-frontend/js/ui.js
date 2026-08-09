@@ -5,6 +5,7 @@ import { consumeAuthFragment, getLocale, getSession, setLocale, signOut } from "
 import { getCart } from "./store.js";
 import { icon } from "./icons.js";
 import { initCartDrawer, openCart } from "./cart-drawer.js";
+import "./router.js"; // SPA-style navigation (main-only swaps)
 
 const dark = () => localStorage.getItem("theme") === "dark";
 const applyTheme = () => {

@@ -100,20 +100,12 @@ a.card:hover, .card.s2-hover:hover {
 footer { font-family: var(--s2-mono); font-size: 0.78rem; }
 .blockquote { font-family: var(--s2-display); font-style: italic; font-weight: 450; }
 
-/* --- View transitions (cross-document MPA; progressive enhancement) ------
-   Same-origin navigations crossfade + gently rise; the navbar/footer keep
-   their own names so the chrome stays rock-still while content moves.
-   Shared-element morphs (product card → hero, blog card → title) come from
-   matching view-transition-names set at render. Unsupported browsers and
-   reduced-motion users navigate exactly as before. */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
-}
-.navbar { view-transition-name: site-nav; }
-body > footer { view-transition-name: site-footer; }
-::view-transition-old(root) { animation: 150ms cubic-bezier(0.4, 0, 1, 1) both s2-vt-out; }
-::view-transition-new(root) { animation: 240ms cubic-bezier(0, 0, 0.2, 1) 30ms both s2-vt-in; }
-@keyframes s2-vt-out { to { opacity: 0; transform: translateY(-0.4rem); } }
-@keyframes s2-vt-in  { from { opacity: 0; transform: translateY(0.5rem); } }
-/* morphing pairs: keep text readable while the box animates */
-::view-transition-group(*) { animation-duration: 260ms; }
+/* --- Client navigation (js/router.js swaps <main> only) --------------------
+   No fades: the view-transition ROOT is frozen (old pixels hold until the
+   new DOM lands), and only elements with matching view-transition-names
+   morph (product card title -> hero, blog card -> post title). The #nav
+   box is reserved so the injected navbar never shifts the page (CLS 0). */
+#nav { min-block-size: 57px; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(*) { animation-duration: 200ms; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation: none; } }
