@@ -111,3 +111,7 @@ main { min-block-size: calc(100dvh - 59px); } /* main fills the viewport below t
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(*) { animation-duration: 200ms; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
 @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation: none; } }
+/* async content areas reserve their space — sections below them never move */
+#detail { min-block-size: 24rem; }
+#grid { min-block-size: 20rem; }
+#posts { min-block-size: 8rem; }
