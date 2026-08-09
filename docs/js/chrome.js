@@ -1,14 +1,15 @@
 // App glue, imported once per page: registers the shared-chrome components
 // (js/components/ — the platform's answer to "HTML has no include"),
 // applies theme/locale prefs, and hosts the tiny cross-cutting utilities
-// (icon, toast). There is no router — every link is a real MPA navigation
-// smoothed by cross-document View Transitions (site.css) and made instant
-// by speculation-rules prerendering (each page's head).
+// (icon, toast), and loads js/router.js — same-document navigation that
+// morphs <main> so this module, its components and their state survive
+// every hop.
 import { consumeAuthFragment, getLocale } from "./api.js";
 import { refreshCart, refreshSession } from "#stores";
 import "./components/nav.js";
 import "./components/footer.js";
 import "./components/cart-drawer.js";
+import "./router.js"; // same-document navigation: morph <main>, keep the chrome alive
 
 export function icon(name, cls = "") {
   const full = name.includes(":") ? name : `lucide:${name}`;

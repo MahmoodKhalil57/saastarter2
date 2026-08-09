@@ -39,6 +39,7 @@
           "baas/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-baas-client@v0.1.0/src/",
           "devgit/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/",
           "htm": "https://esm.sh/htm@3.1.1?target=es2022",
+          "idiomorph": "https://cdn.jsdelivr.net/gh/bigskysoftware/idiomorph@v0.7.4/dist/idiomorph.esm.js",
           "nanostores": "https://esm.sh/nanostores@1.4.2?target=es2022",
           "react": "https://esm.sh/react@19.2.8?target=es2022",
           "react-dom/client": "https://esm.sh/react-dom@19.2.8/client?target=es2022&deps=react@19.2.8",
@@ -77,22 +78,6 @@
     <link rel="modulepreload" href="./js/api.js" />
     <link rel="modulepreload" href="./js/config.js" />
     <script type="module" src="./js/chrome.js"></script>
-    <script type="speculationrules">
-      {
-        "prerender": [
-          {
-            "where": {
-              "and": [
-                { "href_matches": "/*" },
-                { "not": { "href_matches": "*/admin.html" } },
-                { "not": { "href_matches": "*/dev.html" } }
-              ]
-            },
-            "eagerness": "moderate"
-          }
-        ]
-      }
-    </script>
     <meta
       property="og:image"
       content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png"

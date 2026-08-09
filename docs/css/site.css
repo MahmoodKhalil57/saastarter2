@@ -265,19 +265,20 @@ a.s2-card-link {
   }
 }
 
-/* --- navigation: the PLATFORM is the router ------------------------------
-   Cross-document View Transitions replace the old fetch-and-morph client
-   router: every <a> is a real MPA navigation, the browser snapshots old
-   and new, and only elements with matching view-transition-names morph
-   (product card title → product h1, blog card → post title). The root is
-   frozen — no full-page fade, old pixels hold until the new page lands. */
+/* --- navigation ----------------------------------------------------------
+   js/router.js morphs <main> in the SAME document and wraps the patch in
+   startViewTransition, so matching view-transition-names still morph
+   (product card title → product h1) while the chrome is never destroyed.
+   The @view-transition rule below is the no-JS fallback: without the
+   router, links are plain cross-document navigations and the browser
+   animates those instead. */
 @view-transition {
   navigation: auto;
 }
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
+/* The root keeps its default cross-fade. Freezing it (animation: none)
+   turns a cross-document swap into a hard cut, which reads as a blink —
+   and cross-document is now only the no-JS fallback anyway, since
+   js/router.js morphs same-document. */
 ::view-transition-group(*) {
   animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
