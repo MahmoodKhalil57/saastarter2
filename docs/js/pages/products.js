@@ -4,23 +4,24 @@ const grid = document.getElementById("grid");
 const EMOJI = { starter: "🛍️", theme: "🎨", plugin: "🔌" };
 
 function render(items) {
-  grid.innerHTML = items.length === 0 ? '<p class="text-body-secondary">No matches.</p>' : items.map((p) => `
-    <div class="col-sm-6 col-lg-4">
-      <a class="card h-100 text-decoration-none" href="./product.html?slug=${encodeURIComponent(p.slug)}">
-        <div class="card-body">
-          <div class="product-emoji">${EMOJI[p.category] ?? "🧩"}</div>
-          <h5 class="card-title d-flex justify-content-between" style="view-transition-name:product-${p.slug}">${p.name}${p.featured ? '<span class="badge text-bg-primary s2-tier-badge">Featured</span>' : ""}</h5>
-          <p class="card-text text-body-secondary">${p.tagline ?? ""}</p>
-          <span class="s2-price">${p.price_cents ? money(p.price_cents) : "Free"}</span>
+  grid.innerHTML = items.length === 0 ? '<p class="s2-quiet">No matches.</p>' : items.map((p) => `
+    <a class="s2-card-link" href="./product.html?slug=${encodeURIComponent(p.slug)}">
+      <wa-card>
+        <div class="product-emoji">${EMOJI[p.category] ?? "🧩"}</div>
+        <div class="s2-row" style="justify-content:space-between">
+          <strong style="view-transition-name:product-${p.slug}">${p.name}</strong>
+          ${p.featured ? '<wa-badge variant="brand">Featured</wa-badge>' : ""}
         </div>
-      </a>
-    </div>`).join("");
+        <p class="s2-quiet s2-small">${p.tagline ?? ""}</p>
+        <span class="s2-price">${p.price_cents ? money(p.price_cents) : "Free"}</span>
+      </wa-card>
+    </a>`).join("");
 }
 
 let timer;
 document.getElementById("search").addEventListener("input", (event) => {
   clearTimeout(timer);
-  const query = event.target.value.trim();
+  const query = (event.target.value ?? "").trim();
   timer = setTimeout(async () => render(query ? await searchProducts(query) : await products()), 250);
 });
 render(await products());

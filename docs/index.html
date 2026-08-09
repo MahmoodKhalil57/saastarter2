@@ -1,56 +1,74 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg"><link rel="manifest" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/manifest.webmanifest" crossorigin="anonymous"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link id="bs-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/theme.css"><link rel="stylesheet" href="./css/tweakcn-adapter.css"><link rel="stylesheet" href="./css/site.css"><script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><title>saastarter2 — the self-aware SaaS template</title><meta property="og:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png"><meta property="og:type" content="website"><meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/index.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png">
-<meta name="description" content="An ecommerce shop that sells its own source code. Raw HTML + Bootstrap over a declarative baas on Cloudflare Workers."></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>saastarter2 — the self-aware SaaS template</title>
+<meta name="description" content="An ecommerce shop that sells its own source code. Raw HTML + Web Awesome components over a declarative baas on Cloudflare Workers — no build step, no framework, no router.">
+<link rel="icon" type="image/svg+xml" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg">
+<link rel="manifest" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/manifest.webmanifest" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script>{const d=localStorage.theme==="dark",c=document.documentElement.classList;c.toggle("wa-dark",d);c.toggle("dark",d);const l=localStorage.locale==="ar"?"ar":"en";document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}</script>
+<link rel="stylesheet" href="./css/app.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/webawesome.loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<script type="module" src="./js/chrome.js"></script>
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"*/admin.html"}},{"not":{"href_matches":"*/dev.html"}}]},"eagerness":"moderate"}]}</script>
+<meta property="og:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png">
+</head>
 <body>
-<div id="nav"></div>
-<main class="container py-4"><div id="pg-index" class="mx-auto">
-  <section class="s2-hero text-center py-5 my-2">
-    <p class="s2-kicker s2-reveal mb-3">the self-aware saas template</p>
+<s2-nav></s2-nav>
+<main class="container">
+  <section class="s2-hero">
+    <p class="s2-kicker s2-reveal">the self-aware saas template</p>
     <h1 class="s2-hero-title s2-reveal">Ship fast.<br>Stay <em>minimal.</em></h1>
-    <p class="s2-comment s2-reveal mt-4">/* the store you are looking at sells the repo that builds it */</p>
-    <p class="lead mx-auto mt-3 s2-reveal" style="max-width:34rem">Raw HTML + Bootstrap, no build step, no framework. Everything hard lives in the hosted backend — view source; that's the whole app.</p>
-    <div class="mt-4 d-flex gap-2 justify-content-center s2-reveal">
-      <a class="btn btn-primary btn-lg" href="./products.html"><iconify-icon icon="lucide:package" inline></iconify-icon> Browse products</a>
-      <a class="btn btn-outline-primary btn-lg" href="./page.html?slug=story">Our story <iconify-icon icon="lucide:arrow-right" inline></iconify-icon></a>
+    <p class="s2-comment s2-reveal">/* the store you are looking at sells the repo that builds it */</p>
+    <p class="s2-quiet s2-reveal" style="max-inline-size:34rem; margin-inline:auto; font-size:1.1rem">Raw HTML + Web Awesome components, no build step, no framework, no router — the browser is all four. Everything hard lives in the hosted backend. View source; that's the whole app.</p>
+    <div class="s2-row s2-reveal" style="justify-content:center; margin-block-start:1.5rem">
+      <a href="./products.html"><wa-button variant="brand" size="l"><iconify-icon icon="lucide:package" inline></iconify-icon> Browse products</wa-button></a>
+      <a href="./page.html?slug=story"><wa-button appearance="outlined" variant="brand" size="l">Our story <iconify-icon icon="lucide:arrow-right" inline></iconify-icon></wa-button></a>
     </div>
   </section>
-  <section class="py-5">
-    <p class="s2-kicker text-center mb-4">what ships in the box</p>
-    <div class="row g-4">
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:shopping-cart"></iconify-icon><h5>eCommerce</h5><p class="text-body-secondary small mb-0">Guest-by-default cart, coupons, in-page payments (no redirect), digital delivery with signed downloads.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:lock"></iconify-icon><h5>Authentication</h5><p class="text-body-secondary small mb-0">Sessions, Google OAuth, real TOTP two-factor, verified deletion — all bearer-first for static hosts.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:search"></iconify-icon><h5>Search + i18n</h5><p class="text-body-secondary small mb-0">Hybrid lexical+semantic search; English/Arabic with RTL — content localized server-side.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:credit-card"></iconify-icon><h5>Subscriptions</h5><p class="text-body-secondary small mb-0">Recurring checkout, renew/lapse lifecycle, self-serve customer portal.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:truck"></iconify-icon><h5>Delivery</h5><p class="text-body-secondary small mb-0">Neutral delivery contract — download links today; couriers and carriers as drivers tomorrow.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100 s2-hover s2-feature"><div class="card-body"><iconify-icon icon="lucide:mail"></iconify-icon><h5>Forms + CMS</h5><p class="text-body-secondary small mb-0">A contact form with zero JavaScript, hosted pages with localized siblings.</p></div></div></div>
+
+  <section style="padding-block:3rem">
+    <p class="s2-kicker s2-center" style="margin-block-end:1.5rem">what ships in the box</p>
+    <div class="s2-grid">
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:shopping-cart"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">eCommerce</h3><p class="s2-quiet s2-small" style="margin:0">Guest-by-default cart, coupons, in-page payments (no redirect), digital delivery with signed downloads.</p></wa-card>
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:lock"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">Authentication</h3><p class="s2-quiet s2-small" style="margin:0">Sessions, Google OAuth, real TOTP two-factor, verified deletion — all bearer-first for static hosts.</p></wa-card>
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:search"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">Search + i18n</h3><p class="s2-quiet s2-small" style="margin:0">Hybrid lexical+semantic search; English/Arabic with RTL for free — logical properties, no second stylesheet.</p></wa-card>
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:credit-card"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">Subscriptions</h3><p class="s2-quiet s2-small" style="margin:0">Recurring checkout, renew/lapse lifecycle, self-serve customer portal.</p></wa-card>
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:truck"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">Delivery</h3><p class="s2-quiet s2-small" style="margin:0">Neutral delivery contract — download links today; couriers and carriers as drivers tomorrow.</p></wa-card>
+      <wa-card class="s2-hover s2-feature"><iconify-icon icon="lucide:mail"></iconify-icon><h3 style="font-family:var(--s2-body); font-size:1rem; margin-block:0.5rem 0.25rem">Forms + CMS</h3><p class="s2-quiet s2-small" style="margin:0">A contact form with zero JavaScript, hosted pages with localized siblings.</p></wa-card>
     </div>
   </section>
-  <section class="py-5">
-    <p class="s2-kicker text-center mb-1">pricing</p>
-    <h2 class="text-center mb-4">Pay once, own the source</h2>
-    <div class="row g-4 justify-content-center" id="pricing">
-      <div class="col-md-3"><div class="card h-100 s2-hover"><div class="card-body vstack"><h5>Frontend Lite</h5><div class="fs-3 s2-price">$0</div><p class="text-body-secondary small flex-grow-1">This very page — view source, copy, ship.</p><button class="btn btn-outline-secondary" disabled>It's this page</button></div></div></div>
-      <div class="col-md-3"><div class="card h-100 s2-hover" style="border-color:var(--s2-accent)"><div class="card-body vstack"><h5>Backend + Frontend</h5><div class="fs-3 s2-price">$49</div><p class="text-body-secondary small flex-grow-1">Admin, products, checkout, hosted collections + auth pools.</p><button class="btn btn-primary" data-buy="billing-kit"><iconify-icon icon="lucide:plus" inline></iconify-icon> Add to cart</button></div></div></div>
-      <div class="col-md-3"><div class="card h-100 s2-hover"><div class="card-body vstack"><h5>Full Stack Pro</h5><div class="fs-3 s2-price">$149</div><p class="text-body-secondary small flex-grow-1">Stripe payments, order management, lifetime updates.</p><button class="btn btn-outline-primary" data-buy="saastarter2"><iconify-icon icon="lucide:plus" inline></iconify-icon> Add to cart</button></div></div></div>
+
+  <section style="padding-block:3rem">
+    <p class="s2-kicker s2-center" style="margin-block-end:0.25rem">pricing</p>
+    <h2 class="s2-center" style="margin-block:0 1.5rem">Pay once, own the source</h2>
+    <div class="s2-grid" id="pricing" style="max-inline-size:52rem; margin-inline:auto">
+      <wa-card class="s2-hover"><div class="s2-stack" style="block-size:100%"><h3 style="margin:0">Frontend Lite</h3><div class="s2-price" style="font-size:1.5rem">$0</div><p class="s2-quiet s2-small" style="flex:1">This very page — view source, copy, ship.</p><wa-button appearance="outlined" variant="neutral" disabled>It's this page</wa-button></div></wa-card>
+      <wa-card class="s2-hover" style="--border-color:var(--s2-accent)"><div class="s2-stack" style="block-size:100%"><h3 style="margin:0">Backend + Frontend</h3><div class="s2-price" style="font-size:1.5rem">$49</div><p class="s2-quiet s2-small" style="flex:1">Admin, products, checkout, hosted collections + auth pools.</p><wa-button variant="brand" data-buy="billing-kit"><iconify-icon icon="lucide:plus" inline></iconify-icon> Add to cart</wa-button></div></wa-card>
+      <wa-card class="s2-hover"><div class="s2-stack" style="block-size:100%"><h3 style="margin:0">Full Stack Pro</h3><div class="s2-price" style="font-size:1.5rem">$149</div><p class="s2-quiet s2-small" style="flex:1">Stripe payments, order management, lifetime updates.</p><wa-button appearance="outlined" variant="brand" data-buy="saastarter2"><iconify-icon icon="lucide:plus" inline></iconify-icon> Add to cart</wa-button></div></wa-card>
     </div>
   </section>
-  <section class="py-4 text-center">
-    <blockquote class="blockquote mx-auto" style="max-width:34rem"><p>"Best template I've used — and it literally sells itself, so I trusted it instantly."</p><footer class="blockquote-footer">Emily Park, Indie Developer</footer></blockquote>
+
+  <section class="s2-center" style="padding-block:2rem">
+    <blockquote><p>"Best template I've used — and it literally sells itself, so I trusted it instantly."</p><footer class="s2-quiet s2-small">— Emily Park, Indie Developer</footer></blockquote>
   </section>
-</div></main>
-<footer class="border-top py-4 text-center text-body-secondary small">
-  static on GitHub Pages · backend on Cloudflare Workers · <a href="./contact.html">contact</a> · <a href="./blog.html">blog</a> · <a href="./admin.html">admin</a>
-</footer>
-<script type="module" src="./js/ui.js"></script>
+</main>
+<s2-footer></s2-footer>
 <script type="module">
 import { addToCart } from "./js/store.js";
-import { openCart } from "./js/cart-drawer.js";
 document.getElementById("pricing").addEventListener("click", async (event) => {
   const slug = event.target.closest?.("[data-buy]")?.dataset?.buy;
   if (!slug) return;
   await addToCart(slug);
-  openCart();
+  void document.querySelector("s2-cart-drawer")?.show();
 });
 </script>
 </body>

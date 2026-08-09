@@ -1,20 +1,49 @@
-# docs — the raw-HTML edition
+# docs — the platform-native edition
 
-THE frontend (the React edition it started as a sibling of is deleted —
-this is the store now), with the entire toolchain deleted:
+THE frontend, rebuilt on what the web platform ships in 2026. The
+toolchain is still deleted — but this time the *workarounds* are too:
 
-- **No build step** — browser-native ES modules (`<script type="module">`);
-  deploying is copying this folder to any static host.
-- **No router** — real `.html` pages; deep links are just files.
-- **No component library** — Bootstrap 5.3 from a CDN (`data-bs-theme`
-  gives dark mode; the `.rtl.css` build gives Arabic).
-- **No file over 150 lines** — `js/` is the client core (config/api/
-  store/ui/payment), `js/pages/` is one small script per page.
+- **No build step** — browser-native ES modules; `css/app.css` is the
+  "bundle" (plain `@import`). Deploying is copying this folder to any
+  static host (Pages serves `master:/docs`).
+- **No router** — real `.html` pages. Cross-document **View Transitions**
+  (`@view-transition { navigation: auto }` in `css/site.css`) morph
+  matching elements between pages (product card title → product h1), and
+  a **speculation-rules** block in each head prerenders likely next pages,
+  so MPA navigation feels SPA-instant with zero navigation JS. The old
+  fetch-and-morph client router (idiomorph) is gone.
+- **A real component library, no build required** — [Web Awesome]
+  (Shoelace's successor, pinned `@3.11.0` from jsdelivr): drawer (the
+  cart), tab-group (account), rating (reviews), otp-input + qr-code
+  (2FA), markdown (hosted pages), toast, skeleton, copy-button. This is
+  the community-components story for no-build sites: web components.
+- **No RTL stylesheet** — the CSS is logical-properties-only; Arabic is
+  `dir="rtl"` and everything flips, Web Awesome included.
+- **Shared chrome as custom elements** — pages write `<s2-nav>` /
+  `<s2-footer>` / `<s2-cart-drawer>` (defined in `js/chrome.js` +
+  `js/cart.js`, light DOM so the cascade applies). HTML still has no
+  native include; this is the platform's least-bad answer, and the
+  elements' boxes are reserved in CSS so upgrading never shifts layout.
+- **No file over ~200 lines** — `js/` is the client core (config/api/
+  store/chrome/cart/payment), `js/pages/` one small script per page.
 
 Everything server-side is the baas: guest-by-default sessions, hybrid
 search, discounts, the embedded payment element (gateway.md), digital
 delivery claims (delivery.md), 2FA, Google OAuth, subscriptions.
 `js/config.js` is the one file to edit.
+
+## The head is the boilerplate budget
+
+Each page repeats ~15 head lines (meta, one stylesheet, three scripts,
+speculation rules, OG tags). That duplication is the one genuinely
+unsolved gap in no-build HTML — includes don't exist yet. Everything
+below the head is one `<s2-nav>`, the page's own `<main>`, one
+`<s2-footer>`.
+
+A tiny inline script in each head applies theme + locale classes
+**before first paint** (no dark-mode flash, works in prerendered pages);
+`js/chrome.js` re-applies on `pageshow` so pages prerendered before a
+toggle activate correctly.
 
 ## Run it locally
 
@@ -34,10 +63,12 @@ reachable as `localhost` and via the WSL IP (`hostname -I`).
 Notes:
 - `file://` (double-clicking index.html) will NOT work — browsers block
   ES-module imports without a server.
-- VS Code Live Preview serves it fine, but view it in a REAL browser
-  (open the `127.0.0.1:...` URL in Chrome), not the embedded preview
-  panel — the panel's webview blocks the CDN + API requests this app
-  makes. Set `livePreview.openPreviewTarget` to `External Browser`.
+- View Transitions + speculation rules are progressive enhancement:
+  Chromium gets morphing + prerender, everything else gets plain (still
+  correct) navigations.
+- If the catalog is empty, the hosted project probably has no synced
+  config/seed yet: `./cli.sh sync push && ./cli.sh seed push` (needs
+  `.owner-creds.json` filled in).
 
 ## devgit — edit the site from the site
 
@@ -46,23 +77,25 @@ browser can be the editor. `dev.html` stores a fine-grained GitHub PAT
 (one repo, Contents: read/write) in localStorage; every page then grows a
 `</>` button. "Edit this page" re-renders the pristine repo file with
 scripts inert — at that point **the DOM is the file** — so you, DevTools,
-or a Claude browser extension can mutate it. Review the line diff, commit:
-one push to the source branch, one to `gh-pages` (which is the deploy).
-No server anywhere in the loop — the browser talks to api.github.com
-directly. Not just HTML: "Edit css / js / any file" opens any repo file
-as text — stylesheets preview live on the page as you type. Agents get
-console hooks: `s2devgit.enterEdit()` → mutate → `s2devgit.push("msg")`
-for pages; `s2devgit.readFile(path)` / `s2devgit.writeFile(path, text,
-"msg")` for everything else. Four files: `js/devgit.js`,
-`js/devgit-github.js`, `js/devgit-diff.js`, `js/devgit-files.js`.
+or a Claude browser extension can mutate it. Review the line diff, commit
+— the push to `master:/docs` IS the deploy. No server anywhere in the
+loop — the browser talks to api.github.com directly. Not just HTML:
+"Edit css / js / any file" opens any repo file as text — `css/app.css`
+previews live on the page as you type. Agents get console hooks:
+`s2devgit.enterEdit()` → mutate → `s2devgit.push("msg")` for pages;
+`s2devgit.readFile(path)` / `s2devgit.writeFile(path, text, "msg")` for
+everything else. Four files: `js/devgit.js`, `js/devgit-github.js`,
+`js/devgit-diff.js`, `js/devgit-files.js`.
 
-## Theming (full tweakcn vocabulary)
+## Theming (tweakcn → Web Awesome)
 
 The hosted theme document (`hono-aep-baas-config/themes/default.cms.css`)
-drives the whole site through `css/tweakcn-adapter.css`. EVERY tweakcn
-token is live: background/foreground, card, popover, primary, secondary,
-muted, accent, destructive (+foregrounds), border, input, ring,
-chart-1..5, the full sidebar-* set (it styles the cart drawer), radius,
-font-sans/serif/mono, shadow tokens, and letter-spacing. `--spacing` is
-the one non-mappable token (Bootstrap's spacing scale is compile-time).
+still drives the whole site, now through `css/theme-bridge.css`: every
+tweakcn token (`--primary`, `--background`, `--radius`, fonts, …) is
+chained into Web Awesome's `--wa-*` vocabulary and this site's `--s2-*`
+tokens, with editorial-palette fallbacks so the site renders theme-less.
+Dark mode is one toggle setting `.dark` (the theme's scope) + `.wa-dark`
+(Web Awesome's scope); the var() chains re-resolve on their own.
 Restyle = edit the theme + `sync push` — or the studio, or MCP.
+
+[Web Awesome]: https://webawesome.com

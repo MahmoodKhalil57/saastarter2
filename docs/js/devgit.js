@@ -1,8 +1,10 @@
 // Edit-this-page → commit. No build step means the file IS the DOM, so in
 // edit mode anything that can mutate the DOM — you, DevTools, a Claude
 // browser extension — is editing the source. Review the line diff, push, and
-// GitHub Pages serves the new commit. Loaded by ui.js only when a developer
-// has saved a token on dev.html; visitors never fetch this file.
+// GitHub Pages serves the new commit. Loaded by chrome.js only when a
+// developer has saved a token on dev.html; visitors never fetch this file.
+// The UI is SELF-CONTAINED (own dg-* classes in the injected style): it must
+// survive on a frozen page where no framework is awake.
 import { changedCount, diffLines, mergeToSource, renderDiff } from "./devgit-diff.js";
 import { paintFiles, readFile, writeFile } from "./devgit-files.js";
 import { getFile, loadConfig, putFile, targets } from "./devgit-github.js";
@@ -20,27 +22,44 @@ const el = (tag, className, html) => {
 };
 
 const style = el("style", "", `
-  .s2-devgit-fab{position:fixed;bottom:1rem;left:1rem;z-index:2000;font-family:monospace}
-  .s2-devgit-panel{position:fixed;bottom:4rem;left:1rem;z-index:2000;width:min(34rem,calc(100vw - 2rem));max-height:70vh;overflow:auto}
-  .s2-devgit-diff{font-size:.75rem;line-height:1.5;background:var(--bs-tertiary-bg);padding:.5rem;border-radius:.375rem;max-height:14rem;overflow:auto}
-  .s2-devgit-add{color:var(--bs-success)}.s2-devgit-del{color:var(--bs-danger)}.s2-devgit-fold{opacity:.5}
-  .s2-devgit-panel textarea{font-size:.75rem;line-height:1.45;white-space:pre;overflow-x:auto}
-  [contenteditable="true"]:focus-visible{outline:2px dashed var(--bs-primary);outline-offset:2px}`);
-const fab = el("button", "btn btn-dark shadow s2-devgit-fab", "&lt;/&gt;");
-const panel = el("div", "card shadow s2-devgit-panel d-none");
+  .s2-devgit-fab{position:fixed;bottom:1rem;left:1rem;z-index:2000;font-family:monospace;background:#1c1917;color:#faf6f0;border:none;border-radius:.375rem;padding:.5rem .75rem;cursor:pointer;box-shadow:0 .25rem .75rem rgba(0,0,0,.3)}
+  .s2-devgit-panel{position:fixed;bottom:4rem;left:1rem;z-index:2000;width:min(34rem,calc(100vw - 2rem));max-height:70vh;overflow:auto;background:var(--s2-card,#fdfaf5);color:var(--s2-ink,#1c1917);border:1px solid var(--s2-line,#d8d0c4);border-radius:.5rem;padding:.75rem;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.25);font-size:.9rem}
+  .s2-devgit-panel .dg-stack{display:flex;flex-direction:column;gap:.5rem}
+  .s2-devgit-panel .dg-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+  .s2-devgit-panel .dg-end{margin-inline-start:auto}
+  .s2-devgit-panel .dg-btn{font:inherit;font-size:.85rem;border-radius:.375rem;border:1px solid var(--s2-line,#d8d0c4);background:transparent;color:inherit;padding:.3rem .6rem;cursor:pointer}
+  .s2-devgit-panel .dg-btn-primary{background:var(--s2-accent,#d9482b);border-color:var(--s2-accent,#d9482b);color:var(--s2-accent-contrast,#fff)}
+  .s2-devgit-panel .dg-btn-warn{background:#f4c542;border-color:#f4c542;color:#1c1917}
+  .s2-devgit-panel .dg-btn-warn-outline{border-color:#c99700;color:inherit}
+  .s2-devgit-panel .dg-btn-danger{border-color:#b3261e;color:#b3261e}
+  .s2-devgit-panel .dg-btn-link{border:none;background:none;color:var(--s2-accent,#d9482b);padding:0;cursor:pointer;font-size:.85rem}
+  .s2-devgit-panel .dg-input{font:inherit;font-size:.85rem;border:1px solid var(--s2-line,#d8d0c4);border-radius:.375rem;padding:.3rem .5rem;background:transparent;color:inherit;width:100%;box-sizing:border-box}
+  .s2-devgit-panel .dg-alert{border-radius:.375rem;padding:.3rem .6rem;font-size:.85rem;border:1px solid}
+  .s2-devgit-panel .dg-alert-info{border-color:#7aa7d9;background:color-mix(in srgb,#7aa7d9 15%,transparent)}
+  .s2-devgit-panel .dg-alert-danger{border-color:#b3261e;background:color-mix(in srgb,#b3261e 12%,transparent)}
+  .s2-devgit-panel .dg-badge{font-size:.7rem;border-radius:999px;padding:.1em .6em;background:var(--s2-line,#d8d0c4)}
+  .s2-devgit-panel .dg-badge-warn{background:#f4c542;color:#1c1917}
+  .s2-devgit-panel .dg-muted{opacity:.75;font-size:.85rem;margin:0}
+  .s2-devgit-diff{font-size:.75rem;line-height:1.5;background:rgba(128,128,128,.12);padding:.5rem;border-radius:.375rem;max-height:14rem;overflow:auto;margin:0}
+  .s2-devgit-add{color:#276749}.s2-devgit-del{color:#b3261e}.s2-devgit-fold{opacity:.5}
+  .s2-devgit-panel textarea{font-family:monospace;font-size:.75rem;line-height:1.45;white-space:pre;overflow-x:auto;min-height:12rem}
+  [contenteditable="true"]:focus-visible{outline:2px dashed var(--s2-accent,#d9482b);outline-offset:2px}`);
+const fab = el("button", "s2-devgit-fab", "&lt;/&gt;");
+const panel = el("div", "s2-devgit-panel", "");
+panel.hidden = true;
 panel.setAttribute("contenteditable", "false");
-fab.addEventListener("click", () => panel.classList.toggle("d-none"));
+fab.addEventListener("click", () => { panel.hidden = !panel.hidden; });
 
 function paint(html) {
-  panel.innerHTML = `<div class="card-body vstack gap-2"><div class="d-flex justify-content-between"><strong class="s2-mono">devgit</strong><span class="badge text-bg-${state.editing ? "warning" : "secondary"}">${state.editing ? "editing" : "live"}</span></div>${html}</div>`;
-  panel.classList.remove("d-none");
+  panel.innerHTML = `<div class="dg-stack"><div class="dg-row"><strong style="font-family:monospace">devgit</strong><span class="dg-badge ${state.editing ? "dg-badge-warn" : ""}">${state.editing ? "editing" : "live"}</span></div>${html}</div>`;
+  panel.hidden = false;
 }
 
-const status = (message, ok = true) => { const box = panel.querySelector("[data-status]"); if (box) box.innerHTML = `<div class="alert alert-${ok ? "info" : "danger"} py-1 px-2 small mb-0">${message}</div>`; };
+const status = (message, ok = true) => { const box = panel.querySelector("[data-status]"); if (box) box.innerHTML = `<div class="dg-alert dg-alert-${ok ? "info" : "danger"}">${message}</div>`; };
 
 function paintHome() {
-  paint(`<p class="small text-body-secondary mb-0">Freeze this page and edit the DOM, or open any file in the repo (by hand, DevTools, or a browser agent), then commit the diff straight to GitHub. Configure on <a href="./dev.html">dev.html</a>.</p>
-    <div data-status></div><div class="hstack gap-2"><button class="btn btn-warning btn-sm" data-edit>Edit this page</button><button class="btn btn-outline-warning btn-sm" data-files>Edit css / js / any file</button></div>`);
+  paint(`<p class="dg-muted">Freeze this page and edit the DOM, or open any file in the repo (by hand, DevTools, or a browser agent), then commit the diff straight to GitHub. Configure on <a href="./dev.html">dev.html</a>.</p>
+    <div data-status></div><div class="dg-row"><button class="dg-btn dg-btn-warn" data-edit>Edit this page</button><button class="dg-btn dg-btn-warn-outline" data-files>Edit css / js / any file</button></div>`);
   panel.querySelector("[data-edit]").addEventListener("click", () => enterEdit().catch((error) => status(error.message, false)));
   panel.querySelector("[data-files]").addEventListener("click", () => paintFiles({ paint, status, panel, back: paintHome }));
 }
@@ -60,9 +79,9 @@ async function enterEdit() {
 }
 
 function paintEditing() {
-  paint(`<p class="small text-body-secondary mb-0">Page frozen to <code>${targets(cfg)[0].label}</code> — scripts are inert, the DOM is the file. Click into the page to type, or let an agent rewrite it.</p>
-    <div data-diff></div><input class="form-control form-control-sm" data-message placeholder="commit message"><div data-status></div>
-    <div class="hstack gap-2"><button class="btn btn-outline-secondary btn-sm" data-review>Review diff</button><button class="btn btn-primary btn-sm" data-push>Commit &amp; push</button><button class="btn btn-outline-danger btn-sm ms-auto" data-discard>Discard</button></div>`);
+  paint(`<p class="dg-muted">Page frozen to <code>${targets(cfg)[0].label}</code> — scripts are inert, the DOM is the file. Click into the page to type, or let an agent rewrite it.</p>
+    <div data-diff></div><input class="dg-input" data-message placeholder="commit message"><div data-status></div>
+    <div class="dg-row"><button class="dg-btn" data-review>Review diff</button><button class="dg-btn dg-btn-primary" data-push>Commit &amp; push</button><button class="dg-btn dg-btn-danger dg-end" data-discard>Discard</button></div>`);
   panel.querySelector("[data-review]").addEventListener("click", review);
   panel.querySelector("[data-push]").addEventListener("click", () => push().catch((error) => status(error.message, false)));
   panel.querySelector("[data-discard]").addEventListener("click", () => location.reload());
@@ -116,7 +135,7 @@ function serializeBaseline() {
 if (cfg?.token) {
   document.body.append(style, fab, panel);
   paintHome();
-  panel.classList.add("d-none");
+  panel.hidden = true;
   // Console/agent hooks — page loop: s2devgit.enterEdit() → mutate DOM →
   // s2devgit.push("msg"); any file: await s2devgit.readFile("css/site.css")
   // then s2devgit.writeFile("css/site.css", newText, "msg").

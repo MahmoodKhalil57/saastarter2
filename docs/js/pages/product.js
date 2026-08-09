@@ -1,6 +1,5 @@
 import { addToCart, money, myWishlist, postReview, product, reviewsFor, toggleWishlist, track } from "../store.js";
-import { toast } from "../ui.js";
-import { openCart } from "../cart-drawer.js";
+import { icon, toast } from "../chrome.js";
 
 const slug = new URLSearchParams(location.search).get("slug");
 const detail = document.getElementById("detail");
@@ -8,7 +7,7 @@ const detail = document.getElementById("detail");
 // render (content arrives async) — the card's title morphs into this h1,
 // then the real data replaces the text under the same name.
 const vt = slug ? `view-transition-name:product-${slug}` : "";
-if (slug) detail.innerHTML = `<div class="col-12"><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1></div>`;
+if (slug) detail.innerHTML = `<div><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1><wa-skeleton effect="sheen" style="inline-size:60%"></wa-skeleton></div>`;
 const p = await product(slug);
 if (!p) detail.innerHTML = '<p>Not found. <a href="./products.html">Back to catalog</a></p>';
 else {
@@ -16,46 +15,57 @@ else {
   void track("product_viewed", { product_id: p.slug, price_cents: p.price_cents });
   const wished = (await myWishlist()).some((w) => w.product === slug);
   detail.innerHTML = `
-    <div class="col-md-5"><div class="card"><div class="card-body text-center py-5"><div style="font-size:5rem">🧩</div><p class="text-uppercase small text-body-secondary">${p.category ?? ""}</p></div></div></div>
-    <div class="col-md-7 vstack gap-3">
-      <h1 style="${vt}">${p.name}</h1>
-      <p class="lead text-body-secondary">${p.tagline ?? ""}</p>
-      <p>${p.description ?? ""}</p>
-      <div class="fs-3 fw-bold">${p.price_cents ? money(p.price_cents) : "Free"}</div>
-      <div class="d-flex gap-2 align-items-center">
-        <button id="add" class="btn btn-primary btn-lg"><iconify-icon icon="lucide:shopping-cart" inline></iconify-icon> Add to cart</button>
-        <button id="view-cart" class="btn btn-outline-primary btn-lg d-none">View cart <iconify-icon icon="lucide:arrow-right" inline></iconify-icon></button>
-        <button id="wish" class="btn btn-link fs-3 p-0" style="color:${wished ? "var(--s2-accent)" : "var(--bs-secondary-color)"}" aria-label="Toggle wishlist"><iconify-icon icon="${wished ? "lucide:heart" : "lucide:heart"}" inline></iconify-icon></button>
+    <wa-card class="s2-center" style="align-self:start">
+      <div style="font-size:5rem; padding-block:2rem">🧩</div>
+      <p class="s2-quiet s2-small" style="text-transform:uppercase">${p.category ?? ""}</p>
+    </wa-card>
+    <div class="s2-stack">
+      <h1 style="${vt}; margin:0">${p.name}</h1>
+      <p class="s2-quiet" style="font-size:1.15rem; margin:0">${p.tagline ?? ""}</p>
+      <p style="margin:0">${p.description ?? ""}</p>
+      <div class="s2-price" style="font-size:1.75rem">${p.price_cents ? money(p.price_cents) : "Free"}</div>
+      <div class="s2-row">
+        <wa-button id="add" variant="brand" size="l">${icon("shopping-cart")} Add to cart</wa-button>
+        <wa-button id="view-cart" appearance="outlined" variant="brand" size="l" class="s2-hidden">View cart ${icon("arrow-right")}</wa-button>
+        <wa-button id="wish" appearance="plain" size="l" aria-label="Toggle wishlist"
+          style="color:${wished ? "var(--s2-accent)" : "var(--s2-muted)"}">${icon("heart")}</wa-button>
       </div>
     </div>`;
-  document.getElementById("add").onclick = async () => {
+  document.getElementById("add").addEventListener("click", async () => {
     await addToCart(slug);
-    document.getElementById("view-cart").classList.remove("d-none");
-    openCart(); // the sidebar IS the cart
-  };
-  document.getElementById("view-cart").onclick = () => openCart();
-  document.getElementById("wish").onclick = async () => {
+    document.getElementById("view-cart").classList.remove("s2-hidden");
+    void document.querySelector("s2-cart-drawer")?.show(); // the sidebar IS the cart
+  });
+  document.getElementById("view-cart").addEventListener("click", () => void document.querySelector("s2-cart-drawer")?.show());
+  document.getElementById("wish").addEventListener("click", async () => {
     const { wished: now } = await toggleWishlist(slug);
-    document.getElementById("wish").style.color = now ? "var(--s2-accent)" : "var(--bs-secondary-color)";
-  };
+    document.getElementById("wish").style.color = now ? "var(--s2-accent)" : "var(--s2-muted)";
+  });
 }
 
-// reviews
-let rating = 5;
-const stars = document.getElementById("stars");
-const paintStars = () => { stars.innerHTML = [1,2,3,4,5].map((n) => `<span role="button" data-n="${n}" style="color:${n <= rating ? "var(--s2-accent)" : "var(--bs-tertiary-color)"}">★</span>`).join(""); };
-stars.addEventListener("click", (event) => { const n = Number(event.target.dataset.n); if (n) { rating = n; paintStars(); } });
-paintStars();
-
+// reviews — wa-rating both ways: interactive in the form, readonly in rows
 async function renderReviews() {
   const rows = await reviewsFor(slug);
   document.getElementById("reviews").innerHTML = rows.length === 0
-    ? '<p class="text-body-secondary">No reviews yet — be the first.</p>'
-    : rows.map((r) => `<div class="card"><div class="card-body py-2"><div class="d-flex justify-content-between"><strong>${r.title ?? "Review"}</strong><span style="color:var(--s2-accent)">${"★".repeat(r.rating)}</span></div><p class="mb-1 small text-body-secondary">${r.body ?? ""}</p><small class="text-body-tertiary">— ${r.author_name ?? "Anonymous"}</small></div></div>`).join("");
+    ? '<p class="s2-quiet">No reviews yet — be the first.</p>'
+    : rows.map((r) => `<wa-card>
+        <div class="s2-row" style="justify-content:space-between">
+          <strong>${r.title ?? "Review"}</strong>
+          <wa-rating label="Rated ${r.rating} of 5" value="${r.rating}" readonly size="s"></wa-rating>
+        </div>
+        <p class="s2-quiet s2-small" style="margin-block:0.25rem 0">${r.body ?? ""}</p>
+        <small class="s2-quiet">— ${r.author_name ?? "Anonymous"}</small>
+      </wa-card>`).join("");
 }
-document.getElementById("rev-post").onclick = async () => {
-  const response = await postReview({ product: slug, rating, title: document.getElementById("rev-title").value, body: document.getElementById("rev-body").value, author_name: "Pure shopper" });
-  if (response.ok) { toast("Review posted ✓"); void renderReviews(); }
-  else toast("Could not post review", false);
-};
+document.getElementById("rev-post").addEventListener("click", async () => {
+  const response = await postReview({
+    product: slug,
+    rating: Number(document.getElementById("rev-stars").value) || 5,
+    title: document.getElementById("rev-title").value,
+    body: document.getElementById("rev-body").value,
+    author_name: "Pure shopper",
+  });
+  if (response.ok) { void toast("Review posted ✓"); void renderReviews(); }
+  else void toast("Could not post review", false);
+});
 await renderReviews();

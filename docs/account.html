@@ -1,75 +1,140 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg"><link rel="manifest" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/manifest.webmanifest" crossorigin="anonymous"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link id="bs-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/theme.css"><link rel="stylesheet" href="./css/tweakcn-adapter.css"><link rel="stylesheet" href="./css/site.css"><script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><title>Account — saastarter2 pure</title><meta property="og:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png"><meta property="og:type" content="website"><meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/account.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png"></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account — saastarter2 pure</title>
+<link rel="icon" type="image/svg+xml" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg">
+<link rel="manifest" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/manifest.webmanifest" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script>{const d=localStorage.theme==="dark",c=document.documentElement.classList;c.toggle("wa-dark",d);c.toggle("dark",d);const l=localStorage.locale==="ar"?"ar":"en";document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}</script>
+<link rel="stylesheet" href="./css/app.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/webawesome.loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<script type="module" src="./js/chrome.js"></script>
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"*/admin.html"}},{"not":{"href_matches":"*/dev.html"}}]},"eagerness":"moderate"}]}</script>
+<meta property="og:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/account.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png">
+</head>
 <body>
-<div id="nav"></div>
-<main class="container py-4"><div id="pg-account" class="mx-auto" style="max-width:44rem">
-  <div id="guest-hint" class="alert alert-info d-none">You're browsing as a guest — your cart and orders live on this session. <a href="./login.html">Create an account</a> and they come with you.</div>
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-overview">Overview</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-security">Security</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-billing">Billing</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-orders" id="orders-tab-btn">Orders</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-wishlist">Wishlist</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-dev">Developer</button></li>
-  </ul>
-  <div class="tab-content pt-3">
-    <div class="tab-pane fade show active" id="tab-overview">
-      <div class="card mb-3"><div class="card-body">
-        <h5>Profile</h5><p class="text-body-secondary" id="who"></p>
-        <div class="d-flex align-items-center gap-3 mb-3">
-          <img id="avatar" class="rounded-circle border d-none" style="width:3.5rem;height:3.5rem;object-fit:cover" alt="">
-          <div id="avatar-fallback" class="rounded-circle border bg-body-tertiary d-flex align-items-center justify-content-center fw-bold" style="width:3.5rem;height:3.5rem"></div>
-          <label class="btn btn-sm btn-outline-secondary mb-0">Change avatar<input id="avatar-file" type="file" accept="image/*" class="d-none"></label>
+<s2-nav></s2-nav>
+<main class="container" style="max-inline-size:44rem">
+  <wa-callout id="guest-hint" variant="brand" class="s2-hidden" style="margin-block-end:1rem">
+    <iconify-icon slot="icon" icon="lucide:info"></iconify-icon>
+    You're browsing as a guest — your cart and orders live on this session. <a href="./login.html">Create an account</a> and they come with you.
+  </wa-callout>
+
+  <wa-tab-group>
+    <wa-tab panel="overview">Overview</wa-tab>
+    <wa-tab panel="security">Security</wa-tab>
+    <wa-tab panel="billing">Billing</wa-tab>
+    <wa-tab panel="orders">Orders</wa-tab>
+    <wa-tab panel="wishlist">Wishlist</wa-tab>
+    <wa-tab panel="dev">Developer</wa-tab>
+
+    <wa-tab-panel name="overview">
+      <div class="s2-stack">
+        <wa-card>
+          <div class="s2-stack">
+            <strong>Profile</strong><span class="s2-quiet" id="who"></span>
+            <div class="s2-row">
+              <img id="avatar" class="s2-hidden" style="inline-size:3.5rem; block-size:3.5rem; object-fit:cover; border-radius:50%; border:1px solid var(--s2-line)" alt="">
+              <div id="avatar-fallback" style="inline-size:3.5rem; block-size:3.5rem; border-radius:50%; border:1px solid var(--s2-line); display:flex; align-items:center; justify-content:center; font-weight:bold; background:var(--wa-color-surface-lowered)"></div>
+              <label style="cursor:pointer; border:1px solid var(--s2-line); border-radius:var(--wa-border-radius-s); padding:0.25rem 0.6rem; font-size:0.85rem">Change avatar<input id="avatar-file" type="file" accept="image/*" class="s2-hidden"></label>
+            </div>
+            <div class="s2-row" style="max-inline-size:22rem">
+              <wa-input id="prof-name" placeholder="Name" style="flex:1"></wa-input>
+              <wa-button id="prof-save" appearance="outlined">Save</wa-button>
+            </div>
+            <wa-button id="sign-out" size="s" appearance="outlined" variant="danger" style="align-self:start">Sign out</wa-button>
+          </div>
+        </wa-card>
+        <wa-card>
+          <div class="s2-stack">
+            <strong>Change email</strong>
+            <p class="s2-quiet s2-small" style="margin:0">A confirmation link goes to the NEW address.</p>
+            <div class="s2-row" style="max-inline-size:26rem">
+              <wa-input id="new-email" type="email" placeholder="new@email.com" style="flex:1"></wa-input>
+              <wa-button id="email-change" appearance="outlined">Send confirmation</wa-button>
+            </div>
+          </div>
+        </wa-card>
+        <wa-card style="--border-color:var(--wa-color-danger-fill-loud)">
+          <div class="s2-stack">
+            <strong>Delete account</strong>
+            <p class="s2-quiet s2-small" style="margin:0">Emails a confirmation link; the account is anonymized in place.</p>
+            <div class="s2-row" style="max-inline-size:26rem">
+              <wa-input id="del-pw" type="password" placeholder="Current password" style="flex:1"></wa-input>
+              <wa-button id="del-req" appearance="outlined" variant="danger">Request deletion</wa-button>
+            </div>
+          </div>
+        </wa-card>
+      </div>
+    </wa-tab-panel>
+
+    <wa-tab-panel name="security">
+      <div class="s2-stack">
+        <wa-card>
+          <div class="s2-stack">
+            <strong>Two-factor authentication <span id="tf-state"></span></strong>
+            <div id="tf-setup" class="s2-stack">
+              <div class="s2-row" style="max-inline-size:26rem">
+                <wa-input id="tf-pw" type="password" placeholder="Current password" style="flex:1"></wa-input>
+                <wa-button id="tf-enable" appearance="outlined">Enable 2FA</wa-button>
+              </div>
+              <div id="tf-confirm" class="s2-hidden s2-stack">
+                <wa-qr-code id="tf-qr" label="Scan with your authenticator app"></wa-qr-code>
+                <p class="s2-small" style="margin:0">Secret: <code id="tf-secret"></code> <wa-copy-button id="tf-copy" value=""></wa-copy-button></p>
+                <wa-otp-input id="tf-code" label="Code from the app"></wa-otp-input>
+                <wa-button id="tf-verify" variant="brand" style="align-self:start">Confirm</wa-button>
+              </div>
+            </div>
+          </div>
+        </wa-card>
+        <wa-card>
+          <div class="s2-stack" style="max-inline-size:22rem">
+            <strong>Change password</strong>
+            <wa-input id="pw-cur" type="password" placeholder="Current password"></wa-input>
+            <wa-input id="pw-next" type="password" placeholder="New password (8+ chars)"></wa-input>
+            <wa-button id="pw-change" appearance="outlined" style="align-self:start">Change password</wa-button>
+          </div>
+        </wa-card>
+      </div>
+    </wa-tab-panel>
+
+    <wa-tab-panel name="billing">
+      <wa-card>
+        <div class="s2-stack">
+          <strong>Pro subscription <span id="pro-state"></span></strong>
+          <p class="s2-quiet s2-small" style="margin:0">$9/mo — a real recurring checkout; the webhook lifecycle grants, renews, and revokes the entitlement.</p>
+          <div class="s2-row">
+            <wa-button id="sub" variant="brand">Subscribe — $9/mo</wa-button>
+            <wa-button id="portal" appearance="outlined" class="s2-hidden">Manage subscription</wa-button>
+          </div>
         </div>
-        <div class="input-group mb-2" style="max-width:22rem"><input id="prof-name" class="form-control" placeholder="Name"><button id="prof-save" class="btn btn-outline-secondary">Save</button></div>
-        <button id="sign-out" class="btn btn-sm btn-outline-danger">Sign out</button>
-      </div></div>
-      <div class="card mb-3"><div class="card-body">
-        <h5>Change email</h5><p class="text-body-secondary small">A confirmation link goes to the NEW address.</p>
-        <div class="input-group" style="max-width:26rem"><input id="new-email" type="email" class="form-control" placeholder="new@email.com"><button id="email-change" class="btn btn-outline-secondary">Send confirmation</button></div>
-      </div></div>
-      <div class="card border-danger-subtle"><div class="card-body">
-        <h5>Delete account</h5><p class="text-body-secondary small">Emails a confirmation link; the account is anonymized in place.</p>
-        <div class="input-group" style="max-width:26rem"><input id="del-pw" type="password" class="form-control" placeholder="Current password"><button id="del-req" class="btn btn-outline-danger">Request deletion</button></div>
-      </div></div>
-    </div>
-    <div class="tab-pane fade" id="tab-security">
-      <div class="card mb-3"><div class="card-body vstack gap-2">
-        <h5>Two-factor authentication <span id="tf-state"></span></h5>
-        <div id="tf-setup">
-          <div class="input-group mb-2" style="max-width:26rem"><input id="tf-pw" type="password" class="form-control" placeholder="Current password"><button id="tf-enable" class="btn btn-outline-secondary">Enable 2FA</button></div>
-          <div id="tf-confirm" class="d-none"><code id="tf-secret" class="d-block p-2 bg-body-tertiary rounded small mb-2"></code>
-            <div class="input-group" style="max-width:22rem"><input id="tf-code" inputmode="numeric" class="form-control" placeholder="123456"><button id="tf-verify" class="btn btn-primary">Confirm</button></div></div>
+      </wa-card>
+    </wa-tab-panel>
+
+    <wa-tab-panel name="orders"><div id="orders" class="s2-stack"><p class="s2-quiet">Loading…</p></div></wa-tab-panel>
+    <wa-tab-panel name="wishlist"><div id="wishlist" class="s2-stack"><p class="s2-quiet">Loading…</p></div></wa-tab-panel>
+
+    <wa-tab-panel name="dev">
+      <wa-card>
+        <div class="s2-stack">
+          <strong>API key</strong>
+          <p class="s2-quiet s2-small" style="margin:0">Mints an sk_ key bound to YOUR account — it acts as your session does against the project's API. Shown once.</p>
+          <wa-button id="mint" appearance="outlined" style="align-self:start">Mint key</wa-button>
+          <p id="minted-row" class="s2-hidden s2-small" style="margin:0"><code id="minted" style="background:var(--wa-color-surface-lowered); padding:0.25rem 0.5rem; border-radius:var(--wa-border-radius-s)"></code> <wa-copy-button id="minted-copy" value=""></wa-copy-button></p>
         </div>
-      </div></div>
-      <div class="card"><div class="card-body vstack gap-2">
-        <h5>Change password</h5>
-        <input id="pw-cur" type="password" class="form-control" placeholder="Current password" style="max-width:22rem">
-        <input id="pw-next" type="password" class="form-control" placeholder="New password (8+ chars)" style="max-width:22rem">
-        <button id="pw-change" class="btn btn-outline-secondary align-self-start">Change password</button>
-      </div></div>
-    </div>
-    <div class="tab-pane fade" id="tab-billing">
-      <div class="card"><div class="card-body vstack gap-2">
-        <h5>Pro subscription <span id="pro-state"></span></h5>
-        <p class="text-body-secondary small mb-1">$9/mo — a real recurring checkout; the webhook lifecycle grants, renews, and revokes the entitlement.</p>
-        <div class="d-flex gap-2"><button id="sub" class="btn btn-primary">Subscribe — $9/mo</button><button id="portal" class="btn btn-outline-secondary d-none">Manage subscription</button></div>
-      </div></div>
-    </div>
-    <div class="tab-pane fade" id="tab-orders"><div id="orders" class="vstack gap-2 pt-1"><p class="text-body-secondary">Loading…</p></div></div>
-    <div class="tab-pane fade" id="tab-wishlist"><div id="wishlist" class="vstack gap-2 pt-1"><p class="text-body-secondary">Loading…</p></div></div>
-    <div class="tab-pane fade" id="tab-dev">
-      <div class="card"><div class="card-body vstack gap-2">
-        <h5>API key</h5>
-        <p class="text-body-secondary small mb-1">Mints an sk_ key bound to YOUR account — it acts as your session does against the project's API. Shown once.</p>
-        <button id="mint" class="btn btn-outline-secondary align-self-start">Mint key</button>
-        <code id="minted" class="d-none d-block p-2 bg-body-tertiary rounded small"></code>
-      </div></div>
-    </div>
-  </div>
-</div></main>
-<script type="module" src="./js/ui.js"></script>
+      </wa-card>
+    </wa-tab-panel>
+  </wa-tab-group>
+</main>
+<s2-footer></s2-footer>
 <script type="module" src="./js/pages/account.js"></script>
 </body>
 </html>

@@ -1,30 +1,35 @@
 // Hosted Puck pages (site.md §1): render the block types the pure edition
 // knows (Hero, Markdown); anything else degrades to a labeled note. The
 // baas resolves localized siblings (slug@locale) server-side per ?locale.
+// Markdown is no longer hand-rolled — <wa-markdown> renders full GFM; the
+// content rides in as an inert <script type="text/markdown"> set via
+// textContent, so hosted content can never be parsed as live HTML.
 import { base } from "../config.js";
 import { localeQuery } from "../api.js";
 
-/** Mini-markdown: headings, bold, italics, links, code, paragraphs. */
-function md(text) {
-  const esc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  return esc.split(/\n{2,}/).map((block) => {
-    const h = block.match(/^(#{1,3})\s+(.*)$/m);
-    let html = block
-      .replace(/^#{1,3}\s+.*$/m, "")
-      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-      .replace(/`([^`]+)`/g, "<code>$1</code>")
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
-      .trim();
-    const heading = h ? `<h${h[1].length + 1}>${h[2]}</h${h[1].length + 1}>` : "";
-    return heading + (html ? `<p>${html.replace(/\n/g, "<br>")}</p>` : "");
-  }).join("");
+function markdownBlock(content) {
+  const host = document.createElement("wa-markdown");
+  const text = document.createElement("script");
+  text.type = "text/markdown";
+  text.textContent = content;
+  host.append(text);
+  return host;
 }
 
-const BLOCKS = {
-  Markdown: (props) => `<div class="mb-4">${md(props.content ?? "")}</div>`,
-  Hero: (props) => `<section class="text-center py-5"><h1 class="display-4 fw-bold">${props.heading ?? props.title ?? ""}</h1><p class="lead text-body-secondary">${props.text ?? props.subtitle ?? ""}</p></section>`,
-};
+function heroBlock(props) {
+  const section = document.createElement("section");
+  section.className = "s2-center";
+  section.style.paddingBlock = "3rem";
+  const h1 = document.createElement("h1");
+  h1.className = "s2-hero-title";
+  h1.textContent = props.heading ?? props.title ?? "";
+  const p = document.createElement("p");
+  p.className = "s2-quiet";
+  p.style.fontSize = "1.15rem";
+  p.textContent = props.text ?? props.subtitle ?? "";
+  section.append(h1, p);
+  return section;
+}
 
 const slug = new URLSearchParams(location.search).get("slug") ?? "home";
 const response = await fetch(`${base}/pages/${slug}${localeQuery()}`);
@@ -35,9 +40,13 @@ if (!response.ok) {
   const doc = await response.json();
   document.title = `${doc.title} — saastarter2`;
   const content = doc.data?.content ?? [];
-  mount.innerHTML = content.map((block) =>
-    BLOCKS[block.type]
-      ? BLOCKS[block.type](block.props ?? {})
-      : `<p class="text-body-tertiary small">[${block.type} block]</p>`,
-  ).join("") || `<h1>${doc.title}</h1>`;
+  mount.replaceChildren(...content.map((block) => {
+    if (block.type === "Markdown") return markdownBlock(block.props?.content ?? "");
+    if (block.type === "Hero") return heroBlock(block.props ?? {});
+    const note = document.createElement("p");
+    note.className = "s2-quiet s2-small";
+    note.textContent = `[${block.type} block]`;
+    return note;
+  }));
+  if (!mount.hasChildNodes()) mount.innerHTML = `<h1>${doc.title}</h1>`;
 }

@@ -1,75 +1,170 @@
 /* ==========================================================================
-   saastarter2 — "source-code editorial" COMPONENTS
-   Tokens come from the HOSTED THEME via css/tweakcn-adapter.css (edit
-   themes/default.cms.css + sync push to restyle); this file only styles
-   components in terms of --s2-* tokens. Both themes, RTL-safe.
+   saastarter2 — "source-code editorial" site styles
+   Written in 2026 CSS: nesting, logical properties (the reason there is no
+   RTL stylesheet — Arabic flips for free), CSS grid, color-mix, and
+   cross-document View Transitions (the reason there is no client router).
+   Components come from Web Awesome; this file only does layout + voice.
    ========================================================================== */
 
+/* --- base ---------------------------------------------------------------- */
+body {
+  background: var(--s2-paper);
+  color: var(--s2-ink);
+  margin: 0;
+}
 
-body { background: var(--s2-paper); color: var(--s2-ink); }
+.container {
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
 
-/* --- typography ---------------------------------------------------------- */
-h1, h2, h3, .display-2, .display-3, .display-4 {
+h1, h2, h3 {
   font-family: var(--s2-display);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
-.s2-hero-title {
-  font-family: var(--s2-display);
-  font-size: clamp(3rem, 9vw, 5.75rem);
-  line-height: 0.98;
-  font-weight: 600;
-}
-.s2-hero-title em { font-style: italic; color: var(--s2-accent); font-weight: 500; }
+
+a { color: var(--s2-accent); }
+
 .s2-kicker {
   font-family: var(--s2-mono);
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--s2-accent) 85%, var(--s2-ink));
+
+  &::before { content: "// "; opacity: 0.6; }
 }
-.s2-kicker::before { content: "// "; opacity: 0.6; }
-.s2-comment { font-family: var(--s2-mono); font-size: 0.85rem; color: var(--bs-secondary-color); }
+.s2-comment { font-family: var(--s2-mono); font-size: 0.85rem; color: var(--s2-muted); }
 .s2-mono, .s2-price, code { font-family: var(--s2-mono); }
 .s2-price { font-weight: 600; letter-spacing: -0.02em; }
+.s2-quiet { color: var(--s2-muted); }
+.s2-small { font-size: 0.85rem; }
+.s2-center { text-align: center; }
 
-/* --- chrome -------------------------------------------------------------- */
-.navbar { background: var(--s2-paper); }
-.navbar-brand { font-family: var(--s2-display); font-weight: 600; font-size: 1.35rem; }
-.navbar-brand .badge {
-  font-family: var(--s2-mono); font-weight: 500; font-size: 0.6rem;
-  background: var(--s2-accent) !important; color: var(--s2-accent-contrast);
-  vertical-align: super;
-}
-.icon { vertical-align: -0.14em; }
-.nav-link { display: inline-flex; align-items: center; gap: 0.35rem; }
+/* --- chrome (rendered by <s2-nav>/<s2-footer> custom elements) -----------
+   The elements upgrade when js/chrome.js runs; their boxes are reserved
+   here so the injected chrome never shifts the page (CLS 0). */
+s2-nav {
+  display: block;
+  min-block-size: 57px;
+  border-block-end: 1px solid var(--s2-line);
 
-/* --- cards: 1px ink + hard offset shadow on hover ------------------------ */
-.card {
-  border: 1px solid var(--s2-line);
-  border-radius: var(--bs-border-radius);
-  background: var(--bs-body-bg);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  & .s2-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    padding-block: 0.6rem;
+  }
+  & .s2-brand {
+    font-family: var(--s2-display);
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--s2-ink);
+    text-decoration: none;
+    margin-inline-end: auto;
+
+    & small {
+      font-family: var(--s2-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      background: var(--s2-accent);
+      color: var(--s2-accent-contrast);
+      padding: 0.1em 0.4em;
+      border-radius: var(--wa-border-radius-s);
+      vertical-align: super;
+    }
+  }
+  & a:not(.s2-brand) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--s2-ink);
+    text-decoration: none;
+    font-size: 0.95rem;
+
+    &:hover { color: var(--s2-accent); }
+  }
+  & .s2-badge {
+    background: var(--s2-accent);
+    color: var(--s2-accent-contrast);
+    font-family: var(--s2-mono);
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 0.05em 0.5em;
+  }
+  & button {
+    background: none;
+    border: 1px solid var(--s2-line);
+    border-radius: var(--wa-border-radius-s);
+    color: var(--s2-ink);
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+
+    &:hover { border-color: var(--s2-accent); color: var(--s2-accent); }
+  }
 }
-a.card:hover, .card.s2-hover:hover {
-  transform: translate(-2px, -2px);
-  border-color: var(--s2-ink);
+
+s2-footer {
+  display: block;
+  border-block-start: 1px solid var(--s2-line);
+  padding-block: 1.5rem;
+  text-align: center;
+  font-family: var(--s2-mono);
+  font-size: 0.78rem;
+  color: var(--s2-muted);
+}
+
+main {
+  padding-block: 1.5rem;
+  /* main fills the viewport below the nav: the footer never jumps into
+     view while async content is still streaming in */
+  min-block-size: calc(100dvh - 57px);
+}
+
+/* --- cards ---------------------------------------------------------------
+   wa-card is the surface; the ink-offset hover is this site's signature. */
+.s2-hover, a.s2-card-link > wa-card {
+  transition: translate 0.15s ease, box-shadow 0.15s ease;
+}
+.s2-hover:hover, a.s2-card-link:hover > wa-card {
+  translate: -2px -2px;
   box-shadow: 4px 4px 0 var(--s2-ink);
 }
-[data-bs-theme="dark"] a.card:hover, [data-bs-theme="dark"] .card.s2-hover:hover {
-  border-color: var(--s2-accent);
+.dark :is(.s2-hover:hover, a.s2-card-link:hover > wa-card) {
   box-shadow: 4px 4px 0 var(--s2-accent);
 }
-.s2-feature .icon { font-size: 1.5rem; color: var(--s2-accent); }
-.s2-feature h5 { font-family: var(--s2-body); font-weight: 600; font-size: 1rem; margin: 0.6rem 0 0.25rem; }
+a.s2-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 
-/* --- buttons ------------------------------------------------------------- */
-.btn { border-radius: var(--bs-border-radius); font-weight: 500; }
-.btn .icon { margin-inline-end: 0.4rem; }
+  & wa-card { block-size: 100%; }
+}
 
-/* --- hero grid-paper + stagger reveal ------------------------------------ */
+/* --- layout: native grid, no framework ----------------------------------- */
+.s2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.5rem;
+}
+.s2-stack { display: flex; flex-direction: column; gap: 1rem; }
+.s2-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.s2-split {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 48rem) { grid-template-columns: 2fr 3fr; }
+}
+
+/* --- hero: grid paper + stagger reveal ----------------------------------- */
 .s2-hero {
   position: relative;
+  text-align: center;
+  padding-block: 3.5rem;
   background-image:
     linear-gradient(var(--s2-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--s2-line) 1px, transparent 1px);
@@ -78,12 +173,23 @@ a.card:hover, .card.s2-hover:hover {
   border-block-end: 1px solid var(--s2-line);
   margin-inline: calc(50% - 50vw);
   padding-inline: calc(50vw - 50%);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, var(--s2-paper) 95%);
+  }
+  & > * { position: relative; z-index: 1; }
 }
-.s2-hero::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, var(--s2-paper) 95%);
+.s2-hero-title {
+  font-size: clamp(3rem, 9vw, 5.75rem);
+  line-height: 0.98;
+  margin-block: 0.5rem;
+
+  & em { font-style: italic; color: var(--s2-accent); font-weight: 500; }
 }
-.s2-hero > * { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: no-preference) {
   .s2-reveal { opacity: 0; transform: translateY(14px); animation: s2-up 0.55s ease forwards; }
   .s2-reveal:nth-child(2) { animation-delay: 0.08s; }
@@ -92,26 +198,42 @@ a.card:hover, .card.s2-hover:hover {
   @keyframes s2-up { to { opacity: 1; transform: none; } }
 }
 
-/* --- misc ---------------------------------------------------------------- */
-.product-emoji { font-size: 3rem; }
-.artifact-btn { text-decoration: none; }
-.form-control, .input-group-text { border-radius: var(--bs-border-radius); }
-.s2-tier-badge { font-family: var(--s2-mono); font-size: 0.7rem; }
-footer { font-family: var(--s2-mono); font-size: 0.78rem; }
-.blockquote { font-family: var(--s2-display); font-style: italic; font-weight: 450; }
-
-/* --- Client navigation (js/router.js swaps <main> only) --------------------
-   No fades: the view-transition ROOT is frozen (old pixels hold until the
-   new DOM lands), and only elements with matching view-transition-names
-   morph (product card title -> hero, blog card -> post title). The #nav
-   box is reserved so the injected navbar never shifts the page (CLS 0). */
-html { scrollbar-gutter: stable; } /* long->short page: no horizontal jiggle */
-#nav { min-block-size: 59px; }     /* measured navbar box; injected chrome never shifts the page */
-main { min-block-size: calc(100dvh - 59px); } /* main fills the viewport below the nav: the footer NEVER enters view during a swap */
+/* --- navigation: the PLATFORM is the router ------------------------------
+   Cross-document View Transitions replace the old fetch-and-morph client
+   router: every <a> is a real MPA navigation, the browser snapshots old
+   and new, and only elements with matching view-transition-names morph
+   (product card title → product h1, blog card → post title). The root is
+   frozen — no full-page fade, old pixels hold until the new page lands. */
+@view-transition { navigation: auto; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-group(*) { animation-duration: 200ms; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
-@media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation: none; } }
-/* async content areas reserve their space — sections below them never move */
-#detail { min-block-size: 24rem; }
+::view-transition-group(*) {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) { animation: none; }
+}
+html { scrollbar-gutter: stable; }
+
+/* async content areas reserve their space — sections below never move */
 #grid { min-block-size: 20rem; }
+#detail { min-block-size: 24rem; }
 #posts { min-block-size: 8rem; }
+
+/* --- FOUCE guard: undefined components hold layout, not looks ------------ */
+:where(wa-drawer, wa-tab-group, wa-rating, wa-otp-input, wa-qr-code):not(:defined) {
+  visibility: hidden;
+}
+
+/* --- misc ----------------------------------------------------------------- */
+.product-emoji { font-size: 3rem; }
+.s2-feature iconify-icon { font-size: 1.5rem; color: var(--s2-accent); }
+blockquote {
+  font-family: var(--s2-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  max-inline-size: 34rem;
+  margin-inline: auto;
+}
+.s2-hidden { display: none !important; }
+iconify-icon { vertical-align: -0.14em; }

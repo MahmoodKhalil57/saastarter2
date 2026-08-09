@@ -4,6 +4,8 @@
 // mirror tracks every keystroke) — then the same diff → commit → deploy loop.
 // readFile/writeFile are also exposed on window.s2devgit so a browser agent
 // can update ANY repo file the token reaches, no UI required.
+// (css/app.css pulls the other sheets in via @import, so only app.css edits
+// preview live; site.css/theme-bridge.css commits still deploy as always.)
 import { changedCount, diffLines, renderDiff } from "./devgit-diff.js";
 import { getFile, loadConfig, putFile, targets } from "./devgit-github.js";
 
@@ -15,7 +17,8 @@ export function localAssets() {
     .map((el) => el.getAttribute("href") ?? el.getAttribute("src"))
     .filter((url) => url && !/^(https?:)?\/\//.test(url))
     .map((url) => url.replace(/^\.\//, "").split("?")[0]);
-  return [...new Set(refs)];
+  // the @import'd sheets are just as editable — surface them too
+  return [...new Set([...refs, "css/site.css", "css/theme-bridge.css"])];
 }
 
 export async function readFile(path) {
@@ -49,9 +52,9 @@ function livePreview(path, text) {
 // ui = { paint, status, panel, back } supplied by devgit.js.
 export function paintFiles(ui) {
   const assets = localAssets();
-  ui.paint(`<p class="small text-body-secondary mb-0">Any file the token can reach — stylesheets preview live as you type.</p>
-    <div class="hstack gap-2"><input class="form-control form-control-sm" list="s2devgit-files" data-path placeholder="css/site.css" value="${assets.find((p) => p.endsWith(".css")) ?? ""}"><datalist id="s2devgit-files">${assets.map((p) => `<option value="${p}">`).join("")}</datalist><button class="btn btn-warning btn-sm" data-open>Open</button></div>
-    <div data-status></div><button class="btn btn-link btn-sm p-0" data-back>&larr; back</button>`);
+  ui.paint(`<p class="dg-muted">Any file the token can reach — stylesheets preview live as you type.</p>
+    <div class="dg-row"><input class="dg-input" style="flex:1;width:auto" list="s2devgit-files" data-path placeholder="css/site.css" value="${assets.find((p) => p.endsWith(".css")) ?? ""}"><datalist id="s2devgit-files">${assets.map((p) => `<option value="${p}">`).join("")}</datalist><button class="dg-btn dg-btn-warn" data-open>Open</button></div>
+    <div data-status></div><button class="dg-btn-link" data-back>&larr; back</button>`);
   ui.panel.querySelector("[data-back]").addEventListener("click", ui.back);
   ui.panel.querySelector("[data-open]").addEventListener("click", () =>
     openEditor(ui, ui.panel.querySelector("[data-path]").value.trim().replace(/^\.?\//, "")).catch((error) => ui.status(error.message, false)));
@@ -61,10 +64,10 @@ async function openEditor(ui, path) {
   ui.status(`fetching ${path}…`);
   const { files, text } = await readFile(path);
   const preview = path.endsWith(".css") ? livePreview(path, text) : null;
-  ui.paint(`<p class="small text-body-secondary mb-0"><code>${path}</code>${preview ? " — previewing live on this page" : ""}</p>
-    <textarea class="form-control font-monospace" data-text rows="12" spellcheck="false"></textarea>
-    <div data-diff></div><input class="form-control form-control-sm" data-message placeholder="commit message"><div data-status></div>
-    <div class="hstack gap-2"><button class="btn btn-outline-secondary btn-sm" data-review>Review diff</button><button class="btn btn-primary btn-sm" data-push>Commit &amp; push</button><button class="btn btn-outline-danger btn-sm ms-auto" data-discard>Discard</button></div>`);
+  ui.paint(`<p class="dg-muted"><code>${path}</code>${preview ? " — previewing live on this page" : ""}</p>
+    <textarea class="dg-input" data-text rows="12" spellcheck="false"></textarea>
+    <div data-diff></div><input class="dg-input" data-message placeholder="commit message"><div data-status></div>
+    <div class="dg-row"><button class="dg-btn" data-review>Review diff</button><button class="dg-btn dg-btn-primary" data-push>Commit &amp; push</button><button class="dg-btn dg-btn-danger dg-end" data-discard>Discard</button></div>`);
   const area = ui.panel.querySelector("[data-text]");
   area.value = text;
   area.addEventListener("input", () => preview?.update(area.value));

@@ -1,0 +1,75 @@
+/* ==========================================================================
+   tweakcn → Web Awesome bridge
+   The hosted theme (themes/default.cms.css → /v1/…/theme.css) speaks the
+   tweakcn/shadcn token set (--primary, --background, --radius, …) and
+   scopes its dark values under `.dark`. Web Awesome speaks --wa-*.
+   This file is the ONLY place the two vocabularies meet: every rule is a
+   var() chain, so switching theme = editing the hosted document, and dark
+   mode = the boot script toggling `.dark` + `.wa-dark` together — the
+   chains re-resolve on their own, no JS restyling.
+
+   Every bridge carries a design fallback (the editorial palette) so the
+   site renders even with no theme document. Unlayered on purpose: it must
+   beat Web Awesome's @layer wa-theme defaults.
+   ========================================================================== */
+
+:root {
+  /* --- theme → site tokens (consumed by site.css) ----------------------- */
+  --s2-accent: var(--primary, #d9482b);
+  --s2-accent-contrast: var(--primary-foreground, #fffdf9);
+  --s2-paper: var(--background, #faf6f0);
+  --s2-ink: var(--foreground, #1c1917);
+  --s2-card: var(--card, #fdfaf5);
+  --s2-line: var(--border, #d8d0c4);
+  --s2-muted: var(--muted-foreground, #6d6459);
+  --s2-display: var(--font-serif, "Fraunces", Georgia, serif);
+  --s2-body: var(--font-sans, "IBM Plex Sans", ui-sans-serif, sans-serif);
+  --s2-mono: var(--font-mono, "IBM Plex Mono", ui-monospace, monospace);
+
+  /* --- theme → Web Awesome ---------------------------------------------- */
+  --wa-color-brand-fill-loud: var(--s2-accent);
+  --wa-color-brand-fill-normal: color-mix(in oklab, var(--s2-accent) 22%, var(--s2-paper));
+  --wa-color-brand-fill-quiet: color-mix(in oklab, var(--s2-accent) 10%, var(--s2-paper));
+  --wa-color-brand-on-loud: var(--s2-accent-contrast);
+  --wa-color-brand-on-normal: color-mix(in oklab, var(--s2-accent) 70%, var(--s2-ink));
+  --wa-color-brand-on-quiet: color-mix(in oklab, var(--s2-accent) 70%, var(--s2-ink));
+  --wa-color-brand-border-loud: var(--s2-accent);
+  --wa-color-brand-border-normal: color-mix(in oklab, var(--s2-accent) 55%, var(--s2-paper));
+  --wa-color-brand-border-quiet: color-mix(in oklab, var(--s2-accent) 30%, var(--s2-paper));
+
+  --wa-color-surface-default: var(--s2-paper);
+  --wa-color-surface-raised: var(--s2-card);
+  --wa-color-surface-lowered: var(--muted, color-mix(in oklab, var(--s2-paper) 96%, var(--s2-ink)));
+  --wa-color-surface-border: var(--s2-line);
+
+  --wa-color-text-normal: var(--s2-ink);
+  --wa-color-text-quiet: var(--s2-muted);
+  --wa-color-text-link: var(--s2-accent);
+
+  --wa-color-danger-fill-loud: var(--destructive, #b3261e);
+  --wa-color-danger-on-loud: var(--destructive-foreground, #fff);
+
+  --wa-font-family-body: var(--s2-body);
+  --wa-font-family-heading: var(--s2-display);
+  --wa-font-family-code: var(--s2-mono);
+
+  --wa-border-radius-m: var(--radius, 0.25rem);
+  --wa-border-radius-s: calc(var(--radius, 0.25rem) * 0.75);
+  --wa-border-radius-l: calc(var(--radius, 0.25rem) * 1.5);
+}
+
+/* Dark: theme-less fallback literals only — a loaded theme's `.dark` block
+   redefines --primary/--background/… upstream and every chain above
+   re-resolves. `.wa-dark` (set by the same toggle) flips Web Awesome's own
+   internals (color-scheme, neutral scales) in step. */
+.dark {
+  --s2-accent: var(--primary, #ff6a45);
+  --s2-accent-contrast: var(--primary-foreground, #241109);
+  --s2-paper: var(--background, #171412);
+  --s2-ink: var(--foreground, #ece6dd);
+  --s2-card: var(--card, #1d1916);
+  --s2-line: var(--border, #3a342d);
+  --s2-muted: var(--muted-foreground, #a89c8d);
+}
+
+body { letter-spacing: var(--letter-spacing, var(--tracking-normal, 0)); }

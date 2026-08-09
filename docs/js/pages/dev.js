@@ -1,10 +1,10 @@
 // dev.html — enable/disable the devgit module (see js/devgit.js).
 import { clearConfig, getFile, loadConfig, repoInfo, saveConfig, targets } from "../devgit-github.js";
-import { toast } from "../ui.js";
+import { toast } from "../chrome.js";
 
 const form = document.getElementById("devgit-form");
 const status = document.getElementById("devgit-status");
-const say = (html, tone = "secondary") => { status.innerHTML = `<div class="alert alert-${tone} py-2 px-3 mb-0">${html}</div>`; };
+const say = (html, tone = "neutral") => { status.innerHTML = `<wa-callout variant="${tone}">${html}</wa-callout>`; };
 
 const saved = loadConfig();
 if (saved) {
@@ -28,7 +28,7 @@ form.addEventListener("submit", async (event) => {
     });
     saveConfig(cfg);
     say(`Verified — devgit enabled on <code>${probe.branch}</code>${cfg.deployBranch ? ` + deploy to <code>${cfg.deployBranch}</code>` : ""}. Open any page and hit the <code>&lt;/&gt;</code> button.`, "success");
-    toast("devgit enabled");
+    void toast("devgit enabled");
   } catch (error) {
     say(error.message, "danger");
   }
@@ -38,5 +38,5 @@ document.getElementById("devgit-clear").addEventListener("click", () => {
   clearConfig();
   form.reset();
   say("Disabled — token removed from this browser.", "warning");
-  toast("devgit disabled");
+  void toast("devgit disabled");
 });
