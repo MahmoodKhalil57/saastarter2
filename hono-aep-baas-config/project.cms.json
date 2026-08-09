@@ -28,6 +28,15 @@
   "created_by": "Jvk6Uk2lHfwlfOqv76sZPPz7kzApRuMA",
   "display_name": "saastarter2",
   "site": {
+    "admin": {
+      "collections": [
+        { "idField": "slug", "media": ["file"], "slug": "products" },
+        { "slug": "discounts" },
+        { "idField": "slug", "slug": "posts" },
+        { "slug": "reviews" }
+      ],
+      "commerce": true
+    },
     "app": {
       "shortName": "SaaS2"
     },

@@ -15,57 +15,29 @@
     </div>
   </div>
   <div id="studio" class="d-none">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
       <div><p class="s2-kicker mb-0">store admin</p><h1 class="h3 mb-0">saastarter2</h1></div>
-      <button id="lock" class="btn btn-sm btn-outline-secondary">Lock</button>
+      <div class="d-flex gap-2 align-items-center">
+        <select id="admin-locale" class="form-select form-select-sm w-auto"></select>
+        <button id="lock" class="btn btn-sm btn-outline-secondary">Lock</button>
+      </div>
     </div>
-    <ul class="nav nav-tabs" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-stats">Stats</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-orders">Orders</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-products">Products</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-discounts">Discounts</button></li>
-          </ul>
-    <div class="tab-content pt-3">
+    <!-- Stats/Orders are the commerce surface (bespoke panes, gated by
+         site.admin.commerce); every collection tab after them is GENERATED
+         from site.admin.collections + the project's own openapi.json by
+         js/vendor/hono-aep-bootstrap-ui.js. Adding a collection to the
+         config repo makes it appear here with zero UI code. -->
+    <ul class="nav nav-tabs" id="admin-tabs" role="tablist">
+      <li class="nav-item" data-commerce><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-stats">Stats</button></li>
+      <li class="nav-item" data-commerce><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-orders">Orders</button></li>
+    </ul>
+    <div class="tab-content pt-3" id="admin-panes">
       <div class="tab-pane fade show active" id="tab-stats">
         <div class="row g-3" id="stat-cards"></div>
         <p class="s2-kicker mt-4 mb-2">top products</p>
         <div id="top-products" class="vstack gap-2"></div>
       </div>
       <div class="tab-pane fade" id="tab-orders"><div id="orders-list" class="vstack gap-2 pt-1"></div></div>
-      <div class="tab-pane fade" id="tab-products">
-        <div id="products-list" class="vstack gap-2 mb-4"></div>
-        <div class="card"><div class="card-body vstack gap-2">
-          <h6 id="product-form-title">New product</h6>
-          <div class="row g-2">
-            <div class="col-md-4"><input id="p-slug" class="form-control form-control-sm" placeholder="slug (id)"></div>
-            <div class="col-md-5"><input id="p-name" class="form-control form-control-sm" placeholder="Name"></div>
-            <div class="col-md-3"><input id="p-price" type="number" class="form-control form-control-sm" placeholder="Price ¢"></div>
-          </div>
-          <input id="p-tagline" class="form-control form-control-sm" placeholder="Tagline (saved under the selected locale)">
-          <textarea id="p-desc" class="form-control form-control-sm" rows="2" placeholder="Description"></textarea>
-          <div class="row g-2 align-items-center">
-            <div class="col-auto"><select id="p-locale" class="form-select form-select-sm"><option value="en">en</option><option value="ar">ar</option></select></div>
-            <div class="col-auto"><select id="p-category" class="form-select form-select-sm"><option>starter</option><option>component</option><option>plugin</option><option>theme</option></select></div>
-            <div class="col-auto form-check ms-2"><input id="p-featured" type="checkbox" class="form-check-input"><label class="form-check-label small" for="p-featured">Featured</label></div>
-            <div class="col-auto"><label class="btn btn-sm btn-outline-secondary mb-0"><iconify-icon icon="lucide:download" inline></iconify-icon> Deliverable file<input id="p-file" type="file" class="d-none"></label></div>
-            <div class="col-auto small text-body-secondary" id="p-file-state"></div>
-          </div>
-          <button id="p-save" class="btn btn-primary btn-sm align-self-start"><iconify-icon icon="lucide:check" inline></iconify-icon> Save product</button>
-        </div></div>
-      </div>
-      <div class="tab-pane fade" id="tab-discounts">
-        <div id="discounts-list" class="vstack gap-2 mb-4"></div>
-        <div class="card"><div class="card-body">
-          <h6>New discount</h6>
-          <div class="row g-2">
-            <div class="col-md-3"><input id="d-code" class="form-control form-control-sm text-uppercase" placeholder="CODE"></div>
-            <div class="col-md-3"><select id="d-kind" class="form-select form-select-sm"><option>percent</option><option>fixed</option></select></div>
-            <div class="col-md-2"><input id="d-value" type="number" class="form-control form-control-sm" placeholder="Value"></div>
-            <div class="col-md-2"><input id="d-min" type="number" class="form-control form-control-sm" placeholder="Min ¢"></div>
-            <div class="col-md-2"><button id="d-save" class="btn btn-primary btn-sm w-100">Create</button></div>
-          </div>
-        </div></div>
-      </div>
     </div>
   </div>
   <p class="text-center small text-body-secondary mt-4">Definitions (collections, themes, pages, forms) live in the <a href="https://mizan-gpp.the-montiapple.workers.dev/studio">developer studio</a> on the platform.</p>
