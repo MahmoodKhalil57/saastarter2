@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "hono-aep-baas-client": {
+      "source": "MahmoodKhalil57/hono-aep-baas",
+      "sourceType": "github",
+      "skillPath": "skills/client/SKILL.md",
+      "computedHash": "1d77b1b3bec8bf0b2d8bc9e1056a60d581cff045422d2b5b4e8c22de5230391d"
+    }
+  }
+}

@@ -23,7 +23,7 @@ cli.sh                          the one entry (npm: hono-aep-baas-cli) — run i
 2. **Save two gitignored files at the repo root** (both have hosted
    `$schema`s; never commit them):
    - `.owner-creds.json` — `{ "email": …, "password": …, "sk_key": "sk_live_…" }`
-   - `platform-creds.json` — `{ "GOOGLE_CLIENT_ID": …, "STRIPE_SECRET_KEY": …, … }`
+   - `.platform-creds.json` — `{ "GOOGLE_CLIENT_ID": …, "STRIPE_SECRET_KEY": …, … }`
      (your own OAuth/Stripe values; referenced from `secrets.cms.json` as EnvRefs)
 3. **Re-point the clone at your coordinates** (rewrites every file + resets the seed ledger):
    ```sh
