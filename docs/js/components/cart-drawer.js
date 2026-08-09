@@ -1,10 +1,11 @@
-// The cart as a SIDEBAR — <s2-cart-drawer> wraps a Web Awesome drawer,
+// <s2-cart-drawer> (tier 1: compose) — the cart as a SIDEBAR wrapping a
+// Web Awesome drawer,
 // mounted on every page by chrome.js: items → coupon → embedded payment
 // (the gateway's element renders INSIDE the drawer) → done. The page never
 // changes underneath the shopper; `end` placement flips for RTL by itself.
-import { checkoutCart, getCart, money, removeFromCart, validateDiscount, waitForOrder } from "./store.js";
-import { mountPayment } from "./payment.js";
-import { icon, toast } from "./chrome.js";
+import { checkoutCart, getCart, money, removeFromCart, validateDiscount, waitForOrder } from "../store.js";
+import { mountPayment } from "../payment.js";
+import { icon, toast } from "../chrome.js";
 
 class S2CartDrawer extends HTMLElement {
   connectedCallback() {
@@ -126,4 +127,4 @@ class S2CartDrawer extends HTMLElement {
   }
 }
 
-customElements.define("s2-cart-drawer", S2CartDrawer);
+if (!customElements.get("s2-cart-drawer")) customElements.define("s2-cart-drawer", S2CartDrawer);

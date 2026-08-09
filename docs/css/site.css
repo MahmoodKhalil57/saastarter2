@@ -221,7 +221,7 @@ html { scrollbar-gutter: stable; }
 #posts { min-block-size: 8rem; }
 
 /* --- FOUCE guard: undefined components hold layout, not looks ------------ */
-:where(wa-drawer, wa-tab-group, wa-rating, wa-otp-input, wa-qr-code):not(:defined) {
+:where(wa-drawer, wa-tab-group, wa-rating, wa-otp-input, wa-qr-code, s2-search):not(:defined) {
   visibility: hidden;
 }
 

@@ -19,11 +19,15 @@ toolchain is still deleted — but this time the *workarounds* are too:
   the community-components story for no-build sites: web components.
 - **No RTL stylesheet** — the CSS is logical-properties-only; Arabic is
   `dir="rtl"` and everything flips, Web Awesome included.
-- **Shared chrome as custom elements** — pages write `<s2-nav>` /
-  `<s2-footer>` / `<s2-cart-drawer>` (defined in `js/chrome.js` +
-  `js/cart.js`, light DOM so the cascade applies). HTML still has no
-  native include; this is the platform's least-bad answer, and the
-  elements' boxes are reserved in CSS so upgrading never shifts layout.
+- **A first-party component layer** — `js/components/` holds the site's
+  own custom elements: the shared chrome (`<s2-nav>` / `<s2-footer>` /
+  `<s2-cart-drawer>` — HTML still has no native include; this is the
+  platform's least-bad answer, with boxes reserved in CSS so upgrading
+  never shifts layout) plus gap-fillers like `<s2-product-card>` and
+  extensions like `<s2-search>` (a `class extends WaInput`, imported
+  through the `wa/` import map in each head). The contract — and the
+  path to build-once framework-compiled components — is defined in
+  [js/components/README.md](js/components/README.md).
 - **No file over ~200 lines** — `js/` is the client core (config/api/
   store/chrome/cart/payment), `js/pages/` one small script per page.
 

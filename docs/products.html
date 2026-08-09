@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script>{const d=localStorage.theme==="dark",c=document.documentElement.classList;c.toggle("wa-dark",d);c.toggle("dark",d);const l=localStorage.locale==="ar"?"ar":"en";document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}</script>
+<script type="importmap">{"imports":{"wa/":"https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/"}}</script>
 <link rel="stylesheet" href="./css/app.css">
 <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/webawesome.loader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
@@ -26,9 +27,9 @@
   <p class="s2-kicker" style="margin-block-end:0.25rem">catalog</p>
   <h1 style="margin-block:0 0.25rem">The catalog</h1>
   <p class="s2-comment" style="margin-block:0 1rem">/* rows of a hosted collection; search is hybrid lexical + semantic */</p>
-  <wa-input id="search" type="search" placeholder="Search — try “payments”" style="max-inline-size:24rem; margin-block-end:1.5rem">
+  <s2-search id="search" placeholder="Search — try “payments”" style="max-inline-size:24rem; margin-block-end:1.5rem">
     <iconify-icon slot="start" icon="lucide:search"></iconify-icon>
-  </wa-input>
+  </s2-search>
   <div id="grid" class="s2-grid">
     <wa-skeleton effect="sheen" style="block-size:9rem"></wa-skeleton>
     <wa-skeleton effect="sheen" style="block-size:9rem"></wa-skeleton>
