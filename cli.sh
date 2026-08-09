@@ -4,8 +4,8 @@
 #   ./cli.sh seed [diff|push|pull|fmt]     data repo → baas
 #   ./cli.sh secrets [list|set N|delete N] per-project secrets
 #   ./cli.sh validate                      both repos vs hosted $schemas
-#   ./cli.sh serve                         pure-frontend on :8899
-#   ./cli.sh publish                       force-push pure-frontend → gh-pages
+#   ./cli.sh serve                         the site (docs/) on :8899
+#   ./cli.sh publish                       git push — Pages serves master:/docs directly
 #   ./cli.sh init PROJECT_ID [SITE_URL]    re-point a fresh clone at YOUR project
 # Keys come from .owner-creds.json, secret values from platform-creds.json.
 set -euo pipefail
@@ -27,8 +27,8 @@ case "${1:-help}" in
             baas validate --dir hono-aep-baas-idempotent-seed ;;
   serve)    exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", fetch(r) {
               const p = new URL(r.url).pathname.replace(/\/$/, "/index.html");
-              return new Response(Bun.file("pure-frontend" + p));
-            }}); console.log("serving pure-frontend at http://localhost:8899")' ;;
+              return new Response(Bun.file("docs" + p));
+            }}); console.log("serving docs/ at http://localhost:8899")' ;;
   init)     # ./cli.sh init <project-id> [site-url] [endpoint] — a fresh
             # fork becomes YOURS: every coordinate in HTML/config/seed
             # files is rewritten, the seed ledger resets. Then: put your
@@ -48,11 +48,6 @@ case "${1:-help}" in
             printf '{\n  "$schema": "%s/v1/schemas/seed-lock.json"\n}\n' "$new_endpoint" > hono-aep-baas-idempotent-seed/seed-lock.json
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
-  publish)  remote=$(git remote get-url origin)
-            tmp=$(mktemp -d) && cp -r pure-frontend/* "$tmp"
-            touch "$tmp/.nojekyll" # deploy verbatim — Jekyll hangs on vendored JS with Liquid-like {{ sequences
-            git -C "$tmp" init -q -b gh-pages && git -C "$tmp" add -A
-            git -C "$tmp" commit -q -m "publish: $(date -u +%Y-%m-%dT%H:%MZ)"
-            git -C "$tmp" push -f "$remote" gh-pages:gh-pages && rm -rf "$tmp" ;;
+  publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
   *)        sed -n '3,10p' "$0" ;;
 esac

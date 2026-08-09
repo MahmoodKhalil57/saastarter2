@@ -1,4 +1,4 @@
-# pure-frontend — the raw-HTML edition
+# docs — the raw-HTML edition
 
 THE frontend (the React edition it started as a sibling of is deleted —
 this is the store now), with the entire toolchain deleted:
@@ -21,7 +21,7 @@ delivery claims (delivery.md), 2FA, Google OAuth, subscriptions.
 Any static file server works — there is nothing to build:
 
 ```bash
-cd pure-frontend
+cd docs
 python3 -m http.server 8080 --bind 0.0.0.0   # or: bunx serve .
 # → http://localhost:8080
 ```

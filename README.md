@@ -9,7 +9,7 @@ fulfillment), blog, reviews, i18n (en/ar), PWA, generated admin panel,
 SEO/OG/llms.txt. The deployed files ARE the source.
 
 ```
-pure-frontend/                  the site (publish = copy these files)
+docs/                  the site (publish = copy these files)
 hono-aep-baas-config/           the backend, declared   (./cli.sh sync)
 hono-aep-baas-idempotent-seed/  the data, declared      (./cli.sh seed)
 cli.sh                          the one entry (npm: hono-aep-baas-cli) — run it bare for help
@@ -33,7 +33,7 @@ cli.sh                          the one entry (npm: hono-aep-baas-cli) — run i
    ```sh
    ./cli.sh sync push     # definitions, theme, pages, forms, project doc, secrets
    ./cli.sh seed push     # products, posts, discounts, demo users (idempotent)
-   ./cli.sh publish       # force-push pure-frontend → gh-pages
+   ./cli.sh publish       # force-push docs → gh-pages
    ```
 5. Day-2: edit config/seed files (every JSON declares a hosted
    `$schema` — your editor validates as you type; `./cli.sh validate`
@@ -47,7 +47,7 @@ account — same contract for the CLI, the studio, and MCP.
 ## Local development
 
 ```sh
-./cli.sh serve         # pure-frontend at http://localhost:8899 (binds 0.0.0.0)
+./cli.sh serve         # docs at http://localhost:8899 (binds 0.0.0.0)
 ./cli.sh sync          # bare = diff (safe); same for seed
 ./cli.sh secrets       # bare = list (digests only; values are write-only)
 ```
