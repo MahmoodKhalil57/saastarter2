@@ -107,7 +107,7 @@ footer { font-family: var(--s2-mono); font-size: 0.78rem; }
    box is reserved so the injected navbar never shifts the page (CLS 0). */
 html { scrollbar-gutter: stable; } /* long->short page: no horizontal jiggle */
 #nav { min-block-size: 59px; }     /* measured navbar box; injected chrome never shifts the page */
-main { min-block-size: calc(100dvh - 140px); } /* footer stays below the fold while content swaps -> zero visible shift */
+main { min-block-size: calc(100dvh - 59px); } /* main fills the viewport below the nav: the footer NEVER enters view during a swap */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(*) { animation-duration: 200ms; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
 @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation: none; } }

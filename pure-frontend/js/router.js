@@ -19,6 +19,10 @@ async function render(url, push) {
   const currentMain = document.querySelector("main");
   if (!nextMain || !currentMain) return void (location.href = url);
 
+  if (push) {
+    history.replaceState({ y: scrollY }, "", location.href); // remember where we were
+    scrollTo(0, 0); // BEFORE the morph — a scrolled-down user never sees the swap mid-page
+  }
   document.title = doc.title;
   Idiomorph.morph(currentMain, nextMain); // diff + patch; unchanged nodes untouched
 
@@ -34,11 +38,7 @@ async function render(url, push) {
     }
   }
 
-  if (push) {
-    history.replaceState({ y: scrollY }, "", location.href); // remember where we were
-    history.pushState({ y: 0 }, "", url);
-    scrollTo(0, 0);
-  }
+  if (push) history.pushState({ y: 0 }, "", url);
   if (new URL(url, location.href).hash) {
     dispatchEvent(new HashChangeEvent("hashchange")); // e.g. #cart opens the drawer
   }
