@@ -50,6 +50,7 @@ case "${1:-help}" in
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  remote=$(git remote get-url origin)
             tmp=$(mktemp -d) && cp -r pure-frontend/* "$tmp"
+            touch "$tmp/.nojekyll" # deploy verbatim — Jekyll hangs on vendored JS with Liquid-like {{ sequences
             git -C "$tmp" init -q -b gh-pages && git -C "$tmp" add -A
             git -C "$tmp" commit -q -m "publish: $(date -u +%Y-%m-%dT%H:%MZ)"
             git -C "$tmp" push -f "$remote" gh-pages:gh-pages && rm -rf "$tmp" ;;
