@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/schemas/rows/posts.json",
   "body": {
     "ar": "هذه التدوينة صف في مستودع البذرة — البيانات ككود، بلا تكرار، وبالعربية أيضًا.",
     "en": "This post is a row in the seed repo — `hono-aep-baas-idempotent-seed/posts/hello-world.json`. Delete the file and `seed push --prune` removes it; edit it in the studio and `seed pull` writes the change back. Data as code, idempotent by construction."

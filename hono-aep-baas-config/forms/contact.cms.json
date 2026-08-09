@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/schemas/form-config.json",
   "create_time": "2026-08-08T02:08:28Z",
   "created_by": "Jvk6Uk2lHfwlfOqv76sZPPz7kzApRuMA",
   "display_name": "Contact",

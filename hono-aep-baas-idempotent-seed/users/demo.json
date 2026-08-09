@@ -1,5 +1,8 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/schemas/seed-user.json",
   "email": "demo@saastarter2.test",
   "name": "Demo Customer",
-  "password": { "$env": "SEED_DEMO_PASSWORD" }
+  "password": {
+    "$env": "SEED_DEMO_PASSWORD"
+  }
 }

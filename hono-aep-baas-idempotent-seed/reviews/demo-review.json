@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/schemas/rows/reviews.json",
   "author_name": "Demo Customer",
   "body": "Cloned the repo, ran config sync then seed push — the store you are reading this on came up from nothing. The review you are reading IS part of the seed.",
   "product": "saastarter2",

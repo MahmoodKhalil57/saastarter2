@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/schemas/collection-config.json",
   "definition": {
     "singular": "wishlist-item",
     "plural": "wishlist",

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/schemas/project-config.json",
   "auth_pool": {
     "anonymous": {
       "enabled": true

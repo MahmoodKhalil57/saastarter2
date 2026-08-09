@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mizan-gpp.the-montiapple.workers.dev/v1/schemas/seed-lock.json",
   "rows": [
     "discounts/LAUNCH20",
     "posts/hello-world",
