@@ -3,9 +3,12 @@
 THE frontend, rebuilt on what the web platform ships in 2026. The
 toolchain is still deleted — but this time the _workarounds_ are too:
 
-- **No build step** — browser-native ES modules; `css/app.css` is the
-  "bundle" (plain `@import`). Deploying is copying this folder to any
-  static host (Pages serves `master:/docs`).
+- **No build step** — browser-native ES modules; stylesheets are parallel
+  `<link>` tags, deliberately NOT an `@import` chain (nested `@import`
+  hides URLs from the preload scanner and serializes them into a request
+  waterfall — that cost this site a 7-deep critical chain and a 20.6s
+  Speed Index before it was measured and removed). Deploying is copying
+  this folder to any static host (Pages serves `master:/docs`).
 - **No router** — real `.html` pages. Cross-document **View Transitions**
   (`@view-transition { navigation: auto }` in `css/site.css`) morph
   matching elements between pages (product card title → product h1), and
@@ -105,7 +108,7 @@ or a Claude browser extension can mutate it. Review the line diff, commit
 — the push to `master:/docs` IS the deploy. No server anywhere in the
 loop — the browser talks to api.github.com directly. Not just HTML:
 "Edit css / js / any file" opens any repo file as text — `css/app.css`
-previews live on the page as you type. Agents get console hooks:
+previews live on the page as you type (`css/site.css` is the one to edit). Agents get console hooks:
 `devgit.enterEdit()` → mutate → `devgit.push("msg")` for pages;
 `devgit.readFile(path)` / `devgit.writeFile(path, text, "msg")` for
 everything else. It now lives in the [hono-aep-devgit] package (pinned as

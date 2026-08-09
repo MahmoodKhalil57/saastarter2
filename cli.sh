@@ -9,6 +9,7 @@
 #   ./cli.sh remove ALIAS                  drop a pin
 #   ./cli.sh serve                         the site (docs/) on :8899
 #   ./cli.sh ci [secrets|status]           creds → repo secrets; CI sync status
+#   ./cli.sh audit [URL]                   navigation jank: CLS, long frames, view transitions
 #   ./cli.sh publish                       git push — Pages serves master:/docs directly
 #   ./cli.sh init PROJECT_ID [SITE_URL]    re-point a fresh clone at YOUR project
 # Keys come from .owner-creds.json, secret values from platform-creds.json.
@@ -38,6 +39,11 @@ case "${1:-help}" in
             mode=--write; [ "${2:-}" = check ] && mode=--check
             bunx prettier@3.9.6 "$mode" --ignore-path .gitignore --ignore-path .prettierignore --log-level warn . ;;
   add|remove) exec bun tools/importmap.ts "$@" ;;
+  audit)    shift # measures what a screenshot can't: per-navigation CLS with
+            # the element that moved, long animation frames, whether a
+            # cross-document view transition actually ran, prerender status.
+            exec env NODE_PATH="$(npm root -g 2>/dev/null):$HOME/.npm/_npx/31e32ef8478fbf80/node_modules" \
+              node tools/nav-audit.mjs "$@" ;;
   ci)       shift # GitHub Actions plumbing (.github/workflows/baas-sync.yml)
             case "${1:-help}" in
               secrets) # creds → repo secrets, so CI can push config + seed
@@ -86,5 +92,5 @@ case "${1:-help}" in
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
-  *)        sed -n '3,14p' "$0" ;;
+  *)        sed -n '3,15p' "$0" ;;
 esac
