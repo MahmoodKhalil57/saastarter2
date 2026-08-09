@@ -36,6 +36,8 @@ const base = (args.find((a) => a.startsWith("http")) ?? "https://mahmoodkhalil57
 );
 const runs = Number(args[args.indexOf("--runs") + 1]) || 1;
 const headed = args.includes("--headed");
+// How long to hover before clicking (prerender needs a moment to be useful).
+const dwellMs = Number(args[args.indexOf("--dwell") + 1]) || 700;
 
 // The probe runs in EVERY document, before any page script. It cannot
 // rely on anything the page provides.
@@ -169,6 +171,12 @@ for (let run = 0; run < runs; run++) {
     // A REAL user navigation: click the link, don't call goto().
     const link = page.locator(`a[href$="${hop}"]`).first();
     if ((await link.count()) === 0) continue;
+    // Hover first, and dwell. Speculation rules with eagerness:"moderate"
+    // start prerendering on hover/pointerdown — clicking instantly (what a
+    // naive script does) measures a path no real user takes and reports
+    // prerender:false for the wrong reason.
+    await link.hover();
+    await page.waitForTimeout(dwellMs);
     await Promise.all([page.waitForURL(`**/${hop}`, { timeout: 15000 }).catch(() => {}), link.click()]);
     await settle();
     collected.push({ ...(await page.evaluate(() => window.__navAuditReport())), phase: `→ ${hop}` });
