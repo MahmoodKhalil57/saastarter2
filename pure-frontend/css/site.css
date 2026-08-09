@@ -105,7 +105,9 @@ footer { font-family: var(--s2-mono); font-size: 0.78rem; }
    new DOM lands), and only elements with matching view-transition-names
    morph (product card title -> hero, blog card -> post title). The #nav
    box is reserved so the injected navbar never shifts the page (CLS 0). */
-#nav { min-block-size: 57px; }
+html { scrollbar-gutter: stable; } /* long->short page: no horizontal jiggle */
+#nav { min-block-size: 59px; }     /* measured navbar box; injected chrome never shifts the page */
+main { min-block-size: calc(100dvh - 140px); } /* footer stays below the fold while content swaps -> zero visible shift */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(*) { animation-duration: 200ms; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
 @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation: none; } }
