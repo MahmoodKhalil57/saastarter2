@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "hono-aep-webc-factory": "^0.1.0"
+  },
+  "dependencies": {
+    "@base-ui-components/react": "1.0.0-rc.0"
   }
 }

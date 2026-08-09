@@ -66,6 +66,15 @@
           </s2-counter-jit>
         </wa-card>
         <wa-card>
+          <div class="s2-stack">
+            <s2-price-slider min="0" max="200"></s2-price-slider>
+            <span class="s2-quiet s2-small">
+              Base UI (headless React, compound parts) wrapped as a custom element — behavior and a11y from the library,
+              markup and CSS ours, state in the shared atom.
+            </span>
+          </div>
+        </wa-card>
+        <wa-card>
           <div class="s2-row">
             <strong class="s2-price" id="native-count"></strong>
             <wa-button size="s" appearance="outlined" id="reset">Reset</wa-button>
@@ -96,6 +105,7 @@
       import "./js/components/counter-vue.gen.js";
       import "./js/components/counter-react.gen.js";
       import "./js/components/react-jit/counter.element.js";
+      import "./js/components/s2-price-slider.gen.js";
       import { $counter } from "#stores";
 
       $counter.subscribe((value) => {

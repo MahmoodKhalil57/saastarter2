@@ -328,3 +328,39 @@ blockquote {
 iconify-icon {
   vertical-align: -0.14em;
 }
+
+/* --- headless-component styling (Base UI slider) -------------------------
+   A headless library ships behavior + a11y and NO looks: these four rules
+   are the entire visual layer for <s2-price-slider>. */
+.s2-slider-control {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 1.5rem;
+  touch-action: none;
+}
+.s2-slider-track {
+  position: relative;
+  inline-size: 100%;
+  block-size: 0.25rem;
+  border-radius: 999px;
+  background: var(--s2-line);
+}
+.s2-slider-indicator {
+  position: absolute;
+  inset-block: 0;
+  border-radius: 999px;
+  background: var(--s2-accent);
+}
+.s2-slider-thumb {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: 50%;
+  background: var(--s2-accent);
+  border: 2px solid var(--s2-paper);
+  box-shadow: 0 0 0 1px var(--s2-line);
+}
+.s2-slider-thumb:focus-visible {
+  outline: 2px solid var(--s2-accent);
+  outline-offset: 2px;
+}

@@ -8,3 +8,6 @@ export * from "baas/stores.js";
 
 /** Site-local playground atom for the component lab (lab.html). */
 export const $counter = atom(0);
+
+/** Catalog price filter — written by <s2-price-slider>, read by the grid. */
+export const $priceMax = atom(200);

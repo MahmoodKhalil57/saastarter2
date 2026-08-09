@@ -2,9 +2,22 @@
   "outDir": "../docs/js/components",
   "external": ["#stores", "nanostores"],
   "entries": [
-    { "src": "lit/counter-lit.js" },
-    { "src": "react/counter-react.tsx" },
-    { "src": "svelte/counter-svelte.svelte" },
-    { "src": "vue/counter-vue.vue", "tag": "s2-counter-vue" }
+    {
+      "src": "lit/counter-lit.js"
+    },
+    {
+      "src": "react/counter-react.tsx"
+    },
+    {
+      "src": "svelte/counter-svelte.svelte"
+    },
+    {
+      "src": "vue/counter-vue.vue",
+      "tag": "s2-counter-vue"
+    },
+    {
+      "src": "react/s2-price-slider.tsx",
+      "tag": "s2-price-slider"
+    }
   ]
 }
