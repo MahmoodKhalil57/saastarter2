@@ -9,7 +9,7 @@ function render(items) {
       <a class="card h-100 text-decoration-none" href="./product.html?slug=${encodeURIComponent(p.slug)}">
         <div class="card-body">
           <div class="product-emoji">${EMOJI[p.category] ?? "🧩"}</div>
-          <h5 class="card-title d-flex justify-content-between">${p.name}${p.featured ? '<span class="badge text-bg-primary s2-tier-badge">Featured</span>' : ""}</h5>
+          <h5 class="card-title d-flex justify-content-between" style="view-transition-name:product-${p.slug}">${p.name}${p.featured ? '<span class="badge text-bg-primary s2-tier-badge">Featured</span>' : ""}</h5>
           <p class="card-text text-body-secondary">${p.tagline ?? ""}</p>
           <span class="s2-price">${p.price_cents ? money(p.price_cents) : "Free"}</span>
         </div>

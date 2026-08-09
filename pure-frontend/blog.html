@@ -13,7 +13,7 @@ import { posts } from "./js/store.js";
 const rows = await posts();
 document.getElementById("posts").innerHTML = rows.length === 0
   ? '<p class="text-body-secondary">No posts yet.</p>'
-  : rows.map((p) => `<a class="card text-decoration-none" href="./post.html?id=${p.path.split("/").pop()}"><div class="card-body"><h5>${p.title}</h5><small class="text-body-secondary">${new Date(p.create_time).toLocaleDateString()}</small></div></a>`).join("");
+  : rows.map((p) => `<a class="card text-decoration-none" href="./post.html?id=${p.path.split("/").pop()}"><div class="card-body"><h5 style="view-transition-name:post-${p.path.split("/").pop()}">${p.title}</h5><small class="text-body-secondary">${new Date(p.create_time).toLocaleDateString()}</small></div></a>`).join("");
 </script>
 </body>
 </html>

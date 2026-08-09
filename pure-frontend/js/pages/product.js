@@ -4,6 +4,11 @@ import { openCart } from "../cart-drawer.js";
 
 const slug = new URLSearchParams(location.search).get("slug");
 const detail = document.getElementById("detail");
+// Pre-paint skeleton: the view-transition morph target must EXIST at first
+// render (content arrives async) — the card's title morphs into this h1,
+// then the real data replaces the text under the same name.
+const vt = slug ? `view-transition-name:product-${slug}` : "";
+if (slug) detail.innerHTML = `<div class="col-12"><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1></div>`;
 const p = await product(slug);
 if (!p) detail.innerHTML = '<p>Not found. <a href="./products.html">Back to catalog</a></p>';
 else {
@@ -13,7 +18,7 @@ else {
   detail.innerHTML = `
     <div class="col-md-5"><div class="card"><div class="card-body text-center py-5"><div style="font-size:5rem">🧩</div><p class="text-uppercase small text-body-secondary">${p.category ?? ""}</p></div></div></div>
     <div class="col-md-7 vstack gap-3">
-      <h1>${p.name}</h1>
+      <h1 style="${vt}">${p.name}</h1>
       <p class="lead text-body-secondary">${p.tagline ?? ""}</p>
       <p>${p.description ?? ""}</p>
       <div class="fs-3 fw-bold">${p.price_cents ? money(p.price_cents) : "Free"}</div>
