@@ -7,7 +7,7 @@
     "build": "webc-factory build"
   },
   "devDependencies": {
-    "hono-aep-webc-factory": "^0.1.0"
+    "hono-aep-webc-factory": "^0.2.0"
   },
   "dependencies": {
     "@base-ui-components/react": "1.0.0-rc.0"

@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/client/SKILL.md",
       "computedHash": "1d77b1b3bec8bf0b2d8bc9e1056a60d581cff045422d2b5b4e8c22de5230391d"
+    },
+    "hono-aep-frontend": {
+      "source": "MahmoodKhalil57/hono-aep-frontend-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "558b24f29e0664cdc59da384a0f79c6f30b11c409edb3dac9416417da62f18d5"
     }
   }
 }
