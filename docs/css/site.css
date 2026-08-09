@@ -393,3 +393,30 @@ iconify-icon {
     mask-image: none;
   }
 }
+
+/* --- FOUCE: reserve the box BEFORE a custom element upgrades ------------
+   `:not(:defined)` elements are inline and zero-height until their class
+   registers, so everything below them jumps when it does. Hiding them
+   (below) stops the flash; these sizes stop the shift. Measured with
+   `./cli.sh audit` — each rule here corresponds to an element that showed
+   up in the layout-shift attribution. */
+   Heights only, and only where the final height is predictable. Pinning a
+   width would trade a vertical shift for a horizontal one — a button's
+   real width depends on its label, so it gets a height and nothing else. */
+s2-search:not(:defined),
+wa-input:not(:defined) {
+  display: block;
+  block-size: 2.75rem;
+}
+wa-button:not(:defined) {
+  display: inline-block;
+  block-size: 2.5rem;
+}
+wa-card:not(:defined) {
+  display: block;
+  min-block-size: 8rem;
+}
+wa-tab-group:not(:defined) {
+  display: block;
+  min-block-size: 20rem;
+}
