@@ -9,12 +9,22 @@ toolchain is still deleted — but this time the _workarounds_ are too:
   waterfall — that cost this site a 7-deep critical chain and a 20.6s
   Speed Index before it was measured and removed). Deploying is copying
   this folder to any static host (Pages serves `master:/docs`).
-- **No router** — real `.html` pages. Cross-document **View Transitions**
-  (`@view-transition { navigation: auto }` in `css/site.css`) morph
-  matching elements between pages (product card title → product h1), and
-  a **speculation-rules** block in each head prerenders likely next pages,
-  so MPA navigation feels SPA-instant with zero navigation JS. The old
-  fetch-and-morph client router (idiomorph) is gone.
+- **Real `.html` pages, morphed in place** — every URL is a real file, but
+  `js/router.js` intercepts navigation (Navigation API where available,
+  a click listener otherwise) and MORPHS `<main>` with idiomorph rather
+  than letting the document be replaced. Untouched nodes are never
+  destroyed, so the nav, the cart drawer and every registered component
+  survive each hop with their state — that is what keeps navigation from
+  blinking. The animation is still the platform's: the patch runs inside
+  `document.startViewTransition()`, so matching `view-transition-name`s
+  morph. With no JS at all, links are plain cross-document navigations and
+  the `@view-transition` rule animates those instead.
+
+  (A pure cross-document version was tried and reverted: the document is
+  rebuilt on every hop, and components upgrade ~144ms AFTER first paint,
+  so the new page is revealed half-built and pops. No transition can hide
+  that, because it happens after the transition ends.)
+
 - **A real component library, no build required** — [Web Awesome]
   (Shoelace's successor, pinned `@3.11.0` from jsdelivr): drawer (the
   cart), tab-group (account), rating (reviews), otp-input + qr-code

@@ -27,7 +27,14 @@ Break either and things fail *silently*, which is worse than loudly.
    by relative path, and any bundler must mark it external. Two copies of
    an atom means components stop seeing each other's updates and nothing
    errors.
-2. **Pin versions; never track a branch.** CDN URLs are cached
+2. **A full-document swap re-creates every component.** Custom elements
+   upgrade *after* first paint (measured here: ~144ms after FCP), so a
+   navigation that replaces the document reveals a half-built page and
+   the components pop in afterwards — after any view transition has
+   ended, so no transition can hide it. That is why navigation morphs
+   `<main>` in place instead. Prefer patching over replacing whenever the
+   thing being replaced contains custom elements.
+3. **Pin versions; never track a branch.** CDN URLs are cached
    immutably. `@main` plus a year-long cache is a debugging nightmare.
    `./cli.sh add` pins for you.
 
@@ -44,7 +51,7 @@ Break either and things fail *silently*, which is worse than loudly.
 | add any npm or GitHub module | `./cli.sh add <pkg>` / `gh:owner/repo@tag/path` | writes a pinned entry into every page's import map |
 | share state across components | nanostores atoms in `js/stores.js` | ~300 bytes; works from any engine |
 | animate | see `references/motion-ladder.md` | tier-dependent — 0KB for CSS, 23KB+ for a JS engine |
-| move between pages | real MPA links + cross-document View Transitions + speculation rules | zero navigation JS |
+| move between pages | `js/router.js` morphs `<main>` in the same document (idiomorph inside `startViewTransition`); plain cross-document navigation is the no-JS fallback | one small module; the chrome and its state survive every hop |
 | edit the deployed site from a browser | devgit (`</>` button once a token is configured) | only loads when configured; never for visitors |
 | embed a deck, animation, diagram or 3D scene made with Claude Design | export its files into the repo, then isolate/integrate/flatten — see the `hono-aep-design-embed` skill | Design URLs cannot be hotlinked; an export is a snapshot you own |
 
