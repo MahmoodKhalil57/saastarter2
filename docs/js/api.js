@@ -1,5 +1,6 @@
 // Framework-free client core: locale, session (bearer-first), guest-by-default.
 import { base } from "./config.js";
+import { refreshSession } from "#stores";
 
 const KEY = "baas.session-token";
 export const token = () => localStorage.getItem(KEY);
@@ -20,7 +21,7 @@ async function post(path, body, headers = {}) {
   });
   const setToken = response.headers.get("set-auth-token");
   if (setToken) localStorage.setItem(KEY, setToken);
-  if (response.ok) dispatchEvent(new Event("session-changed"));
+  if (response.ok) void refreshSession();
   return response;
 }
 
@@ -28,7 +29,7 @@ export const signUp = (email, password, name) => post("/sign-up/email", { email,
 export const signIn = (email, password) => post("/sign-in/email", { email, password });
 export const requestReset = (email) => post("/request-password-reset", { email, redirectTo: location.origin });
 export const signInGuest = () => post("/sign-in/anonymous", {});
-export const signOut = () => { localStorage.removeItem(KEY); dispatchEvent(new Event("session-changed")); };
+export const signOut = () => { localStorage.removeItem(KEY); void refreshSession(); };
 export const updateProfile = (name) => post("/update-user", { name });
 export const updateAvatar = (image) => post("/update-user", { image });
 export const changeEmail = (newEmail) => post("/change-email", { newEmail, callbackURL: location.href });
@@ -52,7 +53,7 @@ export async function verify2fa(code, challenge) {
     body: JSON.stringify({ code }),
   });
   const t = response.headers.get("set-auth-token");
-  if (t) { localStorage.setItem(KEY, t); dispatchEvent(new Event("session-changed")); }
+  if (t) { localStorage.setItem(KEY, t); void refreshSession(); }
   return response.ok;
 }
 
@@ -66,7 +67,7 @@ export function consumeAuthFragment() {
   if (!match) return;
   localStorage.setItem(KEY, decodeURIComponent(match[1]));
   history.replaceState(null, "", location.pathname + location.search);
-  dispatchEvent(new Event("session-changed"));
+  void refreshSession();
 }
 
 export async function getSession() {

@@ -1,14 +1,16 @@
 // <s2-nav> — the navbar Web Awesome doesn't ship (tier 3: from scratch).
 // Light DOM so the page cascade styles it (site.css) and its box is
-// CSS-reserved, so upgrading never shifts layout. Listens to the app's
-// session-changed / cart-changed events; owns the theme + locale toggles.
-import { getLocale, getSession, setLocale } from "../api.js";
-import { getCart } from "../store.js";
+// CSS-reserved, so upgrading never shifts layout. State comes from the
+// #stores atoms — subscribe fires immediately with the current value, so
+// there is no separate "initial paint" path. Owns theme + locale toggles.
+import { getLocale, setLocale } from "../api.js";
+import { $cartCount, $session } from "#stores";
 import { applyPrefs, icon } from "../chrome.js";
 
 const dark = () => localStorage.getItem("theme") === "dark";
 
 class S2Nav extends HTMLElement {
+  #unsubs = [];
   connectedCallback() {
     this.innerHTML = `
     <div class="container s2-nav-row">
@@ -30,25 +32,22 @@ class S2Nav extends HTMLElement {
       event.preventDefault();
       document.querySelector("s2-cart-drawer")?.show();
     });
-    addEventListener("session-changed", () => void this.refreshAccount());
-    addEventListener("cart-changed", () => void this.refreshBadge());
-    void this.refreshAccount();
-    void this.refreshBadge();
+    this.#unsubs.push($session.subscribe((user) => {
+      const link = this.querySelector("#nav-account");
+      if (!link) return;
+      if (user && !user.isAnonymous) { link.innerHTML = `${icon("user")} Account`; link.href = "./account.html"; }
+      else { link.innerHTML = `${icon("log-in")} Sign in`; link.href = "./login.html"; }
+    }));
+    this.#unsubs.push($cartCount.subscribe((count) => {
+      const badge = this.querySelector("#cart-count");
+      if (!badge) return;
+      badge.textContent = String(count);
+      badge.classList.toggle("s2-hidden", count === 0);
+    }));
   }
-  async refreshAccount() {
-    const link = this.querySelector("#nav-account");
-    const user = await getSession();
-    if (!link) return;
-    if (user && !user.isAnonymous) { link.innerHTML = `${icon("user")} Account`; link.href = "./account.html"; }
-    else { link.innerHTML = `${icon("log-in")} Sign in`; link.href = "./login.html"; }
-  }
-  async refreshBadge() {
-    const badge = this.querySelector("#cart-count");
-    if (!badge) return;
-    const cart = await getCart();
-    const count = (cart.items ?? []).reduce((sum, item) => sum + item.quantity, 0);
-    badge.textContent = String(count);
-    badge.classList.toggle("s2-hidden", count === 0);
+  disconnectedCallback() {
+    this.#unsubs.forEach((unsub) => unsub());
+    this.#unsubs = [];
   }
 }
 

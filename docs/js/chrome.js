@@ -5,6 +5,7 @@
 // smoothed by cross-document View Transitions (site.css) and made instant
 // by speculation-rules prerendering (each page's head).
 import { consumeAuthFragment, getLocale } from "./api.js";
+import { refreshCart, refreshSession } from "#stores";
 import "./components/nav.js";
 import "./components/footer.js";
 import "./components/cart-drawer.js";
@@ -48,6 +49,8 @@ addEventListener("hashchange", maybeOpenCart);
 maybeOpenCart();
 
 consumeAuthFragment();
+void refreshSession();
+void refreshCart();
 
 // devgit (edit-the-site-from-the-site, dev.html): visitors never load it —
 // the import only happens in a browser where a developer saved a token.

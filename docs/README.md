@@ -25,9 +25,16 @@ toolchain is still deleted — but this time the *workarounds* are too:
   platform's least-bad answer, with boxes reserved in CSS so upgrading
   never shifts layout) plus gap-fillers like `<s2-product-card>` and
   extensions like `<s2-search>` (a `class extends WaInput`, imported
-  through the `wa/` import map in each head). The contract — and the
-  path to build-once framework-compiled components — is defined in
-  [js/components/README.md](js/components/README.md).
+  through the `wa/` import map in each head), compiled `*.gen.js`
+  artifacts authored in React/Vue/Svelte/Lit (built once in the
+  repo-root `component-factory/`), and `react-jit/` (React with a
+  lazy-loaded shared engine, zero build). The contract is defined in
+  [js/components/README.md](js/components/README.md); lab.html is the
+  live proof that five engines drive one state atom.
+- **One state layer** — [js/stores.js](js/stores.js) holds nanostores
+  atoms (`$session`, `$cart`, …), imported by every tier through the
+  `#stores` import-map alias so each page has exactly one instance of
+  each atom. Components subscribe; api/store mutations refresh.
 - **No file over ~200 lines** — `js/` is the client core (config/api/
   store/chrome/cart/payment), `js/pages/` one small script per page.
 

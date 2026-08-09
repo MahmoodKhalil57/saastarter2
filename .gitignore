@@ -1,3 +1,5 @@
 .owner-creds.json
 .playwright-cli/
 .platform-creds.json
+component-factory/node_modules/
+component-factory/.tmp/

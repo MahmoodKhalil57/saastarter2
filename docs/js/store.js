@@ -3,6 +3,7 @@
 // cache and speculation-rules prerendering are the cache.
 import { base, config } from "./config.js";
 import { authHeader, ensureSession, localeQuery } from "./api.js";
+import { refreshCart } from "#stores";
 
 const commerce = `${base}/commerce`;
 const json = { "Content-Type": "application/json" };
@@ -51,12 +52,12 @@ export async function getCart() {
 export async function addToCart(variant, quantity = 1) {
   const header = await ensureSession();
   const r = await fetch(`${commerce}/cart:add`, { method: "POST", headers: { ...json, ...header }, body: JSON.stringify({ variant, quantity }) });
-  dispatchEvent(new Event("cart-changed"));
+  void refreshCart();
   return r.ok ? r.json() : null;
 }
 export async function removeFromCart(variant) {
   const r = await fetch(`${commerce}/cart:remove`, { method: "POST", headers: { ...json, ...authHeader() }, body: JSON.stringify({ variant }) });
-  dispatchEvent(new Event("cart-changed"));
+  void refreshCart();
   return r.ok ? r.json() : null;
 }
 export async function validateDiscount(code) {

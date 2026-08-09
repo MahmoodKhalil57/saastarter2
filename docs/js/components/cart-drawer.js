@@ -3,7 +3,8 @@
 // mounted on every page by chrome.js: items → coupon → embedded payment
 // (the gateway's element renders INSIDE the drawer) → done. The page never
 // changes underneath the shopper; `end` placement flips for RTL by itself.
-import { checkoutCart, getCart, money, removeFromCart, validateDiscount, waitForOrder } from "../store.js";
+import { checkoutCart, money, removeFromCart, validateDiscount, waitForOrder } from "../store.js";
+import { $cart, refreshCart } from "#stores";
 import { mountPayment } from "../payment.js";
 import { icon, toast } from "../chrome.js";
 
@@ -39,12 +40,12 @@ class S2CartDrawer extends HTMLElement {
 
     this.el("cd-items").addEventListener("click", async (event) => {
       const variant = event.target.closest?.("[data-variant]")?.dataset?.variant;
-      if (variant) { await removeFromCart(variant); void this.render(); }
+      if (variant) await removeFromCart(variant); // $cart subscription re-renders
     });
     this.el("cd-apply").addEventListener("click", () => void this.applyCoupon());
     this.el("cd-checkout").addEventListener("click", () => void this.checkout());
     this.el("cd-back").addEventListener("click", () => this.view("cart"));
-    addEventListener("cart-changed", () => void this.render());
+    this.unsubCart = $cart.subscribe((cart) => this.render(cart));
   }
 
   el(id) { return this.querySelector(`#${id}`); }
@@ -57,12 +58,11 @@ class S2CartDrawer extends HTMLElement {
   async show() {
     await customElements.whenDefined("wa-drawer");
     this.view("cart");
-    void this.render();
+    void refreshCart(); // re-render arrives through the $cart subscription
     this.querySelector("wa-drawer").open = true;
   }
 
-  async render() {
-    const cart = await getCart();
+  render(cart) {
     const items = this.el("cd-items");
     if ((cart.items ?? []).length === 0) {
       items.innerHTML = '<p class="s2-quiet s2-small">Empty. <a href="./products.html">Browse the catalog →</a></p>';
@@ -96,7 +96,7 @@ class S2CartDrawer extends HTMLElement {
       error.textContent = verdict.reason;
       error.classList.remove("s2-hidden"); line.classList.add("s2-hidden");
     }
-    void this.render();
+    this.render($cart.get());
   }
 
   async checkout() {
@@ -106,7 +106,7 @@ class S2CartDrawer extends HTMLElement {
       this.el("cd-done-title").textContent = title;
       this.view("done");
       this.coupon = null;
-      dispatchEvent(new Event("cart-changed"));
+      void refreshCart();
     };
     if (body.payment) {
       this.view("pay");

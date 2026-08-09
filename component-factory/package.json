@@ -1,0 +1,16 @@
+{
+  "name": "component-factory",
+  "private": true,
+  "type": "module",
+  "description": "Build-once producer: compiles react/ vue/ svelte/ lit/ sources into self-registering custom-element artifacts at docs/js/components/*.gen.js. The site itself never runs this.",
+  "scripts": {
+    "build": "bun run build.ts"
+  },
+  "dependencies": {
+    "lit": "3.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "svelte": "5.56.8",
+    "vue": "3.5.41"
+  }
+}

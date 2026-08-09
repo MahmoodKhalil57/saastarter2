@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>component lab — saastarter2</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/favicon.svg">
+<script>{const d=localStorage.theme==="dark",c=document.documentElement.classList;c.toggle("wa-dark",d);c.toggle("dark",d);const l=localStorage.locale==="ar"?"ar":"en";document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}</script>
+<script type="importmap">{"imports":{"wa/":"https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/","#stores":"./js/stores.js","nanostores":"https://esm.sh/nanostores@1.4.2?target=es2022","react":"https://esm.sh/react@19.2.8?target=es2022","react-dom/client":"https://esm.sh/react-dom@19.2.8/client?target=es2022&deps=react@19.2.8","htm":"https://esm.sh/htm@3.1.1?target=es2022"}}</script>
+<link rel="stylesheet" href="./css/app.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.11.0/dist-cdn/webawesome.loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<script type="module" src="./js/chrome.js"></script>
+</head>
+<body>
+<s2-nav></s2-nav>
+<main class="container" style="max-inline-size:44rem">
+  <p class="s2-kicker" style="margin-block-end:0.25rem">component lab</p>
+  <h1 style="margin-block:0 0.25rem">Five engines, one atom</h1>
+  <p class="s2-comment" style="margin-block:0 1.5rem">/* every row binds to the same nanostores atom — $counter from #stores */</p>
+
+  <div class="s2-stack">
+    <wa-card><s2-counter-lit></s2-counter-lit></wa-card>
+    <wa-card><s2-counter-svelte></s2-counter-svelte></wa-card>
+    <wa-card><s2-counter-vue></s2-counter-vue></wa-card>
+    <wa-card><s2-counter-react></s2-counter-react></wa-card>
+    <wa-card>
+      <s2-counter-jit>
+        <!-- pre-engine fallback: honest content until React arrives (or if it never does) -->
+        <div class="s2-row"><span class="s2-quiet s2-small">react-jit — waiting for the engine…</span></div>
+      </s2-counter-jit>
+    </wa-card>
+    <wa-card>
+      <div class="s2-row">
+        <strong class="s2-price" id="native-count"></strong>
+        <wa-button size="s" appearance="outlined" id="reset">Reset</wa-button>
+        <span class="s2-quiet s2-small">no engine at all — a plain module subscribing to the same atom</span>
+      </div>
+    </wa-card>
+  </div>
+
+  <section style="margin-block-start:2rem">
+    <h2 style="font-size:1.1rem">What this page proves</h2>
+    <p class="s2-quiet s2-small">The first four counters are <code>.gen.js</code> artifacts compiled once in <code>component-factory/</code> (runtime bundled in: lit 15KB · svelte 52KB · vue 71KB · react 182KB, min). The fifth ships as source and lazy-loads a shared React engine from the CDN on first connect — watch its fallback text until the engine lands. All five import the same <code>#stores</code> module through the page import map, so one atom instance drives every engine.</p>
+  </section>
+</main>
+<s2-footer></s2-footer>
+<script type="module">
+import "./js/components/counter-lit.gen.js";
+import "./js/components/counter-svelte.gen.js";
+import "./js/components/counter-vue.gen.js";
+import "./js/components/counter-react.gen.js";
+import "./js/components/react-jit/counter.element.js";
+import { $counter } from "#stores";
+
+$counter.subscribe((value) => { document.getElementById("native-count").textContent = String(value); });
+document.getElementById("reset").addEventListener("click", () => $counter.set(0));
+</script>
+</body>
+</html>
