@@ -38,7 +38,45 @@
       "commerce": true
     },
     "app": {
-      "shortName": "SaaS2"
+      "backgroundColor": "#0a0a0a",
+      "cacheName": "pure-v1",
+      "icons": [
+        {
+          "purpose": "any maskable",
+          "sizes": "any",
+          "src": "https://mahmoodkhalil57.github.io/saastarter2/favicon.svg",
+          "type": "image/svg+xml"
+        }
+      ],
+      "name": "saastarter2",
+      "shortName": "SaaS2",
+      "themeColor": "#0a0a0a"
+    },
+    "assets": {
+      "llms": {
+        "intro": "No build step: the deployed files ARE the source. View source on any page.",
+        "links": [
+          {
+            "note": "the AEP contract this whole site is generated from",
+            "title": "API contract",
+            "url": "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/openapi.json"
+          }
+        ],
+        "sections": [
+          { "collection": "products", "label": "name", "note": "tagline", "title": "Products", "url": "/product.html?slug={id}" },
+          { "collection": "posts", "label": "title", "title": "Blog", "url": "/post.html?slug={id}" }
+        ]
+      },
+      "robots": {
+        "extra": ["Disallow: /admin.html"]
+      },
+      "sitemap": {
+        "collections": [
+          { "slug": "products", "url": "/product.html?slug={id}" },
+          { "slug": "posts", "url": "/post.html?slug={id}" }
+        ],
+        "urls": ["/", "/products.html", "/blog.html", "/contact.html", "/page.html?slug=story"]
+      }
     },
     "description": "The flagship mizan-gpp consumer \u2014 static react-router + shadcn on GitHub Pages.",
     "locale": "en",
@@ -49,7 +87,7 @@
         "ar"
       ]
     },
-    "url": "https://mahmoodkhalil57.github.io"
+    "url": "https://mahmoodkhalil57.github.io/saastarter2"
   },
   "update_time": "2026-08-08T02:08:28Z"
 }
