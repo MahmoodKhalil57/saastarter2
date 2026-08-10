@@ -74,7 +74,9 @@ const viewport = { width: 1440, height: 900 };
 async function snapshot(url, js) {
   const ctx = await browser.newContext({ viewport, javaScriptEnabled: js });
   const page = await ctx.newPage();
-  await page.goto(url, { waitUntil: js ? "load" : "domcontentloaded" });
+  // "load" in both: on a high-latency origin, domcontentloaded fires before
+  // the stylesheets land, and then getAnimations() sees nothing to wait for.
+  await page.goto(url, { waitUntil: "load" });
   // Wait for webfonts in BOTH renders. Otherwise the no-JS snapshot is
   // taken pre-swap and the diff blames JS for font reflow. (Playwright's
   // evaluate runs in an isolated world, so this works with JS disabled.)
@@ -84,7 +86,11 @@ async function snapshot(url, js) {
   await page
     .evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {}))))
     .catch(() => {});
-  await page.waitForTimeout(js ? 2000 : 400); // components upgrade + data lands
+  await page.waitForTimeout(js ? 2000 : 1200); // components upgrade + data lands
+  // one more pass: animations may only have begun after the CSS applied
+  await page
+    .evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {}))))
+    .catch(() => {});
   const result = await page.evaluate(capture);
   await ctx.close();
   return result;
