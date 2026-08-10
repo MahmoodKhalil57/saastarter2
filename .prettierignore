@@ -16,3 +16,4 @@ component-factory/bun.lock
 
 # generated CSS bundle — regenerate with ./cli.sh css-flatten
 docs/css/*.gen.css
+docs/js/*.gen.js

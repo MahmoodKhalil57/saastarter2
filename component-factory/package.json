@@ -4,9 +4,11 @@
   "type": "module",
   "description": "Build-once sources for this site's compiled custom elements. The compiler itself is hono-aep-webc-factory; this directory is just sources + webc.config.json. The site never runs any of it.",
   "scripts": {
-    "build": "webc-factory build"
+    "build": "webc-factory build",
+    "wa-bundle": "bun wa-bundle.ts"
   },
   "devDependencies": {
+    "@awesome.me/webawesome": "3.11.0",
     "hono-aep-webc-factory": "^0.2.0"
   },
   "dependencies": {

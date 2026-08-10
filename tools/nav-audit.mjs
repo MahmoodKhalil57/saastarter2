@@ -15,6 +15,9 @@
 //     pagereveal), rather than assuming the CSS took effect
 //   • whether the page was prerendered by the speculation rules
 //   • long animation frames (the actual definition of jank)
+//   • which custom elements are still un-upgraded AT first paint, and how
+//     long after it each one takes to define — the "buttons and cards
+//     render half-finished" problem, measured instead of eyeballed
 //
 // Usage:
 //   node tools/nav-audit.mjs [baseUrl] [--runs 3] [--headed]
@@ -52,6 +55,8 @@ const probe = () => {
     viewTransition: { swapFired: false, revealFired: false, hadActiveTransition: false },
     prerendered: false,
     domInteractive: null,
+    undefinedAtFcp: [],
+    defines: {},
   };
   const describe = (node) => {
     if (!node || node.nodeType !== 1) return "(anonymous)";
@@ -78,7 +83,14 @@ const probe = () => {
 
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (entry.name === "first-contentful-paint") report.fcp = Math.round(entry.startTime);
+        if (entry.name !== "first-contentful-paint" || report.fcp !== null) continue;
+        report.fcp = Math.round(entry.startTime);
+        // A custom element still :not(:defined) here is one the user sees
+        // half-rendered. Sampling at FCP is what makes this deterministic.
+        const undefinedNow = [...document.querySelectorAll(":not(:defined)")].map((el) => el.tagName.toLowerCase());
+        report.undefinedAtFcp = Object.entries(
+          undefinedNow.reduce((counts, tag) => ({ ...counts, [tag]: (counts[tag] ?? 0) + 1 }), {}),
+        );
       }
     }).observe({ type: "paint", buffered: true });
 
@@ -107,6 +119,22 @@ const probe = () => {
     report.viewTransition.revealFired = true;
     report.viewTransition.hadActiveTransition ||= Boolean(event.viewTransition);
   });
+
+  // When does each custom element on the page actually upgrade?
+  const watchDefines = () => {
+    const tags = new Set(
+      [...document.querySelectorAll("*")].map((el) => el.tagName.toLowerCase()).filter((tag) => tag.includes("-")),
+    );
+    for (const tag of tags) {
+      if (tag in report.defines) continue;
+      report.defines[tag] = null;
+      customElements.whenDefined(tag).then(() => {
+        report.defines[tag] = Math.round(performance.now());
+      });
+    }
+  };
+  addEventListener("DOMContentLoaded", watchDefines);
+  setTimeout(watchDefines, 0);
 
   addEventListener("load", () => {
     const nav = performance.getEntriesByType("navigation")[0];
@@ -222,6 +250,25 @@ if (worst.length) {
   }
 } else {
   console.log("\nno layout shifts recorded.");
+}
+
+const first = rows[0];
+if (first) {
+  console.log("\ncomponent readiness on first load:");
+  const stragglers = first.undefinedAtFcp ?? [];
+  console.log(
+    stragglers.length
+      ? `  un-upgraded AT first paint: ${stragglers.map(([tag, n]) => `${n}x ${tag}`).join(", ")}`
+      : "  un-upgraded at first paint: none",
+  );
+  const defines = Object.entries(first.defines ?? {}).sort((a, b) => (a[1] ?? Infinity) - (b[1] ?? Infinity));
+  for (const [tag, at] of defines) {
+    const delta =
+      at != null && first.fcp != null ? `${at - first.fcp >= 0 ? "+" : ""}${at - first.fcp}ms after FCP` : "";
+    console.log(`  ${tag.padEnd(18)} ${String(at ?? "never").padStart(6)}ms  ${delta}`);
+  }
+  console.log("  (a tag defining long after FCP renders half-finished for that long —");
+  console.log("   import its module directly in the head instead of leaving it to a loader)");
 }
 
 const totalCls = rows.reduce((sum, r) => sum + r.cls, 0) / (rows.length || 1);
