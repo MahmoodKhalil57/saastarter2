@@ -138,7 +138,7 @@
         "ar"
       ]
     },
-    "url": "https://mahmoodkhalil57.github.io/saastarter2",
+    "url": "https://saastarter2.saastemly.com",
     "services": {
       "payment": {
         "provider": "stripe"

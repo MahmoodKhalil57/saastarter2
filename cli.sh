@@ -99,7 +99,7 @@ case "${1:-help}" in
             new_site=${3:-$old_site}; new_endpoint=${4:-$old_endpoint}
             old_origin=$(bun -e "console.log(new URL('$old_site').origin)")
             new_origin=$(bun -e "console.log(new URL('$new_site').origin)")
-            grep -rl "$old_project\|$old_origin\|$old_endpoint" pure-frontend hono-aep-baas-config hono-aep-baas-idempotent-seed --include="*.html" --include="*.js" --include="*.json" --include="*.webmanifest" 2>/dev/null \
+            grep -rl "$old_project\|$old_origin\|$old_endpoint" docs hono-aep-baas-config hono-aep-baas-idempotent-seed --include="*.html" --include="*.js" --include="*.json" --include="*.webmanifest" 2>/dev/null \
               | while read -r f; do
                   sed -i "s|$old_project|$new_project|g; s|$old_site|$new_site|g; s|$old_origin|$new_origin|g; s|$old_endpoint|$new_endpoint|g" "$f"
                 done
