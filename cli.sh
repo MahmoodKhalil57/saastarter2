@@ -9,7 +9,8 @@
 #   ./cli.sh remove ALIAS                  drop a pin
 #   ./cli.sh serve                         the site (docs/) on :8899
 #   ./cli.sh ci [secrets|status]           creds → repo secrets; CI sync status
-#   ./cli.sh audit [URL]                   navigation jank: CLS, long frames, view transitions
+#   ./cli.sh audit [URL]                   navigation jank: CLS, long frames, component readiness
+#   ./cli.sh nojs-diff [URL]               pre-JS vs post-JS layout: what JS moves
 #   ./cli.sh css-flatten                   re-inline the vendored CSS tree (after a version bump)
 #   ./cli.sh wa-bundle                     rebuild the eager component bundle (after a version bump)
 #   ./cli.sh publish                       git push — Pages serves master:/docs directly
@@ -43,6 +44,10 @@ case "${1:-help}" in
   add|remove) exec bun tools/importmap.ts "$@" ;;
   css-flatten) exec bun tools/flatten-css.ts ;;
   wa-bundle)  cd component-factory && exec bun run wa-bundle ;;
+  nojs-diff) shift # render each page with JS off and on, diff the geometry:
+            # anything that moves is a box the HTML failed to reserve
+            exec env NODE_PATH="$(npm root -g 2>/dev/null):$HOME/.npm/_npx/31e32ef8478fbf80/node_modules" \
+              node tools/nojs-diff.mjs "$@" ;;
   audit)    shift # measures what a screenshot can't: per-navigation CLS with
             # the element that moved, long animation frames, whether a
             # cross-document view transition actually ran, prerender status.
@@ -96,5 +101,5 @@ case "${1:-help}" in
             echo "re-pointed → project $new_project · site $new_site · endpoint $new_endpoint"
             echo "next: add .owner-creds.json + platform-creds.json, then ./cli.sh sync push && ./cli.sh seed push" ;;
   publish)  git push origin master ;; # Pages serves master:/docs — pushing IS publishing
-  *)        sed -n '3,17p' "$0" ;;
+  *)        sed -n '3,18p' "$0" ;;
 esac

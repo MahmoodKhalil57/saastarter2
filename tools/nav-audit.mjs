@@ -37,10 +37,12 @@ const base = (args.find((a) => a.startsWith("http")) ?? "https://mahmoodkhalil57
   /\/?$/,
   "/",
 );
-const runs = Number(args[args.indexOf("--runs") + 1]) || 1;
+const runsFlag = args.indexOf("--runs");
+const runs = (runsFlag === -1 ? 0 : Number(args[runsFlag + 1])) || 1;
 const headed = args.includes("--headed");
 // How long to hover before clicking (prerender needs a moment to be useful).
-const dwellMs = Number(args[args.indexOf("--dwell") + 1]) || 700;
+const dwellFlag = args.indexOf("--dwell");
+const dwellMs = (dwellFlag === -1 ? 0 : Number(args[dwellFlag + 1])) || 700;
 
 // The probe runs in EVERY document, before any page script. It cannot
 // rely on anything the page provides.

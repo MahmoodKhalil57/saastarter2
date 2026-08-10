@@ -138,6 +138,11 @@ s2-nav {
 
 s2-footer {
   display: block;
+  /* Measured filled height. Without it the footer grows by one line when
+     JS injects its content — a shift on every page, and the one that
+     showed up on all five in the pre-JS/post-JS diff. */
+  min-block-size: 69px;
+  box-sizing: border-box;
   border-block-start: 1px solid var(--s2-line);
   padding-block: 1.5rem;
   text-align: center;
@@ -410,7 +415,7 @@ iconify-icon {
 s2-search:not(:defined),
 wa-input:not(:defined) {
   display: block;
-  block-size: 2.75rem;
+  min-block-size: 43px; /* measured upgraded height */
 }
 wa-button:not(:defined) {
   display: inline-block;
@@ -419,6 +424,16 @@ wa-button:not(:defined) {
 wa-card:not(:defined) {
   display: block;
   min-block-size: 8rem;
+}
+/* Grid cards have a known content shape, so their reservation can be
+   accurate rather than a generic floor. Both numbers are measured; if the
+   card content changes materially, re-measure with ./cli.sh nojs-diff. */
+.s2-grid > wa-card:not(:defined),
+.s2-grid > a.s2-card-link:not(:defined) {
+  min-block-size: 196px;
+}
+#pricing > wa-card:not(:defined) {
+  min-block-size: 279px;
 }
 wa-tab-group:not(:defined) {
   display: block;

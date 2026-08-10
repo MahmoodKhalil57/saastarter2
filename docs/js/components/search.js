@@ -1,9 +1,10 @@
 // <s2-search> (tier 2: extend) — Web Awesome's input, subclassed. The
-// class comes off the pinned CDN through the `wa/` import map in every
-// page head; we inherit the shadow template, form association, and theme
+// class comes from the page's single Web Awesome instance (#wa-core); we inherit the shadow template, form association, and theme
 // styling, and add the one thing the library doesn't ship: a debounced,
 // bubbling `s2-search` event with the trimmed query in `detail.query`.
-import WaInput from "wa/components/input/input.js";
+// From the eager bundle, never the CDN: a second copy of the module
+// would try to define "wa-input" again, throw, and take this file with it.
+import { WaInput } from "#wa-core";
 
 class S2Search extends WaInput {
   #timer;
