@@ -129,7 +129,7 @@
         ]
       }
     },
-    "description": "The flagship mizan-gpp consumer — static react-router + shadcn on GitHub Pages.",
+    "description": "The flagship mizan-gpp consumer \u2014 static react-router + shadcn on GitHub Pages.",
     "locale": "en",
     "locales": {
       "default": "en",
@@ -138,7 +138,19 @@
         "ar"
       ]
     },
-    "url": "https://mahmoodkhalil57.github.io/saastarter2"
+    "url": "https://mahmoodkhalil57.github.io/saastarter2",
+    "services": {
+      "payment": {
+        "provider": "stripe"
+      },
+      "delivery": {
+        "provider": "download"
+      },
+      "email": {
+        "provider": "resend",
+        "from": "saastarter2 <shop@example.com>"
+      }
+    }
   },
   "update_time": "2026-08-08T02:08:28Z"
 }
