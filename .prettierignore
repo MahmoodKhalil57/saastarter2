@@ -13,3 +13,6 @@ hono-aep-baas-idempotent-seed/
 skills-lock.json
 component-factory/bun.lock
 .agents/
+
+# generated CSS bundle — regenerate with ./cli.sh css-flatten
+docs/css/*.gen.css
