@@ -3,12 +3,15 @@
 THE frontend, rebuilt on what the web platform ships in 2026. The
 toolchain is still deleted — but this time the _workarounds_ are too:
 
-- **No build step** — browser-native ES modules; stylesheets are parallel
-  `<link>` tags, deliberately NOT an `@import` chain (nested `@import`
-  hides URLs from the preload scanner and serializes them into a request
-  waterfall — that cost this site a 7-deep critical chain and a 20.6s
-  Speed Index before it was measured and removed). Deploying is copying
-  this folder to any static host (Pages serves `master:/docs`).
+- **No build step** — browser-native ES modules and a handful of `<link>`
+  tags. Never an `@import` chain: nested `@import` hides URLs from the
+  preload scanner and serializes them: this site had an 8-deep critical
+  chain and a 20.6s Speed Index until it was measured and removed.
+  Web Awesome's own tree is flattened into one committed file by
+  `./cli.sh css-flatten` (18 render-blocking requests → 4). **Re-run it
+  when you bump the Web Awesome pin in the import map**, or the CSS and
+  JS versions drift apart. Deploying is copying this folder to any static
+  host (Pages serves `master:/docs`).
 - **Real `.html` pages, morphed in place** — every URL is a real file, but
   `js/router.js` intercepts navigation (Navigation API where available,
   a click listener otherwise) and MORPHS `<main>` with idiomorph rather
