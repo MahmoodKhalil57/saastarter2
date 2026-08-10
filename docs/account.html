@@ -97,7 +97,7 @@
 
         <wa-tab-panel name="overview">
           <div class="s2-stack">
-            <wa-card>
+            <div class="s2-card">
               <div class="s2-stack">
                 <strong>Profile</strong>
                 <span class="s2-quiet" id="who"></span>
@@ -143,24 +143,24 @@
                 </div>
                 <div class="s2-row" style="max-inline-size: 22rem">
                   <wa-input id="prof-name" placeholder="Name" style="flex: 1"></wa-input>
-                  <wa-button id="prof-save" appearance="outlined">Save</wa-button>
+                  <button class="s2-btn s2-btn-quiet" type="button" id="prof-save">Save</button>
                 </div>
-                <wa-button id="sign-out" size="s" appearance="outlined" variant="danger" style="align-self: start">
+                <button class="s2-btn s2-btn-danger s2-btn-s" type="button" id="sign-out" style="align-self: start">
                   Sign out
-                </wa-button>
+                </button>
               </div>
-            </wa-card>
-            <wa-card>
+            </div>
+            <div class="s2-card">
               <div class="s2-stack">
                 <strong>Change email</strong>
                 <p class="s2-quiet s2-small" style="margin: 0">A confirmation link goes to the NEW address.</p>
                 <div class="s2-row" style="max-inline-size: 26rem">
                   <wa-input id="new-email" type="email" placeholder="new@email.com" style="flex: 1"></wa-input>
-                  <wa-button id="email-change" appearance="outlined">Send confirmation</wa-button>
+                  <button class="s2-btn s2-btn-quiet" type="button" id="email-change">Send confirmation</button>
                 </div>
               </div>
-            </wa-card>
-            <wa-card style="--border-color: var(--wa-color-danger-fill-loud)">
+            </div>
+            <div class="s2-card" style="--border-color: var(--wa-color-danger-fill-loud)">
               <div class="s2-stack">
                 <strong>Delete account</strong>
                 <p class="s2-quiet s2-small" style="margin: 0">
@@ -168,16 +168,16 @@
                 </p>
                 <div class="s2-row" style="max-inline-size: 26rem">
                   <wa-input id="del-pw" type="password" placeholder="Current password" style="flex: 1"></wa-input>
-                  <wa-button id="del-req" appearance="outlined" variant="danger">Request deletion</wa-button>
+                  <button class="s2-btn s2-btn-danger" type="button" id="del-req">Request deletion</button>
                 </div>
               </div>
-            </wa-card>
+            </div>
           </div>
         </wa-tab-panel>
 
         <wa-tab-panel name="security">
           <div class="s2-stack">
-            <wa-card>
+            <div class="s2-card">
               <div class="s2-stack">
                 <strong>
                   Two-factor authentication
@@ -186,7 +186,7 @@
                 <div id="tf-setup" class="s2-stack">
                   <div class="s2-row" style="max-inline-size: 26rem">
                     <wa-input id="tf-pw" type="password" placeholder="Current password" style="flex: 1"></wa-input>
-                    <wa-button id="tf-enable" appearance="outlined">Enable 2FA</wa-button>
+                    <button class="s2-btn s2-btn-quiet" type="button" id="tf-enable">Enable 2FA</button>
                   </div>
                   <div id="tf-confirm" class="s2-hidden s2-stack">
                     <wa-qr-code id="tf-qr" label="Scan with your authenticator app"></wa-qr-code>
@@ -196,24 +196,28 @@
                       <wa-copy-button id="tf-copy" value=""></wa-copy-button>
                     </p>
                     <wa-otp-input id="tf-code" label="Code from the app"></wa-otp-input>
-                    <wa-button id="tf-verify" variant="brand" style="align-self: start">Confirm</wa-button>
+                    <button class="s2-btn s2-btn-brand" type="button" id="tf-verify" style="align-self: start">
+                      Confirm
+                    </button>
                   </div>
                 </div>
               </div>
-            </wa-card>
-            <wa-card>
+            </div>
+            <div class="s2-card">
               <div class="s2-stack" style="max-inline-size: 22rem">
                 <strong>Change password</strong>
                 <wa-input id="pw-cur" type="password" placeholder="Current password"></wa-input>
                 <wa-input id="pw-next" type="password" placeholder="New password (8+ chars)"></wa-input>
-                <wa-button id="pw-change" appearance="outlined" style="align-self: start">Change password</wa-button>
+                <button class="s2-btn s2-btn-quiet" type="button" id="pw-change" style="align-self: start">
+                  Change password
+                </button>
               </div>
-            </wa-card>
+            </div>
           </div>
         </wa-tab-panel>
 
         <wa-tab-panel name="billing">
-          <wa-card>
+          <div class="s2-card">
             <div class="s2-stack">
               <strong>
                 Pro subscription
@@ -223,11 +227,11 @@
                 $9/mo — a real recurring checkout; the webhook lifecycle grants, renews, and revokes the entitlement.
               </p>
               <div class="s2-row">
-                <wa-button id="sub" variant="brand">Subscribe — $9/mo</wa-button>
-                <wa-button id="portal" appearance="outlined" class="s2-hidden">Manage subscription</wa-button>
+                <button class="s2-btn s2-btn-brand" type="button" id="sub">Subscribe — $9/mo</button>
+                <button class="s2-btn s2-btn-quiet s2-hidden" type="button" id="portal">Manage subscription</button>
               </div>
             </div>
-          </wa-card>
+          </div>
         </wa-tab-panel>
 
         <wa-tab-panel name="orders">
@@ -238,14 +242,14 @@
         </wa-tab-panel>
 
         <wa-tab-panel name="dev">
-          <wa-card>
+          <div class="s2-card">
             <div class="s2-stack">
               <strong>API key</strong>
               <p class="s2-quiet s2-small" style="margin: 0">
                 Mints an sk_ key bound to YOUR account — it acts as your session does against the project's API. Shown
                 once.
               </p>
-              <wa-button id="mint" appearance="outlined" style="align-self: start">Mint key</wa-button>
+              <button class="s2-btn s2-btn-quiet" type="button" id="mint" style="align-self: start">Mint key</button>
               <p id="minted-row" class="s2-hidden s2-small" style="margin: 0">
                 <code
                   id="minted"
@@ -258,7 +262,7 @@
                 <wa-copy-button id="minted-copy" value=""></wa-copy-button>
               </p>
             </div>
-          </wa-card>
+          </div>
         </wa-tab-panel>
       </wa-tab-group>
     </main>

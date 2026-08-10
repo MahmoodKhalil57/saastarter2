@@ -16,20 +16,19 @@ else {
   void track("product_viewed", { product_id: p.slug, price_cents: p.price_cents });
   const wished = (await myWishlist()).some((w) => w.product === slug);
   detail.innerHTML = `
-    <wa-card class="s2-center" style="align-self:start">
+    <div class="s2-card s2-center" style="align-self:start">
       <div style="font-size:5rem; padding-block:2rem">🧩</div>
       <p class="s2-quiet s2-small" style="text-transform:uppercase">${p.category ?? ""}</p>
-    </wa-card>
+    </div>
     <div class="s2-stack">
       <h1 style="${vt}; margin:0">${p.name}</h1>
       <p class="s2-quiet" style="font-size:1.15rem; margin:0">${p.tagline ?? ""}</p>
       <p style="margin:0">${p.description ?? ""}</p>
       <div class="s2-price" style="font-size:1.75rem">${p.price_cents ? money(p.price_cents) : "Free"}</div>
       <div class="s2-row">
-        <wa-button id="add" variant="brand" size="l">${icon("shopping-cart")} Add to cart</wa-button>
-        <wa-button id="view-cart" appearance="outlined" variant="brand" size="l" class="s2-hidden">View cart ${icon("arrow-right")}</wa-button>
-        <wa-button id="wish" appearance="plain" size="l" aria-label="Toggle wishlist"
-          style="color:${wished ? "var(--s2-accent)" : "var(--s2-muted)"}">${icon("heart")}</wa-button>
+        <button class="s2-btn s2-btn-brand s2-btn-l" type="button" id="add">${icon("shopping-cart")} Add to cart</button>
+        <button class="s2-btn s2-btn-outline s2-btn-l s2-hidden" type="button" id="view-cart">View cart ${icon("arrow-right")}</button>
+        <button class="s2-btn s2-btn-plain s2-btn-l" type="button" id="wish" aria-label="Toggle wishlist" style="color:${wished ? ">${icon("heart")}</button>
       </div>
     </div>`;
   document.getElementById("add").addEventListener("click", async () => {
@@ -54,14 +53,14 @@ async function renderReviews() {
       ? '<p class="s2-quiet">No reviews yet — be the first.</p>'
       : rows
           .map(
-            (r) => `<wa-card>
+            (r) => `<div class="s2-card">
         <div class="s2-row" style="justify-content:space-between">
           <strong>${r.title ?? "Review"}</strong>
           <wa-rating label="Rated ${r.rating} of 5" value="${r.rating}" readonly size="s"></wa-rating>
         </div>
         <p class="s2-quiet s2-small" style="margin-block:0.25rem 0">${r.body ?? ""}</p>
         <small class="s2-quiet">— ${r.author_name ?? "Anonymous"}</small>
-      </wa-card>`,
+      </div>`,
           )
           .join("");
 }

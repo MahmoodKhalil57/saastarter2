@@ -161,17 +161,17 @@ main {
 /* --- cards ---------------------------------------------------------------
    wa-card is the surface; the ink-offset hover is this site's signature. */
 .s2-hover,
-a.s2-card-link > wa-card {
+a.s2-card-link > .s2-card {
   transition:
     translate 0.15s ease,
     box-shadow 0.15s ease;
 }
 .s2-hover:hover,
-a.s2-card-link:hover > wa-card {
+a.s2-card-link:hover > .s2-card {
   translate: -2px -2px;
   box-shadow: 4px 4px 0 var(--s2-ink);
 }
-.dark :is(.s2-hover:hover, a.s2-card-link:hover > wa-card) {
+.dark :is(.s2-hover:hover, a.s2-card-link:hover > .s2-card) {
   box-shadow: 4px 4px 0 var(--s2-accent);
 }
 a.s2-card-link {
@@ -179,7 +179,7 @@ a.s2-card-link {
   color: inherit;
   display: block;
 
-  & wa-card {
+  & .s2-card {
     block-size: 100%;
   }
 }
@@ -337,6 +337,14 @@ blockquote {
 iconify-icon {
   vertical-align: -0.14em;
 }
+/* The icon element is itself a custom element loaded from a CDN, so before
+   it upgrades it is an empty inline box and everything around it sits
+   differently. 1em square matches what it renders at any font-size. */
+iconify-icon:not(:defined) {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+}
 
 /* --- headless-component styling (Base UI slider) -------------------------
    A headless library ships behavior + a11y and NO looks: these four rules
@@ -405,37 +413,136 @@ iconify-icon {
 
 /* --- FOUCE: reserve the box BEFORE a custom element upgrades ------------
    `:not(:defined)` elements are inline and zero-height until their class
-   registers, so everything below them jumps when it does. Hiding them
-   (below) stops the flash; these sizes stop the shift. Measured with
-   `./cli.sh audit` — each rule here corresponds to an element that showed
-   up in the layout-shift attribution. */
-   Heights only, and only where the final height is predictable. Pinning a
-   width would trade a vertical shift for a horizontal one — a button's
-   real width depends on its label, so it gets a height and nothing else. */
+   registers, so everything below them jumps when it does. Measured with
+   `./cli.sh nojs-diff` — each rule corresponds to an element that showed up
+   there. Heights only, and only where the final height is predictable:
+   pinning a width would trade a vertical shift for a horizontal one. */
 s2-search:not(:defined),
 wa-input:not(:defined) {
   display: block;
   min-block-size: 43px; /* measured upgraded height */
 }
-wa-button:not(:defined) {
-  display: inline-block;
-  block-size: 2.5rem;
-}
-wa-card:not(:defined) {
-  display: block;
-  min-block-size: 8rem;
-}
-/* Grid cards have a known content shape, so their reservation can be
-   accurate rather than a generic floor. Both numbers are measured; if the
-   card content changes materially, re-measure with ./cli.sh nojs-diff. */
-.s2-grid > wa-card:not(:defined),
-.s2-grid > a.s2-card-link:not(:defined) {
-  min-block-size: 196px;
-}
-#pricing > wa-card:not(:defined) {
-  min-block-size: 279px;
-}
 wa-tab-group:not(:defined) {
   display: block;
   min-block-size: 20rem;
+}
+
+/* ==========================================================================
+   Tier-1 primitives: card, button, badge as plain HTML + CSS
+   --------------------------------------------------------------------------
+   These exist so the page is COMPLETE before any JavaScript runs. A card is
+   a bordered box and a button is a styled control — neither needs a custom
+   element, and using one means the element is inert (and the layout wrong)
+   until its class registers. Web Awesome is still the right answer for
+   genuinely interactive widgets: drawer, tab-group, rating, otp-input,
+   qr-code, markdown. It is the wrong answer for a box with a border.
+
+   Every value below is a token, so theming and dark mode are unchanged.
+   ========================================================================== */
+.s2-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: var(--s2-card);
+  color: var(--s2-ink);
+  border: 1px solid var(--s2-line);
+  border-radius: var(--wa-border-radius-m, 6px);
+}
+
+.s2-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding-inline: 1.25rem;
+  block-size: 2.7rem;
+  border: 1px solid transparent;
+  border-radius: var(--wa-border-radius-s, 4px);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--wa-color-neutral-fill-quiet, var(--s2-line));
+  color: var(--s2-ink);
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+
+  &:hover {
+    border-color: var(--s2-accent);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--s2-accent);
+    outline-offset: 2px;
+  }
+  &[disabled],
+  &[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+.s2-btn-brand {
+  background: var(--s2-accent);
+  color: var(--s2-accent-contrast);
+  border-color: var(--s2-accent);
+
+  &:hover {
+    background: color-mix(in oklab, var(--s2-accent) 88%, black);
+  }
+}
+.s2-btn-outline {
+  background: transparent;
+  color: var(--s2-accent);
+  border-color: var(--s2-accent);
+
+  &:hover {
+    background: color-mix(in oklab, var(--s2-accent) 10%, transparent);
+  }
+}
+.s2-btn-quiet {
+  background: transparent;
+  color: var(--s2-ink);
+  border-color: var(--s2-line);
+}
+.s2-btn-plain {
+  background: transparent;
+  border-color: transparent;
+  padding-inline: 0.4rem;
+  color: var(--s2-ink);
+}
+.s2-btn-danger {
+  color: var(--wa-color-danger-fill-loud, #b3261e);
+  border-color: currentcolor;
+  background: transparent;
+}
+.s2-btn-s {
+  block-size: 2.15rem;
+  padding-inline: 0.85rem;
+  font-size: 0.9rem;
+}
+.s2-btn-l {
+  block-size: 3.3rem;
+  padding-inline: 1.6rem;
+  font-size: 1.15rem;
+}
+
+.s2-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--wa-color-neutral-fill-quiet, var(--s2-line));
+  color: var(--s2-ink);
+}
+.s2-tag-brand {
+  background: var(--s2-accent);
+  color: var(--s2-accent-contrast);
+}
+.s2-tag-success {
+  background: var(--wa-color-success-fill-loud, #276749);
+  color: #fff;
 }

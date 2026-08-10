@@ -80,32 +80,34 @@
   <body>
     <s2-nav></s2-nav>
     <main class="container" style="max-inline-size: 26rem">
-      <wa-card id="auth-view">
+      <div class="s2-card" id="auth-view">
         <div class="s2-stack">
           <h1 id="auth-title" style="font-size: 1.4rem; margin: 0">Sign in</h1>
-          <wa-button id="google" appearance="outlined" variant="brand">
+          <button class="s2-btn s2-btn-outline" type="button" id="google">
             <iconify-icon slot="start" icon="lucide:log-in"></iconify-icon>
             Continue with Google
-          </wa-button>
+          </button>
           <div class="s2-center s2-quiet s2-small">or</div>
           <wa-input id="name" placeholder="Name" class="s2-hidden"></wa-input>
           <wa-input id="email" type="email" placeholder="Email"></wa-input>
           <wa-input id="password" type="password" placeholder="Password" password-toggle></wa-input>
           <p id="auth-error" class="s2-small s2-hidden" style="color: var(--wa-color-danger-fill-loud); margin: 0"></p>
-          <wa-button id="submit" variant="brand">Sign in</wa-button>
-          <wa-button id="mode" appearance="plain" size="s">Create an account instead</wa-button>
-          <wa-button id="forgot" appearance="plain" size="s" style="color: var(--s2-muted)">Forgot password?</wa-button>
+          <button class="s2-btn s2-btn-brand" type="button" id="submit">Sign in</button>
+          <button class="s2-btn s2-btn-plain s2-btn-s" type="button" id="mode">Create an account instead</button>
+          <button class="s2-btn s2-btn-plain s2-btn-s" type="button" id="forgot" style="color: var(--s2-muted)">
+            Forgot password?
+          </button>
         </div>
-      </wa-card>
-      <wa-card id="totp-view" class="s2-hidden">
+      </div>
+      <div id="totp-view" class="s2-card s2-hidden">
         <div class="s2-stack">
           <h1 style="font-size: 1.4rem; margin: 0">Two-factor code</h1>
           <p class="s2-quiet s2-small" style="margin: 0">Enter the 6-digit code from your authenticator app.</p>
           <wa-otp-input id="totp-code" label="Verification code"></wa-otp-input>
           <p id="totp-error" class="s2-small s2-hidden" style="color: var(--wa-color-danger-fill-loud); margin: 0"></p>
-          <wa-button id="totp-verify" variant="brand">Verify</wa-button>
+          <button class="s2-btn s2-btn-brand" type="button" id="totp-verify">Verify</button>
         </div>
-      </wa-card>
+      </div>
     </main>
     <s2-footer></s2-footer>
     <script type="module" src="./js/pages/login.js"></script>

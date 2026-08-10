@@ -58,6 +58,9 @@ const capture = () => {
   };
   const out = {};
   for (const el of document.querySelectorAll("body *")) {
+    // Placeholders are MEANT to be replaced once data arrives; counting
+    // them as movement would mean the tool can never read zero.
+    if (el.closest("[data-placeholder]")) continue;
     const r = el.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
     out[path(el)] = [Math.round(r.x), Math.round(r.y + scrollY), Math.round(r.width), Math.round(r.height)];
@@ -72,9 +75,16 @@ async function snapshot(url, js) {
   const ctx = await browser.newContext({ viewport, javaScriptEnabled: js });
   const page = await ctx.newPage();
   await page.goto(url, { waitUntil: js ? "load" : "domcontentloaded" });
-  if (js)
-    await page.waitForTimeout(2500); // let components upgrade and data land
-  else await page.waitForTimeout(400);
+  // Wait for webfonts in BOTH renders. Otherwise the no-JS snapshot is
+  // taken pre-swap and the diff blames JS for font reflow. (Playwright's
+  // evaluate runs in an isolated world, so this works with JS disabled.)
+  await page.evaluate(() => document.fonts.ready).catch(() => {});
+  // CSS animations run WITHOUT JS too (the hero reveal does), so a short
+  // no-JS wait catches them mid-flight and the diff blames JS for it.
+  await page
+    .evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {}))))
+    .catch(() => {});
+  await page.waitForTimeout(js ? 2000 : 400); // components upgrade + data lands
   const result = await page.evaluate(capture);
   await ctx.close();
   return result;

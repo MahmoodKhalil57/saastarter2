@@ -99,16 +99,16 @@
         </p>
         <div class="s2-row s2-reveal" style="justify-content: center; margin-block-start: 1.5rem">
           <a href="./products.html">
-            <wa-button variant="brand" size="l">
+            <button class="s2-btn s2-btn-brand s2-btn-l" type="button">
               <iconify-icon icon="lucide:package" inline></iconify-icon>
               Browse products
-            </wa-button>
+            </button>
           </a>
           <a href="./page.html?slug=story">
-            <wa-button appearance="outlined" variant="brand" size="l">
+            <button class="s2-btn s2-btn-outline s2-btn-l" type="button">
               Our story
               <iconify-icon icon="lucide:arrow-right" inline></iconify-icon>
-            </wa-button>
+            </button>
           </a>
         </div>
       </section>
@@ -116,49 +116,49 @@
       <section style="padding-block: 3rem">
         <p class="s2-kicker s2-center" style="margin-block-end: 1.5rem">what ships in the box</p>
         <div class="s2-grid">
-          <wa-card class="s2-hover s2-feature">
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:shopping-cart"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">eCommerce</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               Guest-by-default cart, coupons, in-page payments (no redirect), digital delivery with signed downloads.
             </p>
-          </wa-card>
-          <wa-card class="s2-hover s2-feature">
+          </div>
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:lock"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">Authentication</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               Sessions, Google OAuth, real TOTP two-factor, verified deletion — all bearer-first for static hosts.
             </p>
-          </wa-card>
-          <wa-card class="s2-hover s2-feature">
+          </div>
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:search"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">Search + i18n</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               Hybrid lexical+semantic search; English/Arabic with RTL for free — logical properties, no second
               stylesheet.
             </p>
-          </wa-card>
-          <wa-card class="s2-hover s2-feature">
+          </div>
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:credit-card"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">Subscriptions</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               Recurring checkout, renew/lapse lifecycle, self-serve customer portal.
             </p>
-          </wa-card>
-          <wa-card class="s2-hover s2-feature">
+          </div>
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:truck"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">Delivery</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               Neutral delivery contract — download links today; couriers and carriers as drivers tomorrow.
             </p>
-          </wa-card>
-          <wa-card class="s2-hover s2-feature">
+          </div>
+          <div class="s2-card s2-hover s2-feature">
             <iconify-icon icon="lucide:mail"></iconify-icon>
             <h3 style="font-family: var(--s2-body); font-size: 1rem; margin-block: 0.5rem 0.25rem">Forms + CMS</h3>
             <p class="s2-quiet s2-small" style="margin: 0">
               A contact form with zero JavaScript, hosted pages with localized siblings.
             </p>
-          </wa-card>
+          </div>
         </div>
       </section>
 
@@ -166,38 +166,38 @@
         <p class="s2-kicker s2-center" style="margin-block-end: 0.25rem">pricing</p>
         <h2 class="s2-center" style="margin-block: 0 1.5rem">Pay once, own the source</h2>
         <div class="s2-grid" id="pricing" style="max-inline-size: 52rem; margin-inline: auto">
-          <wa-card class="s2-hover">
+          <div class="s2-card s2-hover">
             <div class="s2-stack" style="block-size: 100%">
               <h3 style="margin: 0">Frontend Lite</h3>
               <div class="s2-price" style="font-size: 1.5rem">$0</div>
               <p class="s2-quiet s2-small" style="flex: 1">This very page — view source, copy, ship.</p>
-              <wa-button appearance="outlined" variant="neutral" disabled>It's this page</wa-button>
+              <button class="s2-btn s2-btn-quiet" type="button" disabled>It's this page</button>
             </div>
-          </wa-card>
-          <wa-card class="s2-hover" style="--border-color: var(--s2-accent)">
+          </div>
+          <div class="s2-card s2-hover" style="--border-color: var(--s2-accent)">
             <div class="s2-stack" style="block-size: 100%">
               <h3 style="margin: 0">Backend + Frontend</h3>
               <div class="s2-price" style="font-size: 1.5rem">$49</div>
               <p class="s2-quiet s2-small" style="flex: 1">
                 Admin, products, checkout, hosted collections + auth pools.
               </p>
-              <wa-button variant="brand" data-buy="billing-kit">
+              <button class="s2-btn s2-btn-brand" type="button" data-buy="billing-kit">
                 <iconify-icon icon="lucide:plus" inline></iconify-icon>
                 Add to cart
-              </wa-button>
+              </button>
             </div>
-          </wa-card>
-          <wa-card class="s2-hover">
+          </div>
+          <div class="s2-card s2-hover">
             <div class="s2-stack" style="block-size: 100%">
               <h3 style="margin: 0">Full Stack Pro</h3>
               <div class="s2-price" style="font-size: 1.5rem">$149</div>
               <p class="s2-quiet s2-small" style="flex: 1">Stripe payments, order management, lifetime updates.</p>
-              <wa-button appearance="outlined" variant="brand" data-buy="saastarter2">
+              <button class="s2-btn s2-btn-outline" type="button" data-buy="saastarter2">
                 <iconify-icon icon="lucide:plus" inline></iconify-icon>
                 Add to cart
-              </wa-button>
+              </button>
             </div>
-          </wa-card>
+          </div>
         </div>
       </section>
 

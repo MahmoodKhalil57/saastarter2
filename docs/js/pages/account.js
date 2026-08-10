@@ -70,9 +70,9 @@ async function renderWishlist() {
       ? '<p class="s2-quiet">Nothing saved yet — tap ❤️ on a product.</p>'
       : rows
           .map(
-            (w) => `<wa-card><div class="s2-row" style="justify-content:space-between">
+            (w) => `<div class="s2-card"><div class="s2-row" style="justify-content:space-between">
         <a href="./product.html?slug=${encodeURIComponent(w.product)}">${w.product}</a>
-        <wa-button size="s" appearance="plain" variant="danger" data-unwish="${w.product}">Remove</wa-button></div></wa-card>`,
+        <button class="s2-btn s2-btn-plain s2-btn-danger s2-btn-s" type="button" data-unwish="${w.product}">Remove</button></div></div>`,
           )
           .join("");
 }
@@ -147,25 +147,25 @@ async function renderOrders() {
       : orders
           .map(
             (order) => `
-      <wa-card>
+      <div class="s2-card">
         <div class="s2-row" style="justify-content:space-between">
           <span>${order.items.map((i) => `${i.quantity}× ${i.name ?? i.product_id}`).join(", ")}</span>
           <span class="s2-row"><span class="s2-price">${money(order.total_cents)}</span>
-            <wa-badge variant="${["paid", "delivered", "shipped", "fulfilled"].includes(order.status) ? "success" : "neutral"}">${order.status}</wa-badge></span>
+            <span class="s2-tag ${["paid", "delivered", "shipped", "fulfilled"].includes(order.status) ? "s2-tag-success" : ""}">${order.status}</span></span>
         </div>
         <div class="s2-row" style="margin-block-start:0.4rem">
         ${(order.deliveries ?? [])
           .flatMap((d) => d.artifacts)
           .map((artifact) =>
             artifact.kind === "download"
-              ? `<wa-button size="s" appearance="outlined" variant="brand" href="${config.endpoint}${artifact.claim}" target="_blank"><iconify-icon icon="lucide:download" inline></iconify-icon> ${artifact.label}</wa-button>`
+              ? `<a class="s2-btn s2-btn-outline s2-btn-s" href="${config.endpoint}${artifact.claim}" target="_blank"><iconify-icon icon="lucide:download" inline></iconify-icon> ${artifact.label}</button>`
               : artifact.kind === "tracking"
-                ? `<wa-badge variant="neutral">📦 ${artifact.label}${artifact.code ? " — " + artifact.code : ""}</wa-badge>`
+                ? `<span class="s2-tag">📦 ${artifact.label}${artifact.code ? " — " + artifact.code : ""}</wa-badge>`
                 : `<small class="s2-quiet">${artifact.label}</small>`,
           )
           .join(" ")}
         </div>
-      </wa-card>`,
+      </div>`,
           )
           .join("");
 }

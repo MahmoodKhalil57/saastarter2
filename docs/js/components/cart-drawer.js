@@ -17,19 +17,19 @@ class S2CartDrawer extends HTMLElement {
         <div id="cd-items" class="s2-stack"></div>
         <div class="s2-row">
           <wa-input id="cd-code" size="s" placeholder="Discount code (try LAUNCH20)" style="flex:1; text-transform:uppercase"></wa-input>
-          <wa-button id="cd-apply" size="s" appearance="outlined" variant="brand">${icon("tag")} Apply</wa-button>
+          <button class="s2-btn s2-btn-outline s2-btn-s" type="button" id="cd-apply">${icon("tag")} Apply</button>
         </div>
         <p id="cd-coupon-line" class="s2-small s2-hidden" style="color:var(--wa-color-success-fill-loud)"></p>
         <p id="cd-coupon-error" class="s2-small s2-hidden" style="color:var(--wa-color-danger-fill-loud)"></p>
         <div class="s2-row" style="justify-content:space-between; border-block-start:1px solid var(--s2-line); padding-block-start:0.5rem">
           <span>Total</span><strong id="cd-total" class="s2-price" style="font-size:1.25rem"></strong>
         </div>
-        <wa-button id="cd-checkout" variant="brand">${icon("lock")} Checkout</wa-button>
+        <button class="s2-btn s2-btn-brand" type="button" id="cd-checkout">${icon("lock")} Checkout</button>
       </div>
       <div data-view="pay" class="s2-stack s2-hidden">
-        <wa-button id="cd-back" appearance="plain" size="s">← Back to cart (your items are safe)</wa-button>
+        <button class="s2-btn s2-btn-plain s2-btn-s" type="button" id="cd-back">← Back to cart (your items are safe)</button>
         <div id="cd-payment-element" style="border:1px solid var(--s2-line); border-radius:var(--wa-border-radius-m); padding:0.5rem"></div>
-        <wa-button id="cd-pay" variant="brand" disabled>Loading…</wa-button>
+        <button class="s2-btn s2-btn-brand" type="button" id="cd-pay" disabled>Loading…</button>
       </div>
       <div data-view="done" class="s2-center s2-hidden" style="padding-block:2rem">
         <iconify-icon icon="lucide:check" style="font-size:2.5rem; color:var(--wa-color-success-fill-loud)"></iconify-icon>
@@ -78,7 +78,7 @@ class S2CartDrawer extends HTMLElement {
             <small class="s2-quiet">${money(item.price_cents)} × ${item.quantity}</small></div>
           <div class="s2-row">
             <span class="s2-price s2-small">${money(item.price_cents * item.quantity)}</span>
-            <wa-button size="s" appearance="plain" variant="danger" data-variant="${item.variant ?? item.product_id}" aria-label="Remove">${icon("trash-2")}</wa-button>
+            <button class="s2-btn s2-btn-plain s2-btn-danger s2-btn-s" type="button" data-variant="${item.variant ?? item.product_id}" aria-label="Remove">${icon("trash-2")}</button>
           </div>
         </div>`,
         )

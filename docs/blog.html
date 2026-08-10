@@ -81,7 +81,9 @@
     <s2-nav></s2-nav>
     <main class="container" style="max-inline-size: 42rem">
       <h1>Blog</h1>
-      <div id="posts" class="s2-stack"><wa-skeleton effect="sheen" style="block-size: 4rem"></wa-skeleton></div>
+      <div id="posts" class="s2-stack">
+        <wa-skeleton data-placeholder effect="sheen" style="block-size: 4rem"></wa-skeleton>
+      </div>
     </main>
     <s2-footer></s2-footer>
     <script type="module">
@@ -93,10 +95,10 @@
           : rows
               .map((p) => {
                 const id = p.path.split("/").pop();
-                return `<a class="s2-card-link" href="./post.html?id=${id}"><wa-card>
+                return `<a class="s2-card-link" href="./post.html?id=${id}"><div class="s2-card">
         <strong style="view-transition-name:post-${id}; font-size:1.1rem">${p.title}</strong><br>
         <small class="s2-quiet"><wa-format-date date="${p.create_time}" month="long" day="numeric" year="numeric"></wa-format-date></small>
-      </wa-card></a>`;
+      </div></a>`;
               })
               .join("");
     </script>

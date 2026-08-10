@@ -1,15 +1,13 @@
-// Entry for the eager Web Awesome bundle: the components that appear above
-// the fold on most pages. Importing their modules registers the tags.
+// Entry for the eager Web Awesome bundle.
 //
-// It also RE-EXPORTS the classes, and that is not incidental. A custom
-// element name can only be defined once per page. If a subclass imports
-// its base from the CDN while this bundle has already defined the same
-// tag from node_modules, the second define() throws and takes the
-// subclass's whole module down with it. So anything extending a Web
-// Awesome component must get its base class from here — one instance,
-// one registration. (Same rule as #stores: shared globals need a single
-// module instance, and the failure is silent-ish either way.)
-import "@awesome.me/webawesome/dist/components/card/card.js";
-import "@awesome.me/webawesome/dist/components/badge/badge.js";
-export { default as WaButton } from "@awesome.me/webawesome/dist/components/button/button.js";
+// Only components that CANNOT be plain HTML belong here. Cards, buttons
+// and badges used to be in this list; they are now .s2-card / .s2-btn /
+// .s2-tag, which render from the HTML with no JavaScript at all — the
+// whole point of tier 1. What remains is wa-input, because s2-search
+// extends it and the login/account forms use its behavior.
+//
+// The re-export is load-bearing: a custom element name can only be
+// defined once per page, so anything subclassing a Web Awesome component
+// must take its base class from here rather than fetching a second copy
+// from the CDN (that throws and takes the subclass's module down with it).
 export { default as WaInput } from "@awesome.me/webawesome/dist/components/input/input.js";

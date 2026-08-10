@@ -11,15 +11,15 @@ class S2ProductCard extends HTMLElement {
     const slug = this.getAttribute("slug") ?? "";
     this.innerHTML = `
     <a class="s2-card-link" href="./product.html?slug=${encodeURIComponent(slug)}">
-      <wa-card>
+      <div class="s2-card">
         <div class="product-emoji">${EMOJI[this.getAttribute("category")] ?? "🧩"}</div>
         <div class="s2-row" style="justify-content:space-between">
           <strong style="view-transition-name:product-${CSS.escape(slug)}"></strong>
-          ${this.hasAttribute("featured") ? '<wa-badge variant="brand">Featured</wa-badge>' : ""}
+          ${this.hasAttribute("featured") ? '<span class="s2-tag s2-tag-brand">Featured</span>' : ""}
         </div>
         <p class="s2-quiet s2-small"></p>
         <span class="s2-price"></span>
-      </wa-card>
+      </div>
     </a>`;
     // user-authored fields land as text, never as markup
     this.querySelector("strong").textContent = this.getAttribute("name") ?? slug;

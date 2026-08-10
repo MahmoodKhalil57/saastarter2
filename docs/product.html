@@ -84,15 +84,17 @@
       <section style="margin-block-start: 3rem">
         <h2>Reviews</h2>
         <div id="reviews" class="s2-stack" style="margin-block-end: 1.5rem"></div>
-        <wa-card>
+        <div class="s2-card">
           <div class="s2-stack">
             <strong>Write a review</strong>
             <wa-rating id="rev-stars" label="Your rating" value="5"></wa-rating>
             <wa-input id="rev-title" placeholder="Title"></wa-input>
             <wa-textarea id="rev-body" rows="2" placeholder="What did you think?"></wa-textarea>
-            <wa-button id="rev-post" variant="brand" style="align-self: start">Post review</wa-button>
+            <button class="s2-btn s2-btn-brand" type="button" id="rev-post" style="align-self: start">
+              Post review
+            </button>
           </div>
-        </wa-card>
+        </div>
       </section>
     </main>
     <s2-footer></s2-footer>
