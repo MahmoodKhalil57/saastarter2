@@ -10,7 +10,7 @@ const vt = slug ? `view-transition-name:product-${slug}` : "";
 if (slug)
   detail.innerHTML = `<div><h1 style="${vt}">${slug.replace(/-/g, " ")}</h1><wa-skeleton effect="sheen" style="inline-size:60%"></wa-skeleton></div>`;
 const p = await product(slug);
-if (!p) detail.innerHTML = '<p>Not found. <a href="./products.html">Back to catalog</a></p>';
+if (!p) detail.innerHTML = '<p>Not found. <a href="./products">Back to catalog</a></p>';
 else {
   document.title = `${p.name} — saastarter2 pure`;
   void track("product_viewed", { product_id: p.slug, price_cents: p.price_cents });

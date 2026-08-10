@@ -34,7 +34,7 @@ class S2CartDrawer extends HTMLElement {
       <div data-view="done" class="s2-center s2-hidden" style="padding-block:2rem">
         <iconify-icon icon="lucide:check" style="font-size:2.5rem; color:var(--wa-color-success-fill-loud)"></iconify-icon>
         <h3 id="cd-done-title"></h3>
-        <p class="s2-quiet s2-small">Downloads (if any) are on <a href="./account.html">your orders</a>.</p>
+        <p class="s2-quiet s2-small">Downloads (if any) are on <a href="./account">your orders</a>.</p>
       </div>
     </wa-drawer>`;
 
@@ -67,7 +67,7 @@ class S2CartDrawer extends HTMLElement {
   render(cart) {
     const items = this.el("cd-items");
     if ((cart.items ?? []).length === 0) {
-      items.innerHTML = '<p class="s2-quiet s2-small">Empty. <a href="./products.html">Browse the catalog →</a></p>';
+      items.innerHTML = '<p class="s2-quiet s2-small">Empty. <a href="./products">Browse the catalog →</a></p>';
       this.el("cd-checkout").disabled = true;
     } else {
       items.innerHTML = cart.items

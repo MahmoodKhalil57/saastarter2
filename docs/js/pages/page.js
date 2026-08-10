@@ -35,7 +35,7 @@ const slug = new URLSearchParams(location.search).get("slug") ?? "home";
 const response = await fetch(`${base}/pages/${slug}${localeQuery()}`);
 const mount = document.getElementById("page");
 if (!response.ok) {
-  mount.innerHTML = '<p>Page not found. <a href="./index.html">Home</a></p>';
+  mount.innerHTML = '<p>Page not found. <a href="./">Home</a></p>';
 } else {
   const doc = await response.json();
   document.title = `${doc.title} — saastarter2`;

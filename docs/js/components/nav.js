@@ -17,11 +17,11 @@ const dark = () => localStorage.getItem("theme") === "dark";
 // Only used if a page (or a test) creates <s2-nav> with no children.
 const FALLBACK = `
   <div class="container s2-nav-row">
-    <a class="s2-brand" href="./index.html">saastarter2<small>pure</small></a>
-    <a href="./products.html">${icon("package")} Products</a>
-    <a href="./blog.html">${icon("file-text")} Blog</a>
+    <a class="s2-brand" href="./">saastarter2<small>pure</small></a>
+    <a href="./products">${icon("package")} Products</a>
+    <a href="./blog">${icon("file-text")} Blog</a>
     <a href="#cart" id="nav-cart">${icon("shopping-cart")} Cart <span id="cart-count" class="s2-badge s2-hidden"></span></a>
-    <a href="./login.html" id="nav-account">${icon("log-in")} Sign in</a>
+    <a href="./login" id="nav-account">${icon("log-in")} Sign in</a>
     <button id="theme-toggle" aria-label="Toggle dark mode"><iconify-icon class="s2-when-light" icon="lucide:moon" inline></iconify-icon><iconify-icon class="s2-when-dark" icon="lucide:sun" inline></iconify-icon></button>
     <button id="locale-toggle" aria-label="Switch language">${icon("languages")} <span class="s2-mono">ع</span></button>
   </div>`;
@@ -51,7 +51,7 @@ class S2Nav extends HTMLElement {
         if (!link || user === undefined) return;
         const signedIn = user && !user.isAnonymous;
         link.innerHTML = `${icon(signedIn ? "user" : "log-in")} ${signedIn ? "Account" : "Sign in"}`;
-        link.href = signedIn ? "./account.html" : "./login.html";
+        link.href = signedIn ? "./account" : "./login";
       }),
     );
     this.#unsubs.push(

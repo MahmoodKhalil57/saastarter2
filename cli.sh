@@ -77,10 +77,16 @@ case "${1:-help}" in
                 gh run list --workflow=baas-sync.yml --limit 5 2>/dev/null || echo "(no runs yet)" ;;
               *) echo "usage: ./cli.sh ci [secrets|status]" ; exit 1 ;;
             esac ;;
-  serve)    exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", fetch(r) {
+  serve)    # Mirrors GitHub Pages: /products serves products.html, so clean
+            # URLs behave the same locally as in production.
+            exec bun -e 'Bun.serve({ port: 8899, hostname: "0.0.0.0", async fetch(r) {
               const p = new URL(r.url).pathname.replace(/\/$/, "/index.html");
-              return new Response(Bun.file("docs" + p));
-            }}); console.log("serving docs/ at http://localhost:8899")' ;;
+              for (const candidate of [p, p + ".html", p + "/index.html"]) {
+                const f = Bun.file("docs" + candidate);
+                if (await f.exists()) return new Response(f);
+              }
+              return new Response(Bun.file("docs/404.html"), { status: 404 });
+            }}); console.log("serving docs/ at http://localhost:8899 (clean URLs)")' ;;
   init)     # ./cli.sh init <project-id> [site-url] [endpoint] — a fresh
             # fork becomes YOURS: every coordinate in HTML/config/seed
             # files is rewritten, the seed ledger resets. Then: put your

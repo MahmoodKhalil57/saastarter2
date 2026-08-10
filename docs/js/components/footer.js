@@ -7,8 +7,8 @@
 // It is only used if the element is created empty (a page that forgot it,
 // or a test).
 const FALLBACK = `static on GitHub Pages · backend on Cloudflare Workers ·
-  <a href="./contact.html">contact</a> · <a href="./blog.html">blog</a> ·
-  <a href="./admin.html">admin</a>`;
+  <a href="./contact">contact</a> · <a href="./blog">blog</a> ·
+  <a href="./admin">admin</a>`;
 
 class S2Footer extends HTMLElement {
   connectedCallback() {

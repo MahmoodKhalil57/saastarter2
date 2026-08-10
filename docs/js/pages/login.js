@@ -23,7 +23,7 @@ el("submit").addEventListener("click", async () => {
   if (mode === "sign-up") {
     const response = await signUp(email, password, el("name").value || email);
     if (!response.ok) return fail("auth-error", (await response.json()).message ?? "Something went wrong.");
-    return void (location.href = "./account.html");
+    return void (location.href = "./account");
   }
   const result = await signInWith2fa(email, password);
   if (!result.ok) return fail("auth-error", "Wrong email or password.");
@@ -33,12 +33,12 @@ el("submit").addEventListener("click", async () => {
     el("totp-view").classList.remove("s2-hidden");
     return;
   }
-  location.href = "./account.html";
+  location.href = "./account";
 });
 // wa-otp-input fires wa-change when the last digit lands — no button needed,
 // but keep one for paste-and-click users.
 const submitTotp = async () => {
-  if (await verify2fa(el("totp-code").value, challenge)) location.href = "./account.html";
+  if (await verify2fa(el("totp-code").value, challenge)) location.href = "./account";
   else fail("totp-error", "Wrong code — try again.");
 };
 el("totp-verify").addEventListener("click", submitTotp);

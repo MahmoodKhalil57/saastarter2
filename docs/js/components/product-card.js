@@ -10,7 +10,7 @@ class S2ProductCard extends HTMLElement {
   connectedCallback() {
     const slug = this.getAttribute("slug") ?? "";
     this.innerHTML = `
-    <a class="s2-card-link" href="./product.html?slug=${encodeURIComponent(slug)}">
+    <a class="s2-card-link" href="./product?slug=${encodeURIComponent(slug)}">
       <div class="s2-card">
         <div class="product-emoji">${EMOJI[this.getAttribute("category")] ?? "🧩"}</div>
         <div class="s2-row" style="justify-content:space-between">

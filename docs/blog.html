@@ -34,7 +34,7 @@
           "#stores": "./js/stores.js",
           "#wa-core": "./js/wa-core.gen.js",
           "baas/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-baas-client@v0.1.0/src/",
-          "devgit/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.0/src/",
+          "devgit/": "https://cdn.jsdelivr.net/gh/MahmoodKhalil57/hono-aep-devgit@v0.1.2/src/",
           "htm": "https://esm.sh/htm@3.1.1?target=es2022",
           "idiomorph": "https://cdn.jsdelivr.net/gh/bigskysoftware/idiomorph@v0.7.4/dist/idiomorph.esm.js",
           "nanostores": "https://esm.sh/nanostores@1.4.2?target=es2022",
@@ -70,7 +70,7 @@
       content="https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/og.png"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/blog.html" />
+    <meta property="og:url" content="https://mahmoodkhalil57.github.io/saastarter2/blog" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:image"
@@ -85,15 +85,15 @@
            js/components/nav.js — change one, change both.
            Find every copy with:  grep -l s2-nav-row docs/*.html -->
       <div class="container s2-nav-row">
-        <a class="s2-brand" href="./index.html">
+        <a class="s2-brand" href="./">
           saastarter2
           <small>pure</small>
         </a>
-        <a href="./products.html">
+        <a href="./products">
           <iconify-icon icon="lucide:package" inline></iconify-icon>
           Products
         </a>
-        <a href="./blog.html">
+        <a href="./blog">
           <iconify-icon icon="lucide:file-text" inline></iconify-icon>
           Blog
         </a>
@@ -102,7 +102,7 @@
           Cart
           <span id="cart-count" class="s2-badge s2-hidden"></span>
         </a>
-        <a href="./login.html" id="nav-account">
+        <a href="./login" id="nav-account">
           <iconify-icon icon="lucide:log-in" inline></iconify-icon>
           Sign in
         </a>
@@ -126,11 +126,11 @@
       <!-- SYNC: duplicated per page (see the note on <s2-nav>); the fallback
            copy lives in js/components/footer.js — change one, change both. -->
       static on GitHub Pages · backend on Cloudflare Workers ·
-      <a href="./contact.html">contact</a>
+      <a href="./contact">contact</a>
       ·
-      <a href="./blog.html">blog</a>
+      <a href="./blog">blog</a>
       ·
-      <a href="./admin.html">admin</a>
+      <a href="./admin">admin</a>
     </s2-footer>
     <script type="module">
       import { posts } from "./js/store.js";
@@ -141,7 +141,7 @@
           : rows
               .map((p) => {
                 const id = p.path.split("/").pop();
-                return `<a class="s2-card-link" href="./post.html?id=${id}"><div class="s2-card">
+                return `<a class="s2-card-link" href="./post?id=${id}"><div class="s2-card">
         <strong style="view-transition-name:post-${id}; font-size:1.1rem">${p.title}</strong><br>
         <small class="s2-quiet"><wa-format-date date="${p.create_time}" month="long" day="numeric" year="numeric"></wa-format-date></small>
       </div></a>`;

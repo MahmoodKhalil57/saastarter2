@@ -32,9 +32,14 @@ const canTransition = typeof document.startViewTransition === "function";
 function isInternal(url, target) {
   if (url.origin !== location.origin) return false; // studio/admin/Stripe stay real navigations
   if (url.pathname === location.pathname && url.hash) return false; // same-page anchor
-  if (url.pathname.endsWith("/admin.html")) return false; // meta-refresh stub
+  if (/\/admin(\.html)?$/.test(url.pathname)) return false; // meta-refresh stub
   if (target && target !== "_self") return false;
-  return url.pathname.endsWith(".html") || url.pathname.endsWith("/");
+  // Clean URLs: pages are served extensionless (/products, not
+  // /products.html). Treat anything without a file extension as a page,
+  // and never intercept a real asset.
+  const last = url.pathname.split("/").pop() ?? "";
+  const ext = last.includes(".") ? last.slice(last.lastIndexOf(".")) : "";
+  return ext === "" || ext === ".html";
 }
 
 async function swap(url) {

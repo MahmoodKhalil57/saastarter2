@@ -25,7 +25,7 @@ import { toast } from "../chrome.js";
 
 const el = (id) => document.getElementById(id);
 const user = await getSession();
-if (!user) location.href = "./login.html";
+if (!user) location.href = "./login";
 el("guest-hint").classList.toggle("s2-hidden", !user?.isAnonymous);
 el("who").textContent = user?.email ?? "";
 el("prof-name").value = user?.name ?? "";
@@ -71,7 +71,7 @@ async function renderWishlist() {
       : rows
           .map(
             (w) => `<div class="s2-card"><div class="s2-row" style="justify-content:space-between">
-        <a href="./product.html?slug=${encodeURIComponent(w.product)}">${w.product}</a>
+        <a href="./product?slug=${encodeURIComponent(w.product)}">${w.product}</a>
         <button class="s2-btn s2-btn-plain s2-btn-danger s2-btn-s" type="button" data-unwish="${w.product}">Remove</button></div></div>`,
           )
           .join("");
@@ -86,7 +86,7 @@ el("wishlist").addEventListener("click", async (event) => {
 await renderWishlist();
 el("sign-out").addEventListener("click", () => {
   signOut();
-  location.href = "./index.html";
+  location.href = "./";
 });
 
 // 2FA: the totpURI becomes a scannable wa-qr-code + a wa-copy-button secret.

@@ -4,24 +4,24 @@
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <script>
-      // Old SPA-route compatibility: /products/x → product.html?slug=x, etc.
+      // Old SPA-route compatibility: /products/x → product?slug=x, etc.
       const parts = location.pathname
         .replace(/^\/saastarter2\/?/, "")
         .split("/")
         .filter(Boolean);
       const [head, tail] = parts;
       const map = {
-        products: tail ? `product.html?slug=${encodeURIComponent(tail)}` : "products.html",
-        blog: tail ? `post.html?id=${encodeURIComponent(tail)}` : "blog.html",
-        changelog: "blog.html",
-        cart: "index.html#cart",
-        login: "login.html",
-        account: "account.html" + location.search,
+        products: tail ? `product?slug=${encodeURIComponent(tail)}` : "products",
+        blog: tail ? `post?id=${encodeURIComponent(tail)}` : "blog",
+        changelog: "blog",
+        cart: "#cart",
+        login: "login",
+        account: "account" + location.search,
         admin:
           "https://mizan-gpp.the-montiapple.workers.dev/v1/projects/b40546af-b19c-46ca-8661-87db12b3e85a/site/admin.html",
-        contact: "contact.html",
+        contact: "contact",
       };
-      location.replace("/saastarter2/" + (map[head] ?? (head ? `page.html?slug=${encodeURIComponent(head)}` : "")));
+      location.replace("/saastarter2/" + (map[head] ?? (head ? `page?slug=${encodeURIComponent(head)}` : "")));
     </script>
   </head>
   <body>
