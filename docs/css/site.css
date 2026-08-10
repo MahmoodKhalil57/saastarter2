@@ -136,6 +136,23 @@ s2-nav {
   }
 }
 
+/* The theme toggle shows the right icon with no JS: the boot script sets
+   .dark before first paint, and CSS picks which of the two is visible. */
+.s2-when-dark {
+  display: none;
+}
+.dark .s2-when-dark {
+  display: inline-block;
+}
+.dark .s2-when-light {
+  display: none;
+}
+/* "Sign in" and "Account" differ in width; reserving the wider one stops a
+   horizontal jitter when the session resolves. */
+#nav-account {
+  min-inline-size: 6.5rem;
+}
+
 s2-footer {
   display: block;
   /* Measured filled height. Without it the footer grows by one line when
@@ -344,6 +361,14 @@ iconify-icon:not(:defined) {
   display: inline-block;
   inline-size: 1em;
   block-size: 1em;
+}
+/* …but the reservation must not out-specify "this icon is hidden", or the
+   theme toggle shows BOTH its icons until the CDN script lands. */
+iconify-icon.s2-when-dark:not(:defined) {
+  display: none;
+}
+.dark iconify-icon.s2-when-light:not(:defined) {
+  display: none;
 }
 
 /* --- headless-component styling (Base UI slider) -------------------------

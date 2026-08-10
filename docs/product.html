@@ -78,7 +78,44 @@
     />
   </head>
   <body>
-    <s2-nav></s2-nav>
+    <s2-nav>
+      <!-- SYNC: this markup is duplicated on every page so the chrome renders
+           before any JavaScript. The behaviour that enhances it (and the
+           fallback copy, if this is ever missing) lives in
+           js/components/nav.js — change one, change both.
+           Find every copy with:  grep -l s2-nav-row docs/*.html -->
+      <div class="container s2-nav-row">
+        <a class="s2-brand" href="./index.html">
+          saastarter2
+          <small>pure</small>
+        </a>
+        <a href="./products.html">
+          <iconify-icon icon="lucide:package" inline></iconify-icon>
+          Products
+        </a>
+        <a href="./blog.html">
+          <iconify-icon icon="lucide:file-text" inline></iconify-icon>
+          Blog
+        </a>
+        <a href="#cart" id="nav-cart">
+          <iconify-icon icon="lucide:shopping-cart" inline></iconify-icon>
+          Cart
+          <span id="cart-count" class="s2-badge s2-hidden"></span>
+        </a>
+        <a href="./login.html" id="nav-account">
+          <iconify-icon icon="lucide:log-in" inline></iconify-icon>
+          Sign in
+        </a>
+        <button id="theme-toggle" aria-label="Toggle dark mode">
+          <iconify-icon class="s2-when-light" icon="lucide:moon" inline></iconify-icon>
+          <iconify-icon class="s2-when-dark" icon="lucide:sun" inline></iconify-icon>
+        </button>
+        <button id="locale-toggle" aria-label="Switch language">
+          <iconify-icon icon="lucide:languages" inline></iconify-icon>
+          <span class="s2-mono">ع</span>
+        </button>
+      </div>
+    </s2-nav>
     <main class="container">
       <div id="detail" class="s2-split"><p class="s2-quiet">Loading…</p></div>
       <section style="margin-block-start: 3rem">
@@ -97,7 +134,16 @@
         </div>
       </section>
     </main>
-    <s2-footer></s2-footer>
+    <s2-footer>
+      <!-- SYNC: duplicated per page (see the note on <s2-nav>); the fallback
+           copy lives in js/components/footer.js — change one, change both. -->
+      static on GitHub Pages · backend on Cloudflare Workers ·
+      <a href="./contact.html">contact</a>
+      ·
+      <a href="./blog.html">blog</a>
+      ·
+      <a href="./admin.html">admin</a>
+    </s2-footer>
     <script type="module" src="./js/pages/product.js"></script>
   </body>
 </html>
