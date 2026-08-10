@@ -242,9 +242,13 @@ a.s2-card-link {
     font-weight: 500;
   }
 }
+/* The hero holds the LCP element. An element at opacity:0 is not an LCP
+   candidate, so fading the hero in defers LCP by the whole animation —
+   measured at ~1.8s between FCP and LCP here, with the LCP element being
+   the hero paragraph. The rise is therefore transform-only: same staggered
+   entrance, but the text is painted (and LCP-eligible) immediately. */
 @media (prefers-reduced-motion: no-preference) {
   .s2-reveal {
-    opacity: 0;
     transform: translateY(14px);
     animation: s2-up 0.55s ease forwards;
   }
@@ -259,7 +263,6 @@ a.s2-card-link {
   }
   @keyframes s2-up {
     to {
-      opacity: 1;
       transform: none;
     }
   }
