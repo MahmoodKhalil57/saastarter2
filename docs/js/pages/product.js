@@ -28,7 +28,7 @@ else {
       <div class="s2-row">
         <button class="s2-btn s2-btn-brand s2-btn-l" type="button" id="add">${icon("shopping-cart")} Add to cart</button>
         <button class="s2-btn s2-btn-outline s2-btn-l s2-hidden" type="button" id="view-cart">View cart ${icon("arrow-right")}</button>
-        <button class="s2-btn s2-btn-plain s2-btn-l" type="button" id="wish" aria-label="Toggle wishlist" style="color:${wished ? ">${icon("heart")}</button>
+        <button class="s2-btn s2-btn-plain s2-btn-l" type="button" id="wish" aria-label="Toggle wishlist" style="color:${wished ? "var(--s2-accent)" : "inherit"}">${icon("heart")}</button>
       </div>
     </div>`;
   document.getElementById("add").addEventListener("click", async () => {
